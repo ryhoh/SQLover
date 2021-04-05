@@ -1,0 +1,12 @@
+{
+  "name": "easy_1",
+  "DDL": [
+    "create table Students ( id int primary key, name varchar(16) ); ",
+    "insert into Students values (1, 'Alice');",
+    "insert into Students values (2, 'Bob');",
+    "insert into Students values (3, 'Charlie');",
+    "insert into Students values (4, 'David');"
+  ],
+  "expected_expr": "[(1, 'Alice'), (2, 'Bob'), (3, 'Charlie'), (4, 'David')]",
+  "order_strict": "false"
+}
