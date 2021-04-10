@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SQLabo</title>
+    <link rel="stylesheet" href="static/style_template.css">
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>SQLabo</h1>
+
+    <div id="vue_app">
+        <div>
+            <h2>Problem Select</h2>
+            <select name="problem-name" v-model="selected_problem">
+                <option disabled value="">--Please choose problem--</option>
+                <option v-for="problem in problem_list" :key="problem">
+                    {{ problem }}
+                </option>
+            </select>
+        </div>
+
+        <div v-show="selected_problem">
+            <div>
+                <h2>Tables</h2>
+                <div v-for="table in tables" :key="table.name">
+                    <p>{{ table.name }}</p>
+                    <table>
+                        <tr>
+                            <th v-for="col in table.columns" :key="col">
+                                {{ col }}
+                            </th>
+                        </tr>
+                        <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <td v-for="(cell, idx) in record" :key="idx">
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div>
+                <h2>Expected</h2>
+                <table class="expected">
+                    <tr>
+                        <th v-for="col in expected_columns" :key="col">
+                            {{ col }}
+                        </th>
+                    </tr>
+                    <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                        <td v-for="(cell, idx) in record" :key="idx">
+                            {{ cell }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div>
+                <h2>Answer</h2>
+                <h3>Your SQL Here...</h3>
+                <p>
+                    <form @submit.prevent="submit_problem">
+                        <textarea name="sql" cols="30" rows="5" v-model="sql"></textarea>
+                        <br>
+                        <button v-on:click="submit_problem">Submit</button>
+
+                        <!-- Judge Result -->
+                        <span v-show="judged" v-bind:class="result" class="result_icon">
+                            {{ result }}
+                        </span>
+                    </form>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <footer>
+        2021 Apr. Shirosha2
+    </footer>
+
+    <script>
+        // Vue.js
+        const vm = new Vue({
+            el: '#vue_app',
+            
+            data: () => ({
+                problem_list: null,
+                errored: false,
+                loding: false,
+
+                selected_problem: null,
+                tables: null,
+                expected_records: null,
+                expected_columns: null,
+                order_strict: null,
+                
+                sql: null,
+                judged: false,
+                result: null,
+            }),
+
+            // filters: {
+            //     result2class: function(result) {
+            //         if (result === "AC")
+            //             return 
+            //     },
+            // },
+
+            methods: {
+                submit_problem: function() {
+                    this.result = 'Judging...';
+
+                    const params = new URLSearchParams();
+                    params.append('problem_name', this.selected_problem);
+                    params.append('answer', this.sql);
+                    axios
+                        .post('/api/v1/submit', params)
+                        .then(response => {
+                            this.result = response.data.Result;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            console.log(error.response.data);
+                            this.errored = true;
+                        })
+                        .finally(() => this.judged = true);
+                },
+            },
+
+            watch: {
+                selected_problem: function(new_problem, old_problem) {
+                    axios
+                        .get('/api/v1/problem', {
+                            params: {
+                                problem_name: new_problem,
+                            }
+                        })
+                        .then(response => {
+                            this.tables = response.data.tables;
+                            this.expected_records = response.data.expected_records;
+                            this.expected_columns = response.data.expected_columns;
+                            this.order_strict = response.data.order_strict;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.errored = true;
+                        })
+                        .finally(() => this.loading = false);
+                }
+            },
+
+            mounted() {
+                axios
+                    .get('/api/v1/problem_list')
+                    .then(response => {
+                        this.problem_list = response.data.problems;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.errored = true;
+                    })
+                    .finally(() => this.loading = false);
+            },
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+/* template */
+@charset "UTF-8";
+
+:root {
+	--bg-color-main: 102, 176, 106;
+	--bg-color-sub: 197, 225, 165;
+	--bg-color-0: rgb(197, 225, 165);
+	--bg-color-1: rgb(230, 238, 156);
+	--tile-offset: 1.375em;
+
+	--aura-kcolor-0: 102, 187, 106;
+	--aura-kcolor-1: 156, 204, 101;
+	--aura-kcolor-2: 212, 225, 87;
+
+	--color-caution: #F57F17;
+	--color-warn: #c0392b;
+}
+
+body {
+	font-family: "ヒラギノ丸ゴ Pro W4","ヒラギノ丸ゴ Pro W3","ヒラギノ丸ゴ Pro",
+	  "Hiragino Maru Gothic Pro","ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro",
+	  "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+	color: #111;
+	background-color: #FFF;
+}
+
+/* Header */
+
+h1, h2, h3, h4, h5, h6 {
+	padding-left: 0.5em;
+}
+
+h1, h3, h5 {
+	border-left: 0.5em solid rgb(var(--bg-color-main));
+}
+
+h2, h4, h6 {
+	border-left: 0.5em solid rgb(var(--bg-color-sub));
+}
+
+h1 {
+	display: inline;
+	padding-right: 1em;
+}
+
+/* Paragraph */
+
+.p_bar_1, .p_bar_2 {
+	height: 0.5em;
+	width: 0.5em;
+}
+
+.p_bar_1 {
+	border-right: 0.2em solid rgb(var(--bg-color-sub));
+	display: block;
+}
+
+.p_bar_2 {
+	border-top: 0.2em solid rgb(var(--bg-color-main));
+	display: inline;
+}
+
+p.p_bar_main {
+	margin-top: 0;
+	border-top: 0.2em solid rgb(var(--bg-color-main));
+	border-left: 0.2em solid rgb(var(--bg-color-sub));
+	padding-top: 0.25em;
+	padding-left: 0.25em;
+}
+
+blockquote p {
+	background-color: #EEEEEE;
+}
+
+/* Table */
+
+table {
+	border-spacing: 5px;
+}
+
+th, td {
+	padding: 5px;
+}
+
+th {
+	color: #FAFAFA;
+	font-size: 17px;
+	padding: 4px;
+}
+
+th {
+	background-color: rgb(var(--bg-color-main));
+}
+
+tr.bg0 td {
+	background-color: var(--bg-color-0);
+}
+
+tr.bg1 td {
+	background-color: var(--bg-color-1);
+}
+
+/* Text Color */
+
+.caution {
+	color: var(--color-caution);
+	font-weight: 800;
+}
+
+.warn {
+	color: var(--color-warn);
+	font-weight: 800;
+}
+
+.code {
+    font-family: "Courier New", Consolas, monospace;
+}
+
+/* Tile */
+
+.tile {
+	position: absolute;
+	background-color: rgb(var(--bg-color-main));  /* a11 */
+	width: 1.15em;
+	height: 1.15em;
+	margin-top: 0.1em;
+	box-shadow:
+	0em var(--tile-offset) rgb(var(--bg-color-main)),  /* a12 */
+    calc(var(--tile-offset) * 1) var(--tile-offset) rgb(var(--bg-color-main), 0.4),   /* a21 */
+    calc(var(--tile-offset) * 1) 0em                rgb(var(--bg-color-main), 0.6),   /* a22 */
+    calc(var(--tile-offset) * 2) var(--tile-offset) rgb(var(--bg-color-main), 0.55),  /* a31 */
+    calc(var(--tile-offset) * 2) 0em                rgb(var(--bg-color-main), 0.4),   /* a32 */
+    calc(var(--tile-offset) * 3) var(--tile-offset) rgb(var(--bg-color-main), 0.3),   /* a41 */
+    calc(var(--tile-offset) * 3) 0em                rgb(var(--bg-color-main), 0.1),   /* a42 */
+    calc(var(--tile-offset) * 4) var(--tile-offset) rgb(var(--bg-color-main), 0.1),   /* a51 */
+    calc(var(--tile-offset) * 4) 0em                rgb(var(--bg-color-main), 0.05);  /* a52 */
+}
+
+.aura_tile {
+	position: absolute;
+	background-color: rgb(var(--aura-kcolor-1));  /* a11 */
+	width: 1.15em;
+	height: 1.15em;
+	margin-top: 0.1em;
+	box-shadow:
+	0em var(--tile-offset) rgb(var(--aura-kcolor-2)),  /* a12 */
+    calc(var(--tile-offset) * 1) var(--tile-offset) rgb(var(--aura-kcolor-0), 0.4),   /* a21 */
+    calc(var(--tile-offset) * 1) 0em                rgb(var(--aura-kcolor-1), 0.6),   /* a22 */
+    calc(var(--tile-offset) * 2) var(--tile-offset) rgb(var(--aura-kcolor-2), 0.55),  /* a31 */
+    calc(var(--tile-offset) * 2) 0em                rgb(var(--aura-kcolor-2), 0.4),   /* a32 */
+    calc(var(--tile-offset) * 3) var(--tile-offset) rgb(var(--aura-kcolor-0), 0.3),   /* a41 */
+    calc(var(--tile-offset) * 3) 0em                rgb(var(--aura-kcolor-1), 0.1),   /* a42 */
+    calc(var(--tile-offset) * 4) var(--tile-offset) rgb(var(--aura-kcolor-2), 0.1),   /* a51 */
+    calc(var(--tile-offset) * 4) 0em                rgb(var(--aura-kcolor-0), 0.05);  /* a52 */
+}
+
+/* Boxing */
+
+.box {
+	float: left;
+}
+
+.box_container {
+	overflow: hidden;
+}
+
+/* custom */

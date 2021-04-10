@@ -1,0 +1,36 @@
+:root {
+    --ac: rgb(102, 176, 106);
+    --wa: rgb(255, 167,  38);
+
+    --expected-th-bg:   rgb(255, 167,  38);
+    --expected-td-bg-0: rgb(255, 224, 130);
+    --expected-td-bg-1: rgb(255, 245, 157);
+}
+
+.result_icon {
+    color: #FAFAFA;
+    font-weight: 600;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+.AC {
+    background: var(--ac);
+}
+
+.WA, .TLE {
+    background: var(--wa);
+}
+
+.expected th {
+	background-color: var(--expected-th-bg);
+}
+
+.expected tr.bg0 td {
+	background-color: var(--expected-td-bg-0);
+}
+
+.expected tr.bg1 td {
+	background-color: var(--expected-td-bg-1);
+}

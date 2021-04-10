@@ -7,6 +7,19 @@
     "insert into Students values (3, 'Charlie');",
     "insert into Students values (4, 'David');"
   ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name"],
+      "records": [
+        [1, "Alice"],
+        [2, "Bob"],
+        [3, "Charlie"],
+        [4, "David"]
+      ]
+    }
+  ],
+  "expected_columns": ["id", "name"],
   "expected_expr": "[(1, 'Alice'), (2, 'Bob'), (3, 'Charlie'), (4, 'David')]",
   "order_strict": "false"
 }
