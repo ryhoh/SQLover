@@ -50,7 +50,7 @@ def get_problem_list():
 def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
     problem = load_problem(problem_name)
     try:
-        result = db.execute(ddl=problem["DDL"], query=answer)
+        result = db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
     except sqlite3.OperationalError as e:
         return {
             "Result": "RE",
