@@ -19,7 +19,7 @@
     background: var(--ac);
 }
 
-.WA, .TLE {
+.WA, .TLE, .RE {
     background: var(--wa);
 }
 

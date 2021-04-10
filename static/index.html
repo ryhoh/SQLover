@@ -22,6 +22,13 @@
             </select>
         </div>
 
+        <div v-show="problem_loding"><p>Now loading...</p></div>
+        <div v-show="problem_errored">
+            <p class="warn">
+                Problem load failed.<br>
+                Please reload the page.
+            </p>
+        </div>
         <div v-show="selected_problem">
             <div>
                 <h2>Tables</h2>
@@ -63,12 +70,14 @@
                 <h3>Your SQL Here...</h3>
                 <p>
                     <form @submit.prevent="submit_problem">
-                        <textarea name="sql" cols="30" rows="5" v-model="sql"></textarea>
+                        <textarea name="sql" cols="60" rows="6" v-model="sql"></textarea>
                         <br>
-                        <button v-on:click="submit_problem">Submit</button>
+                        <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">Submit</button>
 
                         <!-- Judge Result -->
-                        <span v-show="judged" v-bind:class="result" class="result_icon">
+                        <span v-if="sql_submitting">Submitting...</span>
+                        <span v-else-if="sql_submit_error">Submit failed. Please reload the page.</span>
+                        <span v-else-if="judged" v-bind:class="result" class="result_icon">
                             {{ result }}
                         </span>
                     </form>
@@ -89,30 +98,28 @@
             
             data: () => ({
                 problem_list: null,
-                errored: false,
-                loding: false,
+                problem_list_errored: false,
+                problem_list_loding: false,
 
                 selected_problem: null,
                 tables: null,
                 expected_records: null,
                 expected_columns: null,
                 order_strict: null,
+                problem_errored: false,
+                problem_loding: false,
                 
                 sql: null,
                 judged: false,
                 result: null,
+                sql_submit_error: false,
+                sql_submitting: false,
             }),
-
-            // filters: {
-            //     result2class: function(result) {
-            //         if (result === "AC")
-            //             return 
-            //     },
-            // },
 
             methods: {
                 submit_problem: function() {
                     this.result = 'Judging...';
+                    this.sql_submitting = true;
 
                     const params = new URLSearchParams();
                     params.append('problem_name', this.selected_problem);
@@ -123,16 +130,19 @@
                             this.result = response.data.Result;
                         })
                         .catch(error => {
-                            console.log(error);
-                            console.log(error.response.data);
-                            this.errored = true;
+                            console.log(error.response);
+                            this.sql_submit_error = true;
                         })
-                        .finally(() => this.judged = true);
+                        .finally(() => {
+                            this.judged = true;
+                            this.sql_submitting = false;
+                        });
                 },
             },
 
             watch: {
                 selected_problem: function(new_problem, old_problem) {
+                    this.problem_loding = true;
                     axios
                         .get('/api/v1/problem', {
                             params: {
@@ -146,24 +156,25 @@
                             this.order_strict = response.data.order_strict;
                         })
                         .catch(error => {
-                            console.log(error);
-                            this.errored = true;
+                            console.log(error.response);
+                            this.problem_errored = true;
                         })
-                        .finally(() => this.loading = false);
+                        .finally(() => this.problem_loding = false);
                 }
             },
 
             mounted() {
+                this.problem_list_loading = true;
                 axios
                     .get('/api/v1/problem_list')
                     .then(response => {
                         this.problem_list = response.data.problems;
                     })
                     .catch(error => {
-                        console.log(error);
-                        this.errored = true;
+                        console.log(error.response);
+                        this.problem_list_errored = true;
                     })
-                    .finally(() => this.loading = false);
+                    .finally(() => this.problem_list_loading = false);
             },
         });
     </script>
