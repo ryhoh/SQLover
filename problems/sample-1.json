@@ -1,5 +1,4 @@
 {
-  "name": "easy_1",
   "DDL": [
     "create table Students ( id int primary key, name varchar(16) ); "
   ],
