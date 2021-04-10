@@ -22,14 +22,14 @@
             </select>
         </div>
 
-        <div v-show="problem_loding"><p>Now loading...</p></div>
-        <div v-show="problem_errored">
+        <div v-if="problem_loding"><p>Now loading...</p></div>
+        <div v-else-if="problem_errored">
             <p class="warn">
                 Problem load failed.<br>
                 Please reload the page.
             </p>
         </div>
-        <div v-show="selected_problem">
+        <div v-else-if="selected_problem">
             <div>
                 <h2>Tables</h2>
                 <div v-for="table in tables" :key="table.name">
