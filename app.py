@@ -2,7 +2,7 @@ import glob
 import json
 import sqlite3
 
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -22,7 +22,10 @@ problems_list = frozenset(
 
 
 @app.get('/')
-async def root():
+async def root(request: Request):
+    await request.send_push_promise('static/style_template.css')
+    await request.send_push_promise('static/style.css')
+    await request.send_push_promise('static/main.js')
     return FileResponse('static/index.html')
 
 
