@@ -32,11 +32,7 @@ async def get_help():
 
 @app.get('/api/v1/problem')
 def get_problem(problem_name: str):
-    problem = load_problem(problem_name)
-
-    # JavaScript で読める形で正答の表を渡す
-    problem['expected_records'] = eval(problem["expected_expr"])
-    return problem
+    return load_problem(problem_name)
 
 
 @app.get('/api/v1/problem_list')
@@ -50,14 +46,19 @@ def get_problem_list():
 def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
     problem = load_problem(problem_name)
     try:
-        result = db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
-    except sqlite3.OperationalError as e:
+        answer = db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
+    except (sqlite3.OperationalError, sqlite3.Warning) as e:
         return {
             "Result": "RE",
             "Message": str(e)
         }
+
+    expected = problem['expected']
     correct, wrong_line = judge.judge(
-        expected=eval(problem["expected_expr"]), answered=result, order_strict=problem["order_strict"])
+        expected=[tuple(record) for record in expected["records"]],
+        answered=answer,
+        order_strict=expected["order_strict"]
+    )
 
     return {
         "Result": "AC" if correct else "WA",

@@ -57,9 +57,9 @@ const vm = new Vue({
                 })
                 .then(response => {
                     this.tables = response.data.tables;
-                    this.expected_records = response.data.expected_records;
-                    this.expected_columns = response.data.expected_columns;
-                    this.order_strict = response.data.order_strict;
+                    this.expected_records = response.data.expected.records;
+                    this.expected_columns = response.data.expected.columns;
+                    this.order_strict = response.data.expected.order_strict;
                 })
                 .catch(error => {
                     console.log(error.response);

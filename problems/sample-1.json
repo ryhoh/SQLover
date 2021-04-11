@@ -14,7 +14,14 @@
       ]
     }
   ],
-  "expected_columns": ["id", "name"],
-  "expected_expr": "[(1, 'Alice'), (2, 'Bob'), (3, 'Charlie'), (4, 'David')]",
-  "order_strict": "false"
+  "expected": {
+    "columns": ["id", "name"],
+    "records": [
+        [1, "Alice"],
+        [2, "Bob"],
+        [3, "Charlie"],
+        [4, "David"]
+    ],
+    "order_strict": "false"
+  }
 }
