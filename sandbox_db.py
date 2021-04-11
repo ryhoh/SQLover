@@ -23,8 +23,8 @@ def execute(
         if isinstance(ddl, str):
             cur.execute(ddl)
         elif '__iter__' in dir(ddl):
-            for line in ddl:
-                cur.execute(line)
+            for statement in ''.join(ddl).split(';'):
+                cur.execute(statement + ';')  # Execute each SINGLE statement
         else:
             raise ValueError("Illegal DDL. DDL must be str or iterable.")
 
