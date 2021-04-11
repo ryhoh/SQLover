@@ -14,7 +14,7 @@ app = FastAPI()
 app.mount("/api/problems", StaticFiles(directory="problems"), name="problems")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-explanation = 'Let\'s practice SQL on this service!'
+explanation = "Let's practice SQL on this service!"
 problems_list = frozenset(
     name.removeprefix('problems/').removesuffix('.json')
     for name in glob.glob('problems/*.json', recursive=False)
