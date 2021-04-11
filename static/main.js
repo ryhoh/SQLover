@@ -75,6 +75,7 @@ const vm = new Vue({
             .get('/api/v1/problem_list')
             .then(response => {
                 this.problem_list = response.data.problems;
+                this.problem_list.sort();
             })
             .catch(error => {
                 console.log(error.response);

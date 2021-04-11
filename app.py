@@ -1,7 +1,6 @@
 import glob
 import json
 import sqlite3
-from typing import Iterable
 
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
@@ -16,6 +15,11 @@ app.mount("/api/problems", StaticFiles(directory="problems"), name="problems")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 explanation = 'Let\'s practice SQL on this service!'
+# problems_list = sorted(
+problems_list = frozenset(
+    name.removeprefix('problems/').removesuffix('.json')
+    for name in glob.glob('problems/*.json', recursive=False)
+)
 
 
 @app.get('/')
@@ -36,9 +40,9 @@ def get_problem(problem_name: str):
 
 
 @app.get('/api/v1/problem_list')
-def get_problem_list():
+async def get_problem_list():
     return {
-        'problems': problems_list()
+        'problems': problems_list
     }
 
 
@@ -79,12 +83,6 @@ def load_problem(problem_name: str) -> dict:
     except IOError:
         raise HTTPException(status_code=503, detail="Problem load failed")
     return problem
-
-
-def problems_list() -> Iterable[str]:
-    problems = glob.glob('problems/*.json', recursive=False)
-    return (name.removeprefix('problems/').removesuffix('.json')
-            for name in problems)
 
 
 if __name__ == '__main__':
