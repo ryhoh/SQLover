@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-import db
+import sandbox_db
 import judge
 
 app = FastAPI()
@@ -52,7 +52,7 @@ async def get_problem_list():
 def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
     problem = load_problem(problem_name)
     try:
-        answer = db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
+        answer = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
     except (sqlite3.OperationalError, sqlite3.Warning) as e:
         return {
             "Result": "RE",
