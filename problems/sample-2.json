@@ -1,0 +1,45 @@
+{
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16) unique",
+    ");",
+    "create table Place (",
+    "    name varchar(16) primary key,",
+    "    place varchar(16),",
+    "    foreign key(name) references Students(name)",
+    ");"
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name"],
+      "records": [
+        [1, "Alice"],
+        [2, "Bob"],
+        [3, "Charlie"],
+        [4, "David"]
+      ]
+    },
+    {
+      "name": "Place",
+      "columns": ["name", "place"],
+      "records": [
+          ["Alice", "Aichi"],
+          ["Bob", "Birmingham"],
+          ["Charlie", "Canberra"],
+          ["David", "Detroit"]
+      ]
+    }
+  ],
+  "expected": {
+    "columns": ["id", "name", "place"],
+    "records": [
+        [1, "Alice", "Aichi"],
+        [2, "Bob", "Birmingham"],
+        [3, "Charlie", "Canberra"],
+        [4, "David", "Detroit"]
+    ],
+    "order_sensitive": "false"
+  }
+}
