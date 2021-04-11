@@ -18,6 +18,7 @@ const vm = new Vue({
         sql: null,
         judged: false,
         result: null,
+        re_message: null,
         sql_submit_error: false,
         sql_submitting: false,
     }),
@@ -34,6 +35,7 @@ const vm = new Vue({
                 .post('/api/v1/submit', params)
                 .then(response => {
                     this.result = response.data.Result;
+                    this.re_message = response.data.Message;
                 })
                 .catch(error => {
                     console.log(error.response);
