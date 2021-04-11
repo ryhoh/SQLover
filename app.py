@@ -63,7 +63,7 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
     correct, wrong_line = judge.judge(
         expected=[tuple(record) for record in expected["records"]],
         answered=answer,
-        order_strict=expected["order_strict"]
+        order_strict=expected["order_sensitive"]
     )
 
     return {

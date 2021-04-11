@@ -22,6 +22,6 @@
         [3, "Charlie"],
         [4, "David"]
     ],
-    "order_strict": "false"
+    "order_sensitive": "false"
   }
 }

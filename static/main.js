@@ -11,7 +11,7 @@ const vm = new Vue({
         tables: null,
         expected_records: null,
         expected_columns: null,
-        order_strict: null,
+        order_sensitive: null,
         problem_errored: false,
         problem_loding: false,
         
@@ -59,7 +59,7 @@ const vm = new Vue({
                     this.tables = response.data.tables;
                     this.expected_records = response.data.expected.records;
                     this.expected_columns = response.data.expected.columns;
-                    this.order_strict = response.data.expected.order_strict;
+                    this.order_sensitive = response.data.expected.order_sensitive;
                 })
                 .catch(error => {
                     console.log(error.response);
