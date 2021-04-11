@@ -32,20 +32,22 @@
         <div v-else-if="selected_problem">
             <div>
                 <h2>Tables</h2>
-                <div v-for="table in tables" :key="table.name">
-                    <table>
-                        <caption>{{ table.name }}</caption>
-                        <tr>
-                            <th v-for="col in table.columns" :key="col">
-                                {{ col }}
-                            </th>
-                        </tr>
-                        <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
-                            <td v-for="(cell, idx) in record" :key="idx">
-                                {{ cell }}
-                            </td>
-                        </tr>
-                    </table>
+                <div style="display: flex;">
+                    <div v-for="table in tables" :key="table.name">
+                        <table style="margin: 4px;">
+                            <caption>{{ table.name }}</caption>
+                            <tr>
+                                <th v-for="col in table.columns" :key="col">
+                                    {{ col }}
+                                </th>
+                            </tr>
+                            <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
+                                <td v-for="(cell, idx) in record" :key="idx">
+                                    {{ cell }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
             
