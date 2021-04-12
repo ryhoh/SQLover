@@ -55,7 +55,7 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
         answer = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
     except psycopg2.ProgrammingError as e:
         return {
-            "Result": "RE",
+            "Result": "PE",
             "Message": str(e)
         }
 
