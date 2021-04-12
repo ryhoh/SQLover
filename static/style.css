@@ -34,3 +34,7 @@
 .expected tr.bg1 td {
 	background-color: var(--expected-td-bg-1);
 }
+
+.code {
+    background-color: lightgray;
+}
