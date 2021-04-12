@@ -9,8 +9,16 @@ Each problem must be defined by JSON file like below.
 ```json
 {
   "DDL": [  // List of strings
-    "create table ...",
-    "create table ..."
+    "create table Foo (",
+    "    xxx varchar(256) primary key,",
+    "    yyy varchar(256),",
+    "    zzz varchar(256)",
+    ");",
+    "create table another ..."
+  ],
+  "description": [  // Optional
+    "Hello!",
+    "This is message from writer."
   ],
   "tables": [  // List of tables
     {  // Table information
@@ -39,7 +47,14 @@ Example: This is a JSON code of sample problem.
 ```json
 {
   "DDL": [
-    "create table Students ( id int primary key, name varchar(16) ); "
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16)",
+    ");"
+  ],
+  "description": [
+    "This is the first problem.",
+    "Just select all."
   ],
   "tables": [
     {

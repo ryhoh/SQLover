@@ -38,3 +38,11 @@
 .code {
     background-color: lightgray;
 }
+
+.comment {
+    display: inline-block;
+    margin: 0px;
+    padding: 0.5em;
+    border: solid lightgray 3px;
+}
+

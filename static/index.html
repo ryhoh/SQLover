@@ -53,11 +53,6 @@
             
             <div>
                 <h2>Expected</h2>
-                <p v-if="order_sensitive">This problem is not order-sensitive.</p>
-                <p v-else>
-                    Be careful!<br>
-                    This problem is <span class="caution">order-sensitive</span>!
-                </p>
                 <table class="expected">
                     <caption>(Output)</caption>
                     <tr>
@@ -71,6 +66,24 @@
                         </td>
                     </tr>
                 </table>
+
+                <span class="comment" style="margin-top: 20px;">
+                    <p v-show="description" style="margin: 0;">
+                        <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
+                            Writer's description
+                        </span>
+                        <span v-for="(sentence, idx) in description" key="idx">
+                            {{ sentence }}
+                            <br>
+                        </span>
+                    </p>
+                </span>
+
+                <p v-if="order_sensitive">This problem is not order-sensitive.</p>
+                <p v-else>
+                    Be careful!<br>
+                    This problem is <span class="caution">order-sensitive</span>!
+                </p>
             </div>
 
             <div>

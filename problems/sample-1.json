@@ -1,6 +1,13 @@
 {
   "DDL": [
-    "create table Students ( id int primary key, name varchar(16) ); "
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16)",
+    ");"
+  ],
+  "description": [
+    "This is the first problem.",
+    "Just select all."
   ],
   "tables": [
     {

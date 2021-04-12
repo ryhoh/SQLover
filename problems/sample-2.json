@@ -10,6 +10,9 @@
     "    foreign key(name) references Students(name)",
     ");"
   ],
+  "description": [
+    "Join test on multiple tables."
+  ],
   "tables": [
     {
       "name": "Students",

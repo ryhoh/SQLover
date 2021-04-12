@@ -8,6 +8,7 @@ const vm = new Vue({
         problem_list_loding: false,
 
         selected_problem: null,
+        description: null,
         tables: null,
         expected_records: null,
         expected_columns: null,
@@ -59,6 +60,7 @@ const vm = new Vue({
                 })
                 .then(response => {
                     this.tables = response.data.tables;
+                    this.description = response.data.description;
                     this.expected_records = response.data.expected.records;
                     this.expected_columns = response.data.expected.columns;
                     this.order_sensitive = response.data.expected.order_sensitive;
