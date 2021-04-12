@@ -46,3 +46,6 @@
     border: solid lightgray 3px;
 }
 
+dd {
+    margin-bottom: 1.5em;
+}
