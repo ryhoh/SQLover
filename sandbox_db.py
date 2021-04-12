@@ -1,5 +1,16 @@
-import sqlite3
+import os
+import psycopg2
 from typing import List, Dict, Tuple, Any, Union
+
+
+SANDBOX_DB = os.environ.get('SANDBOX_DB')
+
+
+def _connect():
+    if SANDBOX_DB is None:  # for debugging
+        return psycopg2.connect(host="localhost", port=54320, user="web", password="web", database="sandbox")
+    else:
+        return psycopg2.connect(SANDBOX_DB)
 
 
 def execute(
@@ -15,31 +26,35 @@ def execute(
     :param query: 実行するクエリ
     :return: クエリ結果
     """
+    # todo docstringを英語化
+    with _connect() as conn:
+        with conn.cursor() as cur:
+            # Make tables
+            if isinstance(ddl, str):
+                cur.execute(ddl)
+            elif '__iter__' in dir(ddl):
+                for statement in ''.join(ddl).split(';'):
+                    if statement == '':
+                        continue
+                    cur.execute(statement + ';')  # Execute each SINGLE statement
+            else:
+                raise ValueError("Illegal DDL. DDL must be str or iterable.")
 
-    with sqlite3.connect(":memory:") as conn:  # メモリ上に作成すると，close 時に解放される
-        cur = conn.cursor()
+            # Insert records
+            for table in tables:
+                for record in table['records']:
+                    val = '(' + ','.join(
+                        "'" + elm + "'" if isinstance(elm, str) else str(elm)
+                        for elm in record
+                    ) + ')'
+                    # Don't care sql-injection because this is an independent DB.
+                    cur.execute("insert into %s values %s" % (table['name'], val))
 
-        # Make tables
-        if isinstance(ddl, str):
-            cur.execute(ddl)
-        elif '__iter__' in dir(ddl):
-            for statement in ''.join(ddl).split(';'):
-                cur.execute(statement + ';')  # Execute each SINGLE statement
-        else:
-            raise ValueError("Illegal DDL. DDL must be str or iterable.")
+            # Test query
+            cur.execute(query)
+            result = cur.fetchall()
 
-        # Insert records
-        for table in tables:
-            for record in table['records']:
-                val = '(' + ','.join(
-                    "'" + elm + "'" if isinstance(elm, str) else str(elm)
-                    for elm in record
-                ) + ')'
-                # Don't care sql-injection because this is an independent DB.
-                cur.execute("insert into %s values %s" % (table['name'], val))
+        # prepare for next
+        conn.rollback()
 
-        # Test query
-        cur.execute(query)
-        result = cur.fetchall()
-        cur.close()
-        return result
+    return result

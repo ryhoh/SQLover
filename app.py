@@ -1,10 +1,10 @@
 import glob
 import json
-import sqlite3
 
 from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+import psycopg2
 import uvicorn
 
 import sandbox_db
@@ -53,7 +53,7 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
     problem = load_problem(problem_name)
     try:
         answer = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
-    except (sqlite3.OperationalError, sqlite3.Warning) as e:
+    except psycopg2.ProgrammingError as e:
         return {
             "Result": "RE",
             "Message": str(e)
