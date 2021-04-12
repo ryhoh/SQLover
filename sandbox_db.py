@@ -3,7 +3,7 @@ import psycopg2
 from typing import List, Dict, Tuple, Any, Union
 
 
-SANDBOX_DB = os.environ.get('SANDBOX_DB')
+SANDBOX_DB = os.environ.get('SANDBOX_DB_URL')
 
 
 def _connect():
