@@ -51,60 +51,80 @@
                 </div>
             </div>
             
-            <div>
-                <h2>Expected</h2>
-                <table class="expected">
-                    <caption>(Output)</caption>
-                    <tr>
-                        <th v-for="col in expected_columns" :key="col">
-                            {{ col }}
-                        </th>
-                    </tr>
-                    <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                        <td v-for="(cell, idx) in record" :key="idx">
-                            {{ cell }}
-                        </td>
-                    </tr>
-                </table>
+            <!-- Expected & Answer area -->
+            <div>  
+                <div class="float_pane">
+                    <h2>Expected</h2>
 
-                <span class="comment" style="margin-top: 20px;">
-                    <p v-show="description" style="margin: 0;">
-                        <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
-                            Writer's description
-                        </span>
-                        <span v-for="(sentence, idx) in description" key="idx">
-                            {{ sentence }}
-                            <br>
-                        </span>
+                    <span class="comment" style="margin-top: 20px;">
+                        <p v-show="description" style="margin: 0;">
+                            <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
+                                Writer's description
+                            </span>
+                            <span v-for="(sentence, idx) in description" key="idx">
+                                {{ sentence }}
+                                <br>
+                            </span>
+                        </p>
+                    </span>
+
+                    <p v-if="order_sensitive">
+                        Be careful!<br>
+                        This problem is <span class="caution">order-sensitive</span>!
                     </p>
-                </span>
+                    <p v-else>This problem is not order-sensitive.</p>
+                    
+                    <table class="expected">
+                        <caption>(Output)</caption>
+                        <tr>
+                            <th v-for="col in expected_columns" :key="col">
+                                {{ col }}
+                            </th>
+                        </tr>
+                        <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <td v-for="(cell, idx) in record" :key="idx">
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </table>
 
-                <p v-if="order_sensitive">
-                    Be careful!<br>
-                    This problem is <span class="caution">order-sensitive</span>!
-                </p>
-                <p v-else>This problem is not order-sensitive.</p>
-                
-            </div>
+                </div>
 
-            <div>
-                <h2>Answer</h2>
-                <p>
-                    Write your SQL here...<br>
-                    <form @submit.prevent="submit_problem">
-                        <textarea name="sql" cols="60" rows="6" v-model="sql"></textarea>
-                        <br>
-                        <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">Submit</button>
+                <div class="float_pane">
+                    <h2>Answer</h2>
+                    <p>
+                        Write your SQL here...<br>
+                        <form @submit.prevent="submit_problem">
+                            <textarea name="sql" cols="60" rows="6" v-model="sql"></textarea>
+                            <br>
+                            <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">Submit</button>
 
-                        <!-- Judge Result -->
-                        <span v-if="sql_submitting">Submitting...</span>
-                        <span v-else-if="sql_submit_error">Submit failed. Please reload the page.</span>
-                        <span v-else-if="judged" v-bind:class="result" class="result_icon">
-                            {{ result }}
-                        </span>
-                    </form>
-                    <span v-if="result === 'PE'" class="code">{{ re_message }}</span>
-                </p>
+                            <!-- Judge Result -->
+                            <span v-if="sql_submitting">Submitting...</span>
+                            <span v-else-if="sql_submit_error">Submit failed. Please reload the page.</span>
+                            <span v-else-if="judged" v-bind:class="result" class="result_icon">
+                                {{ result }}
+                            </span>
+                        </form>
+                        <span v-if="result === 'PE'" class="code">{{ re_message }}</span>
+                    </p>
+
+                    <table v-show="answer_records" class="expected">
+                        <caption>(Your output)</caption>
+                        <tr>
+                            <th v-for="col in answer_columns" :key="col">
+                                {{ col }}
+                            </th>
+                        </tr>
+                        <tr v-for="(record, idx) in answer_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <td v-for="(cell, idx) in record" :key="idx">
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="float_end"></div>
             </div>
         </div>
     </div>

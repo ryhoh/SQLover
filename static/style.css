@@ -7,6 +7,15 @@
     --expected-td-bg-1: rgb(255, 245, 157);
 }
 
+.float_pane {
+    float: left;
+    margin-right: 40px;
+}
+
+.float_end {
+    clear: left;
+}
+
 .result_icon {
     color: #FFF;
     font-weight: 600;

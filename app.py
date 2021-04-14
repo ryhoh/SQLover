@@ -1,5 +1,6 @@
 import glob
 import json
+from typing import Dict, Any
 
 from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -50,25 +51,27 @@ async def get_problem_list():
 
 @app.post('/api/v1/submit')
 def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
-    problem = load_problem(problem_name)
-    try:
-        answer = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
-    except psycopg2.ProgrammingError as e:
+    problem: Dict[str, Any] = load_problem(problem_name)
+    result: sandbox_db.Result = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
+
+    if result.has_error:
         return {
             "result": "PE",
-            "message": str(e)
+            "message": result.error_message
         }
 
     expected = problem['expected']
     correct, wrong_line = judge.judge(
         expected=[tuple(record) for record in expected["records"]],
-        answered=answer,
+        answered=result.records,
         order_strict=expected["order_sensitive"]
     )
 
     return {  # todo 実行結果の表も返したい
         "result": "AC" if correct else "WA",
         "wrong_line": wrong_line,
+        "answer_columns": result.columns,
+        "answer_records": result.records,
     }
 
 
