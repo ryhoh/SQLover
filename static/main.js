@@ -35,8 +35,8 @@ const vm = new Vue({
             axios
                 .post('/api/v1/submit', params)
                 .then(response => {
-                    this.result = response.data.Result;
-                    this.re_message = response.data.Message;
+                    this.result = response.data.result;
+                    this.re_message = response.data.message;
                 })
                 .catch(error => {
                     console.log(error.response);

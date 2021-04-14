@@ -55,8 +55,8 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
         answer = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
     except psycopg2.ProgrammingError as e:
         return {
-            "Result": "PE",
-            "Message": str(e)
+            "result": "PE",
+            "message": str(e)
         }
 
     expected = problem['expected']
@@ -66,9 +66,9 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
         order_strict=expected["order_sensitive"]
     )
 
-    return {
-        "Result": "AC" if correct else "WA",
-        "Wrong Line": wrong_line,
+    return {  # todo 実行結果の表も返したい
+        "result": "AC" if correct else "WA",
+        "wrong_line": wrong_line,
     }
 
 
