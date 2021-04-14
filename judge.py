@@ -16,8 +16,7 @@ def judge(
     """
 
     if order_strict:  # 順序まで要求する場合
-        correct = expected == answered
-        if correct:
+        if expected == answered:
             return True, None
         for idx, (expected_record, answered_record) in enumerate(zip(expected, answered), start=1):
             if expected_record != answered_record:
