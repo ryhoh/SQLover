@@ -34,7 +34,7 @@ Each problem must be defined by JSON file like below.
     "records": [
         ["Hi!", "Foo", "Bar"]
     ],
-    "order_sensitive": "false"  // true when using ORDER BY
+    "order_sensitive": false  // true when using ORDER BY
   }
 }
 ```
@@ -76,7 +76,7 @@ Example: This is a JSON code of sample problem.
         [3, "Charlie"],
         [4, "David"]
     ],
-    "order_sensitive": "false"
+    "order_sensitive": false
   }
 }
 ```

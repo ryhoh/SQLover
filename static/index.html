@@ -79,11 +79,12 @@
                     </p>
                 </span>
 
-                <p v-if="order_sensitive">This problem is not order-sensitive.</p>
-                <p v-else>
+                <p v-if="order_sensitive">
                     Be careful!<br>
                     This problem is <span class="caution">order-sensitive</span>!
                 </p>
+                <p v-else>This problem is not order-sensitive.</p>
+                
             </div>
 
             <div>

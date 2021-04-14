@@ -43,6 +43,6 @@
         [3, "Charlie", "Canberra"],
         [4, "David", "Detroit"]
     ],
-    "order_sensitive": "false"
+    "order_sensitive": false
   }
 }
