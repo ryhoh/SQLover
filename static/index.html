@@ -74,7 +74,7 @@
                     </p>
                     <p v-else>This problem is not order-sensitive.</p>
                     
-                    <table class="expected">
+                    <table class="expected centering">
                         <caption>(Output)</caption>
                         <tr>
                             <th v-for="col in expected_columns" :key="col">
@@ -110,7 +110,7 @@
                     </p>
 
                     <!-- Result Table by Submitted SQL -->
-                    <table v-show="answer_records" class="expected">
+                    <table v-show="answer_records" class="expected centering">
                         <caption>(Your output)</caption>
                         <tr>
                             <th v-for="col in answer_columns" :key="col">

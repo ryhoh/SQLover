@@ -16,6 +16,11 @@
     clear: left;
 }
 
+.centering {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .result_icon {
     color: #FFF;
     font-weight: 600;
