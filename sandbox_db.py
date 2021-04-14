@@ -37,7 +37,7 @@ def execute(
     独立した sqlite3 データベース上で，テーブル作成とクエリを実行する
 
     :param ddl: テーブル作成に用いる DDL
-    :param tables: (テーブルの名前，レコードなどの辞書)の配列
+    :param tables: insert する，(テーブルの名前，レコードなどの辞書)の配列
     :param query: 実行するクエリ
     :return: 実行結果
     """
@@ -77,5 +77,5 @@ def execute(
         finally:  # prepare for next
             conn.rollback()
 
-    # print(result_records)
+    result_records = [tuple(record) for record in result_records]
     return Result(has_error=False, columns=result_columns, records=result_records)
