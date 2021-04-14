@@ -21,6 +21,7 @@ const vm = new Vue({
         result: null,
         answer_columns: null,
         answer_records: null,
+        wrong_line: null,
         re_message: null,
         sql_submit_error: false,
         sql_submitting: false,
@@ -41,6 +42,7 @@ const vm = new Vue({
                     this.re_message = response.data.message;
                     this.answer_columns = response.data.answer_columns;
                     this.answer_records = response.data.answer_records;
+                    this.wrong_line = response.data.wrong_line;
                 })
                 .catch(error => {
                     console.log(error.response);

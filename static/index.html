@@ -109,6 +109,7 @@
                         <pre v-if="result === 'PE'" class="code">{{ re_message }}</pre>
                     </p>
 
+                    <!-- Result Table by Submitted SQL -->
                     <table v-show="answer_records" class="expected">
                         <caption>(Your output)</caption>
                         <tr>
@@ -120,6 +121,7 @@
                             <td v-for="(cell, idx) in record" :key="idx">
                                 {{ cell }}
                             </td>
+                            <td v-if="wrong_line == idx + 1" class="warn" style="background-color: #FFF;">&lt;</td>
                         </tr>
                     </table>
                 </div>
