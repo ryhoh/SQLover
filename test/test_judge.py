@@ -1,6 +1,7 @@
 import unittest
 
 from judge import judge
+import sandbox_db
 
 
 class JudgeTestCase(unittest.TestCase):
@@ -126,6 +127,61 @@ class JudgeTestCase(unittest.TestCase):
         correct, wrong_line = judge(expected=expected, answered=answered, order_strict=False)
         self.assertFalse(correct)
         self.assertEqual(2, wrong_line)
+
+    def test_real_1(self):
+        ddl = [
+            "create table Students (",
+            "    id int primary key,",
+            "    name varchar(16) unique",
+            ");",
+            "create table LivesIn (",
+            "    id int primary key,",
+            "    place varchar(16),",
+            "    foreign key(id) references Students(id)",
+            ");"
+        ]
+
+        tables = [
+            {
+                "name": "Students",
+                "columns": ["id", "name"],
+                "records": [
+                    [1, "David"],
+                    [2, "Charlie"],
+                    [3, "Bob"],
+                    [4, "Alice"]
+                ]
+            },
+            {
+                "name": "LivesIn",
+                "columns": ["id", "place"],
+                "records": [
+                    [1, "Detroit"],
+                    [2, "Birmingham"],
+                    [3, "Canberra"],
+                    [4, "Birmingham"]
+                ]
+            }
+        ]
+
+        query = """
+select Students.name, LivesIn.place
+from Students
+join LivesIn on Students.id = LivesIn.id
+where LivesIn.place = 'Birmingham'
+order by Students.name asc;
+"""
+
+        expected = [
+            ("Alice", "Birmingham"),
+            ("Charlie", "Birmingham")
+        ]
+
+        result: sandbox_db.Result = sandbox_db.execute(ddl=ddl, tables=tables, query=query)
+        self.assertFalse(result.has_error)
+
+        correct, wrong_line = judge(expected=expected, answered=result.records, order_strict=True)
+        self.assertTrue(correct)
 
 
 if __name__ == '__main__':
