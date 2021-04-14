@@ -2,9 +2,22 @@
     --ac: rgb(102, 176, 106);
     --wa: rgb(255, 167,  38);
 
-    --expected-th-bg:   rgb(255, 167,  38);
-    --expected-td-bg-0: rgb(255, 224, 130);
-    --expected-td-bg-1: rgb(255, 245, 157);
+    --prepared-th-bg:   rgb(  3, 155, 229);
+    --prepared-td-bg-0: rgb(129, 212, 250);
+    --prepared-td-bg-1: rgb(179, 229, 252);
+
+    --wrong-th-bg:   rgb(255, 167,  38);
+    --wrong-td-bg-0: rgb(255, 224, 130);
+    --wrong-td-bg-1: rgb(255, 245, 157);
+
+    --accepted-th-bg:   rgb(102, 176, 106);
+    --accepted-td-bg-0: rgb(197, 225, 165);
+	--accepted-td-bg-1: rgb(230, 238, 156);
+
+    /* same to accepted */
+    --expected-th-bg:   var(--accepted-th-bg  );
+    --expected-td-bg-0: var(--accepted-td-bg-0);
+    --expected-td-bg-1: var(--accepted-td-bg-1);
 }
 
 .float_pane {
@@ -21,6 +34,11 @@
     margin-right: auto;
 }
 
+.sql_area {
+    resize: vertical;
+	min-height: 80px;
+}
+
 .result_icon {
     color: #FFF;
     font-weight: 600;
@@ -29,12 +47,24 @@
     margin-top: 8px;
 }
 
-.AC {
+.result_icon.AC {
     background: var(--ac);
 }
 
-.WA, .TLE, .PE {
+.result_icon.WA, .result_icon.TLE, .result_icon.PE {
     background: var(--wa);
+}
+
+.prepared th {
+	background-color: var(--prepared-th-bg);
+}
+
+.prepared tr.bg0 td {
+	background-color: var(--prepared-td-bg-0);
+}
+
+.prepared tr.bg1 td {
+	background-color: var(--prepared-td-bg-1);
 }
 
 .expected th {
@@ -47,6 +77,30 @@
 
 .expected tr.bg1 td {
 	background-color: var(--expected-td-bg-1);
+}
+
+.AC th {
+	background-color: var(--accepted-th-bg);
+}
+
+.AC tr.bg0 td {
+	background-color: var(--accepted-td-bg-0);
+}
+
+.AC tr.bg1 td {
+	background-color: var(--accepted-td-bg-1);
+}
+
+.WA th {
+	background-color: var(--wrong-th-bg);
+}
+
+.WA tr.bg0 td {
+	background-color: var(--wrong-td-bg-0);
+}
+
+.WA tr.bg1 td {
+	background-color: var(--wrong-td-bg-1);
 }
 
 .code {

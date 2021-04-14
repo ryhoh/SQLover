@@ -34,7 +34,7 @@
                 <h2>Tables</h2>
                 <div style="display: flex;">
                     <div v-for="table in tables" :key="table.name">
-                        <table style="margin: 4px;">
+                        <table style="margin: 4px;" class="prepared">
                             <caption>{{ table.name }}</caption>
                             <tr>
                                 <th v-for="col in table.columns" :key="col">
@@ -59,7 +59,7 @@
                     <span class="comment" style="margin-top: 20px;">
                         <p v-show="description" style="margin: 0;">
                             <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
-                                Writer's description
+                                Description from Writer
                             </span>
                             <span v-for="(sentence, idx) in description" key="idx">
                                 {{ sentence }}
@@ -70,7 +70,7 @@
 
                     <p v-if="order_sensitive">
                         Be careful!<br>
-                        This problem is <span class="caution">order-sensitive</span>!
+                        This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
                     </p>
                     <p v-else>This problem is not order-sensitive.</p>
                     
@@ -93,9 +93,8 @@
                 <div class="float_pane">
                     <h2>Answer</h2>
                     <p>
-                        Write your SQL here...<br>
                         <form @submit.prevent="submit_problem">
-                            <textarea name="sql" cols="60" rows="6" v-model="sql"></textarea>
+                            <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..."></textarea>
                             <br>
                             <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">Submit</button>
 
@@ -110,7 +109,7 @@
                     </p>
 
                     <!-- Result Table by Submitted SQL -->
-                    <table v-show="answer_records" class="expected centering">
+                    <table v-show="answer_records" v-bind:class="result" class="expected centering">
                         <caption>(Your output)</caption>
                         <tr>
                             <th v-for="col in answer_columns" :key="col">
