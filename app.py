@@ -67,7 +67,7 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
         order_strict=expected["order_sensitive"]
     )
 
-    return {  # todo 実行結果の表も返したい
+    return {
         "result": "AC" if correct else "WA",
         "wrong_line": wrong_line,
         "answer_columns": result.columns,
