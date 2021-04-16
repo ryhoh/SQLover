@@ -27,11 +27,11 @@
 
         <div>
             <div>
-                <h2 v-show="language === 'en'">Problem Select</h2>
-                <h2 v-show="language === 'ja'">問題選択</h2>
+                <h2 v-show="is_english">Problem Select</h2>
+                <h2 v-show="is_japanese">問題選択</h2>
                 <select name="problem-name" v-model="selected_problem">
-                    <option disabled value="" v-show="language === 'en'">--Please choose problem--</option>
-                    <option disabled value="" v-show="language === 'ja'">--問題を選んでください--</option>
+                    <option disabled value="" v-show="is_english">--Please choose problem--</option>
+                    <option disabled value="" v-show="is_japanese">--問題を選んでください--</option>
                     <option v-for="problem in problem_list" :key="problem">
                         {{ problem }}
                     </option>
@@ -39,23 +39,23 @@
             </div>
 
             <div v-if="problem_loding">
-                <p v-show="language === 'en'">Now loading...</p>
-                <p v-show="language === 'ja'">読み込み中...</p>
+                <p v-show="is_english">Now loading...</p>
+                <p v-show="is_japanese">読み込み中...</p>
             </div>
             <div v-else-if="problem_errored">
-                <p class="warn" v-show="language === 'en'">
+                <p class="warn" v-show="is_english">
                     Problem load failed.<br>
                     Please reload the page.
                 </p>
-                <p class="warn" v-show="language === 'ja'">
+                <p class="warn" v-show="is_japanese">
                     問題の読み込みに失敗しました。<br>
                     ページを再読み込みしてください。
                 </p>
             </div>
             <div v-else-if="selected_problem">
                 <div>
-                    <h2 v-show="language === 'en'">Tables</h2>
-                    <h2 v-show="language === 'ja'">テーブル</h2>
+                    <h2 v-show="is_english">Tables</h2>
+                    <h2 v-show="is_japanese">テーブル</h2>
                     <div style="display: flex;">
                         <div v-for="table in tables" :key="table.name">
                             <table style="margin: 4px;" class="prepared">
@@ -78,14 +78,14 @@
                 <!-- Expected & Answer area -->
                 <div>  
                     <div class="float_pane">
-                        <h2 v-show="language === 'en'">Expected</h2>
-                        <h2 v-show="language === 'ja'">期待される出力</h2>
+                        <h2 v-show="is_english">Expected</h2>
+                        <h2 v-show="is_japanese">期待される出力</h2>
 
                         <span class="comment">
                             <p v-show="description" style="margin: 0;">
                                 <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
-                                    <span v-show="language === 'en'">Description from Writer</span>
-                                    <span v-show="language === 'ja'">問題についての説明</span>
+                                    <span v-show="is_english">Description from Writer</span>
+                                    <span v-show="is_japanese">問題についての説明</span>
                                 </span>
                                 <span v-for="(sentence, idx) in description" key="idx">
                                     {{ sentence }}
@@ -95,19 +95,19 @@
                         </span>
 
                         <p v-if="order_sensitive">
-                            <span v-show="language === 'en'">
+                            <span v-show="is_english">
                                 Be careful!
                                 This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
                             </span>
-                            <span v-show="language === 'ja'">
+                            <span v-show="is_japanese">
                                 注意：この問題は、<span class="caution" style="text-decoration: underline;">順番も</span>正しくなければいけません。
                             </span>
                         </p>
                         <p v-else>
-                            <span v-show="language === 'en'">
+                            <span v-show="is_english">
                                 This problem is not order-sensitive.
                             </span>
-                            <span v-show="language === 'ja'">
+                            <span v-show="is_japanese">
                                 この問題は、順不同です。
                             </span>
                         </p>
@@ -129,29 +129,30 @@
                     </div>
 
                     <div class="float_pane">
-                        <h2 v-show="language === 'en'">Answer</h2>
-                        <h2 v-show="language === 'ja'">解答</h2>
+                        <h2 v-show="is_english">Answer</h2>
+                        <h2 v-show="is_japanese">解答</h2>
                         <p>
                             <form @submit.prevent="submit_problem">
-                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..."></textarea>
+                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="is_english"></textarea>
+                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="is_japanese"></textarea>
                                 <br>
                                 <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">
-                                    <span v-show="language === 'en'">
+                                    <span v-show="is_english">
                                         Submit
                                     </span>
-                                    <span v-show="language === 'ja'">
+                                    <span v-show="is_japanese">
                                         提出
                                     </span>
                                 </button>
 
                                 <!-- Judge Result -->
                                 <span v-if="sql_submitting">
-                                    <span v-show="language === 'en'">Submitting...</span>
-                                    <span v-show="language === 'ja'">提出中...</span>
+                                    <span v-show="is_english">Submitting...</span>
+                                    <span v-show="is_japanese">提出中...</span>
                                 </span>
                                 <span v-else-if="sql_submit_error">
-                                    <span v-show="language === 'en'">Submit failed. Please reload the page.</span>
-                                    <span v-show="language === 'ja'">提出に失敗しました。ページを再読み込みしてください。</span>
+                                    <span v-show="is_english">Submit failed. Please reload the page.</span>
+                                    <span v-show="is_japanese">提出に失敗しました。ページを再読み込みしてください。</span>
                                 </span>
                                 <span v-else-if="judged" v-bind:class="result" class="result_icon">
                                     {{ result }}
@@ -183,18 +184,18 @@
 
             <hr>
 
-            <h2 v-show="language === 'en'">Result Categories</h2>
-            <h2 v-show="language === 'ja'">結果の種類</h2>
+            <h2 v-show="is_english">Result Categories</h2>
+            <h2 v-show="is_japanese">結果の種類</h2>
             <dl>
                 <dt class="result_icon AC" style="display:inline">AC</dt>
-                <dd v-show="language === 'en'">means "Accepted". There are no errors and your answer is correct.</dd>
-                <dd v-show="language === 'ja'">正答（Accepted）を意味します。実行時にエラーがなく、正しいクエリ結果が得られた状態です。</dd>
+                <dd v-show="is_english">means "Accepted". There are no errors and your answer is correct.</dd>
+                <dd v-show="is_japanese">正答（Accepted）を意味します。実行時にエラーがなく、正しいクエリ結果が得られた状態です。</dd>
                 <dt class="result_icon WA" style="display:inline">WA</dt>
-                <dd v-show="language === 'en'">means "Wrong Answer". There are no errors but your answer is wrong.</dd>
-                <dd v-show="language === 'ja'">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、クエリ結果が正しくない状態です。</dd>
+                <dd v-show="is_english">means "Wrong Answer". There are no errors but your answer is wrong.</dd>
+                <dd v-show="is_japanese">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、クエリ結果が正しくない状態です。</dd>
                 <dt class="result_icon PE" style="display:inline">PE</dt>
-                <dd v-show="language === 'en'">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
-                <dd v-show="language === 'ja'">クエリにエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
+                <dd v-show="is_english">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
+                <dd v-show="is_japanese">クエリにエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
             </dl>
 
         </div>

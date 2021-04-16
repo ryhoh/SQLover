@@ -29,6 +29,16 @@ const vm = new Vue({
         sql_submitting: false,
     }),
 
+    computed: {
+        is_english: function() {
+            return this.language === 'en';
+        },
+
+        is_japanese: function() {
+            return this.language === 'ja';
+        },
+    },
+
     methods: {
         submit_problem: function() {
             this.result = 'Judging...';
