@@ -68,7 +68,7 @@ const vm = new Vue({
     },
 
     watch: {
-        selected_problem: function(new_problem, old_problem) {
+        selected_problem: function(new_problem, _old_problem) {
             this.problem_loding = true;
             axios
                 .get('/api/v1/problem', {
