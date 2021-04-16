@@ -9,144 +9,202 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <h1>SQLabo</h1>
-
     <div id="vue_app">
-        <div>
-            <h2>Problem Select</h2>
-            <select name="problem-name" v-model="selected_problem">
-                <option disabled value="">--Please choose problem--</option>
-                <option v-for="problem in problem_list" :key="problem">
-                    {{ problem }}
-                </option>
-            </select>
-        </div>
+        <header>
+            <h1 style="float: left; margin: 0px;">SQLabo</h1>
+            <div id="lang_change" style="float: right;">
+                <label>
+                    <input type="radio" name="lang-button" value="en" v-model="language">
+                    English
+                </label>
+                <label>
+                    <input type="radio" name="lang-button" value="ja" v-model="language">
+                    日本語
+                </label>
+            </div>
+            <div style="clear: both;"></div>
+        </header>
 
-        <div v-if="problem_loding"><p>Now loading...</p></div>
-        <div v-else-if="problem_errored">
-            <p class="warn">
-                Problem load failed.<br>
-                Please reload the page.
-            </p>
-        </div>
-        <div v-else-if="selected_problem">
+        <div>
             <div>
-                <h2>Tables</h2>
-                <div style="display: flex;">
-                    <div v-for="table in tables" :key="table.name">
-                        <table style="margin: 4px;" class="prepared">
-                            <caption>{{ table.name }}</caption>
+                <h2 v-show="language === 'en'">Problem Select</h2>
+                <h2 v-show="language === 'ja'">問題選択</h2>
+                <select name="problem-name" v-model="selected_problem">
+                    <option disabled value="" v-show="language === 'en'">--Please choose problem--</option>
+                    <option disabled value="" v-show="language === 'ja'">--問題を選んでください--</option>
+                    <option v-for="problem in problem_list" :key="problem">
+                        {{ problem }}
+                    </option>
+                </select>
+            </div>
+
+            <div v-if="problem_loding">
+                <p v-show="language === 'en'">Now loading...</p>
+                <p v-show="language === 'ja'">読み込み中...</p>
+            </div>
+            <div v-else-if="problem_errored">
+                <p class="warn" v-show="language === 'en'">
+                    Problem load failed.<br>
+                    Please reload the page.
+                </p>
+                <p class="warn" v-show="language === 'ja'">
+                    問題の読み込みに失敗しました。<br>
+                    ページを再読み込みしてください。
+                </p>
+            </div>
+            <div v-else-if="selected_problem">
+                <div>
+                    <h2 v-show="language === 'en'">Tables</h2>
+                    <h2 v-show="language === 'ja'">テーブル</h2>
+                    <div style="display: flex;">
+                        <div v-for="table in tables" :key="table.name">
+                            <table style="margin: 4px;" class="prepared">
+                                <caption>{{ table.name }}</caption>
+                                <tr>
+                                    <th v-for="col in table.columns" :key="col">
+                                        {{ col }}
+                                    </th>
+                                </tr>
+                                <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
+                                    <td v-for="(cell, idx) in record" :key="idx">
+                                        {{ cell }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expected & Answer area -->
+                <div>  
+                    <div class="float_pane">
+                        <h2 v-show="language === 'en'">Expected</h2>
+                        <h2 v-show="language === 'ja'">期待される出力</h2>
+
+                        <span class="comment">
+                            <p v-show="description" style="margin: 0;">
+                                <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
+                                    <span v-show="language === 'en'">Description from Writer</span>
+                                    <span v-show="language === 'ja'">問題についての説明</span>
+                                </span>
+                                <span v-for="(sentence, idx) in description" key="idx">
+                                    {{ sentence }}
+                                    <br>
+                                </span>
+                            </p>
+                        </span>
+
+                        <p v-if="order_sensitive">
+                            <span v-show="language === 'en'">
+                                Be careful!
+                                This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
+                            </span>
+                            <span v-show="language === 'ja'">
+                                注意：この問題は、<span class="caution" style="text-decoration: underline;">順番も</span>正しくなければいけません。
+                            </span>
+                        </p>
+                        <p v-else>
+                            <span v-show="language === 'en'">
+                                This problem is not order-sensitive.
+                            </span>
+                            <span v-show="language === 'ja'">
+                                この問題は、順不同です。
+                            </span>
+                        </p>
+                        
+                        <table class="expected centering">
+                            <caption>(Output)</caption>
                             <tr>
-                                <th v-for="col in table.columns" :key="col">
+                                <th v-for="col in expected_columns" :key="col">
                                     {{ col }}
                                 </th>
                             </tr>
-                            <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
                                 <td v-for="(cell, idx) in record" :key="idx">
                                     {{ cell }}
                                 </td>
                             </tr>
                         </table>
+
                     </div>
-                </div>
-            </div>
-            
-            <!-- Expected & Answer area -->
-            <div>  
-                <div class="float_pane">
-                    <h2>Expected</h2>
 
-                    <span class="comment">
-                        <p v-show="description" style="margin: 0;">
-                            <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
-                                Description from Writer
-                            </span>
-                            <span v-for="(sentence, idx) in description" key="idx">
-                                {{ sentence }}
+                    <div class="float_pane">
+                        <h2 v-show="language === 'en'">Answer</h2>
+                        <h2 v-show="language === 'ja'">解答</h2>
+                        <p>
+                            <form @submit.prevent="submit_problem">
+                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..."></textarea>
                                 <br>
-                            </span>
+                                <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">
+                                    <span v-show="language === 'en'">
+                                        Submit
+                                    </span>
+                                    <span v-show="language === 'ja'">
+                                        提出
+                                    </span>
+                                </button>
+
+                                <!-- Judge Result -->
+                                <span v-if="sql_submitting">
+                                    <span v-show="language === 'en'">Submitting...</span>
+                                    <span v-show="language === 'ja'">提出中...</span>
+                                </span>
+                                <span v-else-if="sql_submit_error">
+                                    <span v-show="language === 'en'">Submit failed. Please reload the page.</span>
+                                    <span v-show="language === 'ja'">提出に失敗しました。ページを再読み込みしてください。</span>
+                                </span>
+                                <span v-else-if="judged" v-bind:class="result" class="result_icon">
+                                    {{ result }}
+                                </span>
+                            </form>
+                            <pre v-if="result === 'PE'" class="code">{{ re_message }}</pre>
                         </p>
-                    </span>
 
-                    <p v-if="order_sensitive">
-                        Be careful!
-                        This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
-                    </p>
-                    <p v-else>This problem is not order-sensitive.</p>
-                    
-                    <table class="expected centering">
-                        <caption>(Output)</caption>
-                        <tr>
-                            <th v-for="col in expected_columns" :key="col">
-                                {{ col }}
-                            </th>
-                        </tr>
-                        <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                            <td v-for="(cell, idx) in record" :key="idx">
-                                {{ cell }}
-                            </td>
-                        </tr>
-                    </table>
+                        <!-- Result Table by Submitted SQL -->
+                        <table v-show="answer_records" v-bind:class="result" class="expected centering">
+                            <caption>(Your output)</caption>
+                            <tr>
+                                <th v-for="col in answer_columns" :key="col">
+                                    {{ col }}
+                                </th>
+                            </tr>
+                            <tr v-for="(record, idx) in answer_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                                <td v-for="(cell, idx) in record" :key="idx">
+                                    {{ cell }}
+                                </td>
+                                <td v-if="wrong_line == idx + 1" class="warn" style="background-color: #FFF;">&lt;</td>
+                            </tr>
+                        </table>
+                    </div>
 
+                    <div class="float_end"></div>
                 </div>
-
-                <div class="float_pane">
-                    <h2>Answer</h2>
-                    <p>
-                        <form @submit.prevent="submit_problem">
-                            <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..."></textarea>
-                            <br>
-                            <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">Submit</button>
-
-                            <!-- Judge Result -->
-                            <span v-if="sql_submitting">Submitting...</span>
-                            <span v-else-if="sql_submit_error">Submit failed. Please reload the page.</span>
-                            <span v-else-if="judged" v-bind:class="result" class="result_icon">
-                                {{ result }}
-                            </span>
-                        </form>
-                        <pre v-if="result === 'PE'" class="code">{{ re_message }}</pre>
-                    </p>
-
-                    <!-- Result Table by Submitted SQL -->
-                    <table v-show="answer_records" v-bind:class="result" class="expected centering">
-                        <caption>(Your output)</caption>
-                        <tr>
-                            <th v-for="col in answer_columns" :key="col">
-                                {{ col }}
-                            </th>
-                        </tr>
-                        <tr v-for="(record, idx) in answer_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                            <td v-for="(cell, idx) in record" :key="idx">
-                                {{ cell }}
-                            </td>
-                            <td v-if="wrong_line == idx + 1" class="warn" style="background-color: #FFF;">&lt;</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="float_end"></div>
             </div>
+
+            <hr>
+
+            <h2 v-show="language === 'en'">Result Categories</h2>
+            <h2 v-show="language === 'ja'">結果の種類</h2>
+            <dl>
+                <dt class="result_icon AC" style="display:inline">AC</dt>
+                <dd v-show="language === 'en'">means "Accepted". There are no errors and your answer is correct.</dd>
+                <dd v-show="language === 'ja'">正答（Accepted）を意味します。実行時にエラーがなく、正しいクエリ結果が得られた状態です。</dd>
+                <dt class="result_icon WA" style="display:inline">WA</dt>
+                <dd v-show="language === 'en'">means "Wrong Answer". There are no errors but your answer is wrong.</dd>
+                <dd v-show="language === 'ja'">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、クエリ結果が正しくない状態です。</dd>
+                <dt class="result_icon PE" style="display:inline">PE</dt>
+                <dd v-show="language === 'en'">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
+                <dd v-show="language === 'ja'">クエリにエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
+            </dl>
+
         </div>
+        
+        <hr>
+
+        <footer>
+            2021 Apr. Shirosha2
+        </footer>
     </div>
-
-    <hr>
-
-    <h2>Result Categories</h2>
-    <dl>
-        <dt class="result_icon AC" style="display:inline">AC</dt>
-        <dd>means "Accepted". There are no errors and your answer is correct.</dd>
-        <dt class="result_icon WA" style="display:inline">WA</dt>
-        <dd>means "Wrong Answer". There are no errors but your answer is wrong.</dd>
-        <dt class="result_icon PE" style="display:inline">PE</dt>
-        <dd>means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
-    </dl>
-    
-    <hr>
-
-    <footer>
-        2021 Apr. Shirosha2
-    </footer>
 
     <script src="static/main.js"></script>
 </body>

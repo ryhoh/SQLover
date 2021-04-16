@@ -20,6 +20,7 @@
     --expected-td-bg-1: var(--accepted-td-bg-1);
 }
 
+/* タグのスタイルのオーバーライド */
 h1 {
     border-color: rgb(  3, 155, 229);
 }
@@ -28,6 +29,11 @@ h2 {
     border-color: rgb(129, 212, 250);;
 }
 
+table {
+	border-spacing: 3px;
+}
+
+/* クラスごとの設定 */
 .float_pane {
     float: left;
     margin-right: 40px;

@@ -3,6 +3,8 @@ const vm = new Vue({
     el: '#vue_app',
     
     data: () => ({
+        language: 'en',
+
         problem_list: null,
         problem_list_errored: false,
         problem_list_loding: false,
@@ -80,6 +82,7 @@ const vm = new Vue({
     },
 
     mounted() {
+        // Load problem list
         this.problem_list_loading = true;
         axios
             .get('/api/v1/problem_list')
@@ -92,5 +95,8 @@ const vm = new Vue({
                 this.problem_list_errored = true;
             })
             .finally(() => this.problem_list_loading = false);
+
+        // Set default language
+        this.language = (navigator.browserLanguage || navigator.language || navigator.userLanguage).substr(0,2);
     },
 });
