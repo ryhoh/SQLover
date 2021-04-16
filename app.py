@@ -5,7 +5,6 @@ from typing import Dict, Any
 from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-import psycopg2
 import uvicorn
 
 import sandbox_db
