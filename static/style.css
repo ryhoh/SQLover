@@ -36,6 +36,7 @@ table {
 /* クラスごとの設定 */
 .float_pane {
     float: left;
+    width: 480px;
     margin-right: 40px;
 }
 
