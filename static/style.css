@@ -1,10 +1,14 @@
 :root {
     --ac: rgb(102, 176, 106);
     --wa: rgb(255, 167,  38);
+    
+    --h1: rgb(186,  28,  88);
+    --h2: var(--h1);
+    --h2-sub: rgb(234, 76, 136);
 
-    --prepared-th-bg:   rgb(  3, 155, 229);
-    --prepared-td-bg-0: rgb(129, 212, 250);
-    --prepared-td-bg-1: rgb(179, 229, 252);
+    --prepared-th-bg:   rgb(108, 122, 137);
+    --prepared-td-bg-0: rgb(172, 186, 201);
+    --prepared-td-bg-1: rgb(197, 211, 226);
 
     --wrong-th-bg:   rgb(255, 167,  38);
     --wrong-td-bg-0: rgb(255, 224, 130);
@@ -18,26 +22,65 @@
     --expected-th-bg:   var(--accepted-th-bg  );
     --expected-td-bg-0: var(--accepted-td-bg-0);
     --expected-td-bg-1: var(--accepted-td-bg-1);
+
+    --header-thickness: 48px;
 }
 
 /* タグのスタイルのオーバーライド */
 h1 {
-    border-color: rgb(  3, 155, 229);
+    border-color: var(--h1);
 }
 
 h2 {
-    border-color: rgb(129, 212, 250);;
+    border-color: var(--h2);
 }
 
 table {
 	border-spacing: 3px;
 }
 
-/* クラスごとの設定 */
+/* タグに対する装飾 */
+body {
+    margin: 0px;
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    height: var(--header-thickness);
+    background-color: var(--h1);
+    color: #FFF;
+    border-left: 0px;
+}
+
+header h1 {
+    border-color: #FFF;
+    border-width: 0px;
+}
+
+header h2 {
+    margin-top: 0px;
+    padding: 6px;
+    border-width: 0px;
+    width: 120px;
+    text-align: center;
+}
+
+header h2:hover {
+    background-color: var(--h2-sub);
+}
+
+main {
+    padding-top: var(--header-thickness);
+    margin-left: 8px;
+}
+
+/* -- クラスごとの設定 -- */
+/* 配置 */
 .float_pane {
     float: left;
-    width: 480px;
-    margin-right: 40px;
+    width: 400px;
+    margin-right: 20px;
 }
 
 .float_end {
@@ -54,6 +97,7 @@ table {
 	min-height: 80px;
 }
 
+/* 実行結果関係 */
 .result_icon {
     color: #FFF;
     font-weight: 600;

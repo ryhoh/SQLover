@@ -9,23 +9,32 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div id="vue_app">
-        <header>
-            <h1 style="float: left; margin: 0px;">SQLabo</h1>
-            <div id="lang_change" style="float: right;">
+    <div id="vue_app" class="container">
+        <header class="sidebar__item">
+            <h1 style="margin: 0px; float: left;">SQLabo</h1>
+            
+            <div id="lang_change" style="float: right">
                 <label>
                     <input type="radio" name="lang-button" value="en" v-model="language">
                     English
                 </label>
+                <br>
                 <label>
                     <input type="radio" name="lang-button" value="ja" v-model="language">
                     日本語
                 </label>
             </div>
+
+            <h2 v-show="is_english" style="float: left">Login</h2>
+            <h2 v-show="is_japanese" style="float: left">ログイン</h2>
+
+            <h2 v-show="is_english" style="float: left">Problems</h2>
+            <h2 v-show="is_japanese" style="float: left">問題選択</h2>
+
             <div style="clear: both;"></div>
         </header>
 
-        <div>
+        <main>
             <div>
                 <h2 v-show="is_english">Problem Select</h2>
                 <h2 v-show="is_japanese">問題選択</h2>
@@ -81,7 +90,8 @@
                         <h2 v-show="is_english">Expected</h2>
                         <h2 v-show="is_japanese">期待される出力</h2>
 
-                        <span class="comment">
+                        <!-- Description -->
+                        <div class="comment">
                             <p v-show="description" style="margin: 0;">
                                 <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
                                     <span v-show="is_english">Description from Writer</span>
@@ -92,7 +102,7 @@
                                     <br>
                                 </span>
                             </p>
-                        </span>
+                        </div>
 
                         <p v-if="order_sensitive">
                             <span v-show="is_english">
@@ -111,21 +121,6 @@
                                 この問題は、順不同です。
                             </span>
                         </p>
-                        
-                        <table class="expected centering">
-                            <caption>(Output)</caption>
-                            <tr>
-                                <th v-for="col in expected_columns" :key="col">
-                                    {{ col }}
-                                </th>
-                            </tr>
-                            <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                                <td v-for="(cell, idx) in record" :key="idx">
-                                    {{ cell }}
-                                </td>
-                            </tr>
-                        </table>
-
                     </div>
 
                     <div class="float_pane">
@@ -133,8 +128,8 @@
                         <h2 v-show="is_japanese">解答</h2>
                         <p>
                             <form @submit.prevent="submit_problem">
-                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="is_english"></textarea>
-                                <textarea name="sql" cols="60" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="is_japanese"></textarea>
+                                <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="is_english"></textarea>
+                                <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="is_japanese"></textarea>
                                 <br>
                                 <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">
                                     <span v-show="is_english">
@@ -160,10 +155,33 @@
                             </form>
                             <pre v-if="result === 'PE'" class="code">{{ re_message }}</pre>
                         </p>
+                    </div>
 
+                    <div class="float_end"></div>
+                </div>
+
+                <div>
+                    <!-- Expected output -->
+                    <div class="float_pane">
+                        <table class="expected centering">
+                            <caption>(Output)</caption>
+                            <tr>
+                                <th v-for="col in expected_columns" :key="col">
+                                    {{ col }}
+                                </th>
+                            </tr>
+                            <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                                <td v-for="(cell, idx) in record" :key="idx">
+                                    {{ cell }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="float_pane">
                         <!-- Result Table by Submitted SQL -->
                         <table v-show="answer_records" v-bind:class="result" class="expected centering">
-                            <caption>(Your output)</caption>
+                            <caption style="white-space: nowrap">(Your output)</caption>
                             <tr>
                                 <th v-for="col in answer_columns" :key="col">
                                     {{ col }}
@@ -197,14 +215,13 @@
                 <dd v-show="is_english">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
                 <dd v-show="is_japanese">クエリにエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
             </dl>
-
-        </div>
         
-        <hr>
+            <hr>
 
-        <footer>
-            2021 Apr. Shirosha2
-        </footer>
+            <footer>
+                2021 Apr. Shirosha2
+            </footer>
+        </main>
     </div>
 
     <script src="static/main.js"></script>
