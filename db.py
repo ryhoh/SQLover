@@ -5,7 +5,7 @@ import psycopg2
 import psycopg2.errors
 
 
-DATABASE = os.environ.get('DATABASE') or 'postgresql://web:web@localhost/sqlabo'
+DATABASE = os.environ.get('DATABASE_URL') or 'postgresql://web:web@localhost/sqlabo'
 
 
 def get_passwd_by_name_from_user(name: str) -> bytes:
