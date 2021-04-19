@@ -16,10 +16,12 @@ const vm = new Vue({
         user_accessing: null,
         user_info: 'forms',
         user_message: null,
+        user_clear_num: null,
 
         problem_list: null,
         problem_list_errored: false,
         problem_list_loding: false,
+        problem_num: null,
 
         selected_problem: null,
         description: null,
@@ -54,7 +56,6 @@ const vm = new Vue({
     methods: {
         signup: function() {
             if (this.user_name === null || this.user_name.length < 4 || 30 < this.user_name.length) {
-                // this.user_result = 'register_name_invalid';
                 if (this.language === 'ja') {
                     this.user_message = 'ユーザ名は4文字以上30文字以内の英数字にしてください';
                 } else {
@@ -64,7 +65,6 @@ const vm = new Vue({
             }
 
             if (this.user_password === null || this.user_password.length < 8 || 60 < this.user_password.length) {
-                // this.user_result = 'register_password_invalid';
                 if (this.language === 'ja') {
                     this.user_message = 'パスワードは8文字以上60文字以内にしてください';
                 } else {
@@ -86,10 +86,10 @@ const vm = new Vue({
             axios
                 .post('/api/v1/signup', params)
                 .then(response => {
-                    // this.user_result = 'register_' + response.data.result;
                     setTimeout(clearUserResult.bind(this), 5000);
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
+                        this.user_clear_num = response.data.cleared_num;
                         if (this.language === 'ja') {
                             this.user_message = '登録に成功しました!';
                         } else {
@@ -123,6 +123,11 @@ const vm = new Vue({
             const params = new URLSearchParams();
             params.append('problem_name', this.selected_problem);
             params.append('answer', this.sql);
+            if (this.user_info === 'loginned') {
+                params.append('user_name', this.user_name);
+                params.append('user_passwd', this.user_password);
+            }
+
             axios
                 .post('/api/v1/submit', params)
                 .then(response => {
@@ -131,6 +136,7 @@ const vm = new Vue({
                     this.answer_columns = response.data.answer_columns;
                     this.answer_records = response.data.answer_records;
                     this.wrong_line = response.data.wrong_line;
+                    this.user_clear_num = response.data.cleared_num;
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -151,9 +157,9 @@ const vm = new Vue({
             axios
                 .post('/api/v1/login', params)
                 .then(response => {
-                    // this.user_result = 'login_' + response.data.result;
                     setTimeout(clearUserResult.bind(this), 5000);
                     this.user_info = 'name';
+                    this.user_clear_num = response.data.cleared_num;
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
                         if (this.language === 'ja') {
@@ -193,7 +199,6 @@ const vm = new Vue({
             this.user_name = '';
             this.user_password = '';
             this.user_info = 'forms';
-            // this.user_result = 'logouted';
             setTimeout(clearUserResult.bind(this), 5000);
             if (this.language === 'ja') {
                 this.user_message = 'ログアウトしました';
@@ -215,11 +220,21 @@ const vm = new Vue({
                     }
                 })
                 .then(response => {
+                    // Print new problem's data
                     this.tables = response.data.tables;
                     this.description = response.data.description;
                     this.expected_records = response.data.expected.records;
                     this.expected_columns = response.data.expected.columns;
                     this.order_sensitive = response.data.expected.order_sensitive;
+
+                    // Delete old problem's gabage
+                    this.sql = null;
+                    this.judged = false;
+                    this.result = null,
+                    this.answer_columns = null;
+                    this.answer_records = null;
+                    this.wrong_line = null;
+                    this.re_message = null;
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -237,6 +252,7 @@ const vm = new Vue({
             .then(response => {
                 this.problem_list = response.data.problems;
                 this.problem_list.sort();
+                this.problem_num = this.problem_list.length;
             })
             .catch(error => {
                 console.log(error.response);

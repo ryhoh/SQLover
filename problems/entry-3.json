@@ -1,0 +1,32 @@
+{
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16),",
+    "    age int",
+    ");"
+  ],
+  "description": [
+      "Extract students' name and age whose name ends with 'e'."
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name", "age"],
+      "records": [
+        [1, "Alice", 16],
+        [2, "Bob", 18],
+        [3, "Charlie", 15],
+        [4, "David", 23]
+      ]
+    }
+  ],
+  "expected": {
+    "columns": ["name", "age"],
+    "records": [
+      ["Alice", 16],
+      ["Charlie", 15]
+    ],
+    "order_sensitive": false
+  }
+}

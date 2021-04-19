@@ -55,11 +55,15 @@ async def get_problem_list():
 @app.post('/api/v1/login')
 def login(name: str = Form(...), password: str = Form(...)):
     try:
-        hashed_passwd = db.get_passwd_by_name_from_user(name)
+        hashed_passwd = db.read_passwd_by_name_from_user(name)
     except ValueError:
         return {'result': 'failed'}
+
     accepted = verify_password(password, hashed_passwd)
-    return {'result': 'success' if accepted else 'failed'}
+    return {
+        'result': 'success' if accepted else 'failed',
+        'cleared_num': db.read_cleared_num_from_result(name),
+    }
 
 
 @app.post('/api/v1/signup')
@@ -70,12 +74,21 @@ def signup(name: str = Form(...), password: str = Form(...)):
     if password == '' or len(password) < 8 or 60 < len(password) or not password.isascii():
         return {'result': 'password_invalid'}
 
-    success = db.user_register(name=name, password=get_password_hash(password))
-    return {'result': 'success' if success else 'failed'}
+    success = db.create_user(name=name, password=get_password_hash(password))
+    return {
+        'result': 'success' if success else 'failed',
+        'cleared_num': 0,
+    }
 
 
 @app.post('/api/v1/submit')
-def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
+def submit_answer(
+        problem_name: str = Form(...),
+        answer: str = Form(...),
+        user_name: str = Form(None),
+        user_passwd: str = Form(None)
+):
+    # run SQL
     problem: Dict[str, Any] = load_problem(problem_name)
     result: sandbox_db.Result = sandbox_db.execute(ddl=problem["DDL"], tables=problem["tables"], query=answer)
 
@@ -85,6 +98,7 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
             "message": result.error_message
         }
 
+    # Judge
     expected = problem['expected']
     correct, wrong_line = judge.judge(
         expected=[tuple(record) for record in expected["records"]],
@@ -92,12 +106,20 @@ def submit_answer(problem_name: str = Form(...), answer: str = Form(...)):
         order_strict=expected["order_sensitive"]
     )
 
-    return {
+    ret_val = {
         "result": "AC" if correct else "WA",
         "wrong_line": wrong_line,
         "answer_columns": result.columns,
         "answer_records": result.records,
     }
+
+    # Update record
+    if user_name and user_passwd:
+        db.create_problem(problem_name)
+        db.upsert_result(problem_name, user_name, "AC" if correct else "WA")
+        ret_val["cleared_num"] = db.read_cleared_num_from_result(user_name)
+
+    return ret_val
 
 
 # Functions

@@ -47,9 +47,9 @@
             <span v-else-if="user_info === 'loginned'">
                 <span v-show="is_english">User</span>
                 <span v-show="is_japanese">ユーザ名</span>
-                : {{ user_name }} (1/1 
-                <span v-show="is_english">cleared!)</span>
-                <span v-show="is_japanese">クリア済)</span>
+                : {{ user_name }} ({{ user_clear_num }}/{{ problem_num }}
+                <span v-show="is_english"> cleared!)</span>
+                <span v-show="is_japanese"> クリア済)</span>
 
                 <a class="btn" v-on:click="logout" v-bind:disabled="user_accessing">
                     <span v-show="is_english">Logout</span>
