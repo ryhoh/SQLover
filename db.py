@@ -82,7 +82,7 @@ def read_cleared_num_from_result(user_name: str) -> int:
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select count(problem_id) from results
+                select sum(cleared::int) from results
                 where user_id = (select id from users
                     where users.name = %s)
                 group by user_id;
