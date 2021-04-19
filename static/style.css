@@ -54,8 +54,10 @@ header {
 }
 
 header h1 {
-    border-color: #FFF;
     border-width: 0px;
+    padding-right: 32px;
+    color: #FFF;
+    user-select: none;
 }
 
 header h2 {
@@ -64,10 +66,26 @@ header h2 {
     border-width: 0px;
     width: 120px;
     text-align: center;
+    color: #FFF;
 }
 
 header h2:hover {
     background-color: var(--h2-sub);
+}
+
+header .btn {
+    display: inline-block;
+    height: 20px;
+    width: 84px;
+    text-align: center;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: var(--h2-sub);
+}
+
+header .btn:hover {
+    cursor: pointer;
 }
 
 main {

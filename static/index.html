@@ -13,23 +13,55 @@
         <header class="sidebar__item">
             <h1 style="margin: 0px; float: left;">SQLabo</h1>
             
-            <div id="lang_change" style="float: right">
+            <div id="lang_change" style="float: right; margin-right: 8px">
                 <label>
-                    <input type="radio" name="lang-button" value="en" v-model="language">
+                    <input type="radio" class="radio_btn" name="lang-button" value="en" v-model="language">
                     English
                 </label>
                 <br>
                 <label>
-                    <input type="radio" name="lang-button" value="ja" v-model="language">
+                    <input type="radio" class="radio_btn" name="lang-button" value="ja" v-model="language">
                     日本語
                 </label>
             </div>
 
-            <h2 v-show="is_english" style="float: left">Login</h2>
-            <h2 v-show="is_japanese" style="float: left">ログイン</h2>
+            <div v-if="user_info === 'forms'" style="margin-left: 8px; float: left;">
+                <form>
+                    <input type="text" size="16" v-model="user_name" placeholder="username" v-show="is_english">
+                    <input type="text" size="16" v-model="user_name" placeholder="ユーザ名" v-show="is_japanese">
+                    <input type="password" size="16" v-model="user_password" placeholder="password" v-show="is_english">
+                    <input type="password" size="16" v-model="user_password" placeholder="パスワード" v-show="is_japanese">
 
-            <h2 v-show="is_english" style="float: left">Problems</h2>
-            <h2 v-show="is_japanese" style="float: left">問題選択</h2>
+                    <a class="btn" v-on:click="login" v-bind:disabled="user_accessing">
+                        <span v-show="is_english">Login</span>
+                        <span v-show="is_japanese">ログイン</span>
+                    </a>
+
+                    <a class="btn" v-on:click="signup" v-bind:disabled="user_accessing">
+                        <span v-show="is_english">Register</span>
+                        <span v-show="is_japanese">登録</span>
+                    </a>
+                </form>
+            </div>
+
+            <span v-else-if="user_info === 'loginned'">
+                <span v-show="is_english">User</span>
+                <span v-show="is_japanese">ユーザ名</span>
+                : {{ user_name }} (1/1 
+                <span v-show="is_english">cleared!)</span>
+                <span v-show="is_japanese">クリア済)</span>
+
+                <a class="btn" v-on:click="logout" v-bind:disabled="user_accessing">
+                    <span v-show="is_english">Logout</span>
+                    <span v-show="is_japanese">ログアウト</span>
+                </a>
+            </span>
+
+            <br>
+
+            <span style="margin-left: 10px; font-size: 90%; text-align: left;">
+                {{ user_message }}
+            </span>
 
             <div style="clear: both;"></div>
         </header>
@@ -114,12 +146,8 @@
                             </span>
                         </p>
                         <p v-else>
-                            <span v-show="is_english">
-                                This problem is not order-sensitive.
-                            </span>
-                            <span v-show="is_japanese">
-                                この問題は、順不同です。
-                            </span>
+                            <span v-show="is_english">This problem is not order-sensitive.</span>
+                            <span v-show="is_japanese">この問題は、順不同です。</span>
                         </p>
                     </div>
 
@@ -132,12 +160,8 @@
                                 <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="is_japanese"></textarea>
                                 <br>
                                 <button v-on:click="submit_problem" v-bind:disabled="sql_submitting">
-                                    <span v-show="is_english">
-                                        Submit
-                                    </span>
-                                    <span v-show="is_japanese">
-                                        提出
-                                    </span>
+                                    <span v-show="is_english">Submit</span>
+                                    <span v-show="is_japanese">提出</span>
                                 </button>
 
                                 <!-- Judge Result -->
@@ -199,6 +223,18 @@
                     <div class="float_end"></div>
                 </div>
             </div>
+            <div v-else>
+                <p>
+                    <span v-show="is_english">
+                        This is SQL learning application.<br>
+                        Please select problem from drop-down list.
+                    </span>
+                    <span v-show="is_japanese">
+                        SQL を練習できるアプリケーションです。<br>
+                        ドロップダウンリストから、問題を選んでください。
+                    </span>
+                </p>
+            </div>
 
             <hr>
 
@@ -213,7 +249,7 @@
                 <dd v-show="is_japanese">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、クエリ結果が正しくない状態です。</dd>
                 <dt class="result_icon PE" style="display:inline">PE</dt>
                 <dd v-show="is_english">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
-                <dd v-show="is_japanese">クエリにエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
+                <dd v-show="is_japanese">解答にエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
             </dl>
         
             <hr>
