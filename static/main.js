@@ -3,6 +3,25 @@ const clearUserResult = function() {
     this.user_message = null;
 };
 
+const wipe_problem = function() {
+    this.selected_problem = null;
+    this.description = null;
+    this.tables = null;
+    this.expected_records = null;
+    this.expected_columns = null;
+    this.order_sensitive = null;
+};
+
+const wipe_sql = function() {
+    this.sql = null;
+    this.judged = false;
+    this.result = null,
+    this.answer_columns = null;
+    this.answer_records = null;
+    this.wrong_line = null;
+    this.re_message = null;
+};
+
 
 // Vue.js
 const vm = new Vue({
@@ -54,6 +73,11 @@ const vm = new Vue({
     },
 
     methods: {
+        reset_all: function() {
+            wipe_problem.bind(this)();
+            wipe_sql.bind(this)();
+        },
+
         signup: function() {
             if (this.user_name === null || this.user_name.length < 4 || 30 < this.user_name.length) {
                 if (this.language === 'ja') {
@@ -212,6 +236,9 @@ const vm = new Vue({
 
     watch: {
         selected_problem: function(new_problem, _old_problem) {
+            if (new_problem === null)
+                return;  // '-- Please choose problem --'
+
             this.problem_loding = true;
             axios
                 .get('/api/v1/problem', {
@@ -228,13 +255,7 @@ const vm = new Vue({
                     this.order_sensitive = response.data.expected.order_sensitive;
 
                     // Delete old problem's gabage
-                    this.sql = null;
-                    this.judged = false;
-                    this.result = null,
-                    this.answer_columns = null;
-                    this.answer_records = null;
-                    this.wrong_line = null;
-                    this.re_message = null;
+                    wipe_sql.bind(this)();
                 })
                 .catch(error => {
                     console.log(error.response);

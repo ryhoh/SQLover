@@ -11,7 +11,7 @@
 <body>
     <div id="vue_app" class="container">
         <header class="sidebar__item">
-            <h1 style="margin: 0px; float: left;">SQLabo</h1>
+            <h1 style="margin: 0px; float: left;" v-on:click="reset_all">SQLabo</h1>
             
             <div id="lang_change" style="float: right; margin-right: 8px">
                 <label>
@@ -25,43 +25,45 @@
                 </label>
             </div>
 
-            <div v-if="user_info === 'forms'" style="margin-left: 8px; float: left;">
-                <form>
-                    <input type="text" size="16" v-model="user_name" placeholder="username" v-show="is_english">
-                    <input type="text" size="16" v-model="user_name" placeholder="ユーザ名" v-show="is_japanese">
-                    <input type="password" size="16" v-model="user_password" placeholder="password" v-show="is_english">
-                    <input type="password" size="16" v-model="user_password" placeholder="パスワード" v-show="is_japanese">
+            <div style="float: left;">
+                <div v-if="user_info === 'forms'" style="margin-left: 8px;">
+                    <form>
+                        <input type="text" size="16" v-model="user_name" placeholder="username" v-show="is_english">
+                        <input type="text" size="16" v-model="user_name" placeholder="ユーザ名" v-show="is_japanese">
+                        <input type="password" size="16" v-model="user_password" placeholder="password" v-show="is_english">
+                        <input type="password" size="16" v-model="user_password" placeholder="パスワード" v-show="is_japanese">
 
-                    <a class="btn" v-on:click="login" v-bind:disabled="user_accessing">
-                        <span v-show="is_english">Login</span>
-                        <span v-show="is_japanese">ログイン</span>
-                    </a>
+                        <a class="btn" v-on:click="login" v-bind:disabled="user_accessing">
+                            <span v-show="is_english">Login</span>
+                            <span v-show="is_japanese">ログイン</span>
+                        </a>
 
-                    <a class="btn" v-on:click="signup" v-bind:disabled="user_accessing">
-                        <span v-show="is_english">Register</span>
-                        <span v-show="is_japanese">登録</span>
+                        <a class="btn" v-on:click="signup" v-bind:disabled="user_accessing">
+                            <span v-show="is_english">Register</span>
+                            <span v-show="is_japanese">登録</span>
+                        </a>
+                    </form>
+                </div>
+
+                <span v-else-if="user_info === 'loginned'">
+                    <span v-show="is_english">User</span>
+                    <span v-show="is_japanese">ユーザ名</span>
+                    : {{ user_name }} ({{ user_clear_num }}/{{ problem_num }}
+                    <span v-show="is_english"> cleared!)</span>
+                    <span v-show="is_japanese"> クリア済)</span>
+
+                    <a class="btn" v-on:click="logout" v-bind:disabled="user_accessing">
+                        <span v-show="is_english">Logout</span>
+                        <span v-show="is_japanese">ログアウト</span>
                     </a>
-                </form>
+                </span>
+
+                <br>
+
+                <span style="margin-left: 10px; font-size: 90%; text-align: left;">
+                    {{ user_message }}
+                </span>
             </div>
-
-            <span v-else-if="user_info === 'loginned'">
-                <span v-show="is_english">User</span>
-                <span v-show="is_japanese">ユーザ名</span>
-                : {{ user_name }} ({{ user_clear_num }}/{{ problem_num }}
-                <span v-show="is_english"> cleared!)</span>
-                <span v-show="is_japanese"> クリア済)</span>
-
-                <a class="btn" v-on:click="logout" v-bind:disabled="user_accessing">
-                    <span v-show="is_english">Logout</span>
-                    <span v-show="is_japanese">ログアウト</span>
-                </a>
-            </span>
-
-            <br>
-
-            <span style="margin-left: 10px; font-size: 90%; text-align: left;">
-                {{ user_message }}
-            </span>
 
             <div style="clear: both;"></div>
         </header>
@@ -71,8 +73,8 @@
                 <h2 v-show="is_english">Problem Select</h2>
                 <h2 v-show="is_japanese">問題選択</h2>
                 <select name="problem-name" v-model="selected_problem">
-                    <option disabled value="" v-show="is_english">--Please choose problem--</option>
-                    <option disabled value="" v-show="is_japanese">--問題を選んでください--</option>
+                    <option disabled value="" v-show="is_english">-- Please choose problem --</option>
+                    <option disabled value="" v-show="is_japanese">-- 問題を選んでください --</option>
                     <option v-for="problem in problem_list" :key="problem">
                         {{ problem }}
                     </option>
