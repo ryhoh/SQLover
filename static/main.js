@@ -3,7 +3,7 @@ const clearUserResult = function() {
     this.user_message = null;
 };
 
-const wipe_problem = function() {
+const wipeProblem = function() {
     this.selected_problem = null;
     this.description = null;
     this.tables = null;
@@ -12,7 +12,7 @@ const wipe_problem = function() {
     this.order_sensitive = null;
 };
 
-const wipe_sql = function() {
+const wipeSql = function() {
     this.sql = null;
     this.judged = false;
     this.result = null,
@@ -22,9 +22,29 @@ const wipe_sql = function() {
     this.re_message = null;
 };
 
+// c.f. https://qiita.com/ka215/items/d059a78e29adef3978b5
+const mb_substr = function(str, begin, end) {
+    let ret = '';
+    for (let i = 0, len = 0; i < str.length; ++i, ++len) {
+        const upper = str.charCodeAt(i);
+        const lower = str.length > (i + 1) ? str.charCodeAt(i + 1) : 0;
+        let s = '';
+        if(0xD800 <= upper && upper <= 0xDBFF && 0xDC00 <= lower && lower <= 0xDFFF) {
+            ++i;
+            s = String.fromCharCode(upper, lower);
+        } else {
+            s = String.fromCharCode(upper);
+        }
+        if ( begin <= len && len < end ) {
+            ret += s;
+        }
+    }
+    return ret;
+};
+
 
 // Vue.js
-const vm = new Vue({
+new Vue({
     el: '#vue_app',
     
     data: () => ({
@@ -41,6 +61,7 @@ const vm = new Vue({
         problem_list_errored: false,
         problem_list_loding: false,
         problem_num: null,
+        cleared_flags: null,
 
         selected_problem: null,
         description: null,
@@ -62,20 +83,24 @@ const vm = new Vue({
         sql_submitting: false,
     }),
 
+    filters: {
+        
+    },
+
     computed: {
-        is_english: function() {
+        isEnglish: function() {
             return this.language === 'en';
         },
 
-        is_japanese: function() {
+        isJapanese: function() {
             return this.language === 'ja';
         },
     },
 
     methods: {
-        reset_all: function() {
-            wipe_problem.bind(this)();
-            wipe_sql.bind(this)();
+        resetAll: function() {
+            wipeProblem.bind(this)();
+            wipeSql.bind(this)();
         },
 
         signup: function() {
@@ -114,6 +139,7 @@ const vm = new Vue({
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
                         this.user_clear_num = response.data.cleared_num;
+                        this.cleared_flags = response.data.cleared_flags;
                         if (this.language === 'ja') {
                             this.user_message = '登録に成功しました!';
                         } else {
@@ -128,7 +154,7 @@ const vm = new Vue({
                     }
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    console.error(error.response);
                     if (this.language === 'ja') {
                         this.user_message = 'エラーが発生しました...';
                     } else {
@@ -140,7 +166,7 @@ const vm = new Vue({
                 });
         },
 
-        submit_problem: function() {
+        submitProblem: function() {
             this.result = 'Judging...';
             this.sql_submitting = true;
 
@@ -161,9 +187,10 @@ const vm = new Vue({
                     this.answer_records = response.data.answer_records;
                     this.wrong_line = response.data.wrong_line;
                     this.user_clear_num = response.data.cleared_num;
+                    this.cleared_flags = response.data.cleared_flags;
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    console.error(error.response);
                     this.sql_submit_error = true;
                 })
                 .finally(() => {
@@ -184,6 +211,7 @@ const vm = new Vue({
                     setTimeout(clearUserResult.bind(this), 5000);
                     this.user_info = 'name';
                     this.user_clear_num = response.data.cleared_num;
+                    this.cleared_flags = response.data.cleared_flags;
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
                         if (this.language === 'ja') {
@@ -200,7 +228,7 @@ const vm = new Vue({
                     }
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    console.error(error.response);
                     if (this.language === 'ja') {
                         this.user_message = 'エラーが発生しました...';
                     } else {
@@ -222,6 +250,7 @@ const vm = new Vue({
 
             this.user_name = '';
             this.user_password = '';
+            this.cleared_flags = null;
             this.user_info = 'forms';
             setTimeout(clearUserResult.bind(this), 5000);
             if (this.language === 'ja') {
@@ -232,6 +261,18 @@ const vm = new Vue({
             
             this.user_accessing = false;
         },
+
+        addTrophyMark: function(problem_name, problem_idx) {
+            if (this.cleared_flags == null) {
+                return '　' + problem_name;
+            }
+
+            if (this.cleared_flags[problem_idx]) {
+                return '🏆' + problem_name;
+            } else {
+                return '　' + problem_name;
+            }
+        },
     },
 
     watch: {
@@ -239,6 +280,7 @@ const vm = new Vue({
             if (new_problem === null)
                 return;  // '-- Please choose problem --'
 
+            new_problem = mb_substr(new_problem, 1, new_problem.length)  // Remove 🏆
             this.problem_loding = true;
             axios
                 .get('/api/v1/problem', {
@@ -255,10 +297,10 @@ const vm = new Vue({
                     this.order_sensitive = response.data.expected.order_sensitive;
 
                     // Delete old problem's gabage
-                    wipe_sql.bind(this)();
+                    wipeSql.bind(this)();
                 })
                 .catch(error => {
-                    console.log(error.response);
+                    console.error(error.response);
                     this.problem_errored = true;
                 })
                 .finally(() => this.problem_loding = false);
@@ -272,11 +314,10 @@ const vm = new Vue({
             .get('/api/v1/problem_list')
             .then(response => {
                 this.problem_list = response.data.problems;
-                this.problem_list.sort();
                 this.problem_num = this.problem_list.length;
             })
             .catch(error => {
-                console.log(error.response);
+                console.error(error.response);
                 this.problem_list_errored = true;
             })
             .finally(() => this.problem_list_loading = false);

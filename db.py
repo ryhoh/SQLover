@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Tuple
 
 import psycopg2
 import psycopg2.errors
@@ -70,6 +70,30 @@ def create_problem(name: str) -> bool:
         finally:
             conn.commit()
     return True
+
+
+def read_cleared_problem_from_result(user_name: str) -> List[Tuple[str]]:
+    """
+    Read an user's problems of cleared.
+
+    :param user_name: user's name
+    :return: Number of cleared
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                select problems.name
+                from results
+                join problems on results.problem_id = problems.id
+                where results.cleared and results.user_id = (
+                    select users.id from users
+                    where users.name = %s
+                );
+            """, (user_name,))
+            res: List[Tuple[str]] = cur.fetchall()
+            if len(res) == 0:
+                raise ValueError("User not exist:", user_name)
+    return res
 
 
 def read_cleared_num_from_result(user_name: str) -> int:

@@ -1,11 +1,12 @@
 import glob
 import json
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+import natsort
 from passlib.context import CryptContext
 
 import db
@@ -22,10 +23,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 explanation = "Let's practice SQL on this service!"
-problems_list = frozenset(
+problems_list: List[str] = natsort.natsorted(
     name.removeprefix('problems/').removesuffix('.json')
     for name in glob.glob('problems/*.json', recursive=False)
 )
+problems_num = len(problems_list)
 
 
 # End points
@@ -44,7 +46,7 @@ async def get_help():
 
 @app.get('/api/v1/problem')
 def get_problem(problem_name: str):
-    return load_problem(problem_name)
+    load_problem(problem_name)
 
 
 @app.get('/api/v1/problem_list')
@@ -60,9 +62,15 @@ def login(name: str = Form(...), password: str = Form(...)):
         return {'result': 'failed'}
 
     accepted = verify_password(password, hashed_passwd)
+    cleared_problems = set(
+        elms[0] for elms in
+        db.read_cleared_problem_from_result(name)
+    )
+    cleared_flags = [problem in cleared_problems for problem in problems_list]
     return {
         'result': 'success' if accepted else 'failed',
-        'cleared_num': db.read_cleared_num_from_result(name),
+        'cleared_num': sum(cleared_flags),
+        'cleared_flags': cleared_flags,
     }
 
 
@@ -78,6 +86,7 @@ def signup(name: str = Form(...), password: str = Form(...)):
     return {
         'result': 'success' if success else 'failed',
         'cleared_num': 0,
+        'cleared_flags': [False for _ in range(problems_num)]
     }
 
 
@@ -117,7 +126,13 @@ def submit_answer(
     if user_name and user_passwd:
         db.create_problem(problem_name)
         db.upsert_result(problem_name, user_name, "AC" if correct else "WA")
-        ret_val["cleared_num"] = db.read_cleared_num_from_result(user_name)
+        cleared_problems = set(
+            elms[0] for elms in
+            db.read_cleared_problem_from_result(user_name)
+        )
+        cleared_flags = [problem in cleared_problems for problem in problems_list]
+        ret_val["cleared_num"] = sum(cleared_flags)
+        ret_val['cleared_flags'] = cleared_flags
 
     return ret_val
 
@@ -126,13 +141,15 @@ def submit_answer(
 def check_problem_name(problem_name: str):
     if ".." in problem_name:  # 関係ないディレクトリにアクセスさせない
         raise HTTPException(status_code=403, detail="Forbidden")
+    elif problem_name not in problems_list:
+        raise HTTPException(status_code=404, detail="Not Found")
 
 
 def get_password_hash(password: str) -> bytes:
     return pwd_context.hash(password)
 
 
-def load_problem(problem_name: str) -> dict:
+def load_problem(problem_name: str) -> Dict[str, Any]:
     check_problem_name(problem_name)
     try:
         with open("problems/" + problem_name + ".json", "r") as f:
