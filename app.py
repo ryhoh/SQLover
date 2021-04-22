@@ -46,7 +46,7 @@ async def get_help():
 
 @app.get('/api/v1/problem')
 def get_problem(problem_name: str):
-    load_problem(problem_name)
+    return load_problem(problem_name)
 
 
 @app.get('/api/v1/problem_list')
