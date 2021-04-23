@@ -22,12 +22,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-explanation = "Let's practice SQL on this service!"
 problems_list: List[str] = natsort.natsorted(
     name.removeprefix('problems/').removesuffix('.json')
     for name in glob.glob('problems/*.json', recursive=False)
 )
 problems_num = len(problems_list)
+sandbox_psql_version = ' '.join(sandbox_db.read_version().split()[:2])  # 'PostgreSQL XX.X'
 
 
 # End points
@@ -39,11 +39,6 @@ async def root(request: Request):
     return FileResponse('static/index.html')
 
 
-@app.get('/api/v1/help')
-async def get_help():
-    return {'help': explanation}
-
-
 @app.get('/api/v1/problem')
 def get_problem(problem_name: str):
     return load_problem(problem_name)
@@ -52,6 +47,11 @@ def get_problem(problem_name: str):
 @app.get('/api/v1/problem_list')
 async def get_problem_list():
     return {'problems': problems_list}
+
+
+@app.get('/api/v1/info')
+def get_info():
+    return {'version': sandbox_psql_version}
 
 
 @app.post('/api/v1/login')

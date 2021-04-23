@@ -189,7 +189,8 @@
                     <!-- Expected output -->
                     <div class="float_pane">
                         <table class="expected centering">
-                            <caption style="white-space: nowrap">(Output)</caption>
+                            <caption style="white-space: nowrap" v-show="isEnglish">(Output)</caption>
+                            <caption style="white-space: nowrap" v-show="isJapanese">(出力例)</caption>
                             <tr>
                                 <th v-for="col in expected_columns" :key="col">
                                     {{ col }}
@@ -206,7 +207,8 @@
                     <div class="float_pane">
                         <!-- Result Table by Submitted SQL -->
                         <table v-show="answer_records" v-bind:class="result" class="expected centering">
-                            <caption style="white-space: nowrap">(Your output)</caption>
+                            <caption style="white-space: nowrap" v-show="isEnglish">(Your output)</caption>
+                            <caption style="white-space: nowrap" v-show="isJapanese">(あなたの出力)</caption>
                             <tr>
                                 <th v-for="col in answer_columns" :key="col">
                                     {{ col }}
@@ -228,12 +230,22 @@
                 <p>
                     <span v-show="isEnglish">
                         This is SQL learning application.<br>
-                        Please select problem from drop-down list.
+                        Please select problem from drop-down list.<br>
+                        <br>
+                        Do you like posting a problem?<br>
+                        Visit <a href="https://github.com/ryhoh/SQLabo" target=”_blank” rel=”noopener”>https://github.com/ryhoh/SQLabo</a> and post new problem!<br>
+                        <br>
+                        Database Environment:
                     </span>
                     <span v-show="isJapanese">
                         SQL を練習できるアプリケーションです。<br>
-                        ドロップダウンリストから、問題を選んでください。
+                        ドロップダウンリストから、問題を選んでください。<br>
+                        <br>
+                        作問に興味がある方は，<a href="https://github.com/ryhoh/SQLabo" target=”_blank” rel=”noopener”>https://github.com/ryhoh/SQLabo</a> を覗いてみてください。<br>
+                        <br>
+                        実行環境：
                     </span>
+                    {{ db_version }}
                 </p>
             </div>
 

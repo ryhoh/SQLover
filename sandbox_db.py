@@ -4,7 +4,7 @@ import psycopg2.extras
 from typing import List, Tuple, Dict, Any, Union
 
 
-SANDBOX_DB = os.environ.get('SANDBOX_DB_URL')
+SANDBOX_DB = os.environ.get('SANDBOX_DB_URL') or 'postgresql://web:web@localhost:54320/sandbox'
 
 
 class Result:
@@ -21,11 +21,16 @@ class Result:
         self.records = records
 
 
-def _connect():
-    if SANDBOX_DB is None:  # for debugging
-        return psycopg2.connect(host="localhost", port=54320, user="web", password="web", database="sandbox")
-    else:
-        return psycopg2.connect(SANDBOX_DB)
+def read_version() -> str:
+    """
+    Read the version of PostgreSQL
+
+    :return: Version information
+    """
+    with psycopg2.connect(SANDBOX_DB) as conn:
+        with conn.cursor() as cur:
+            cur.execute("select version();")
+            return cur.fetchone()[0]
 
 
 def execute(
@@ -42,7 +47,7 @@ def execute(
     :return: 実行結果
     """
     # todo docstringを英語化
-    with _connect() as conn:
+    with psycopg2.connect(SANDBOX_DB) as conn:
         try:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 # Make tables

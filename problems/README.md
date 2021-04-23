@@ -1,8 +1,8 @@
 # How To Write Problems
 
-<u>To problem author: Please write a JSON file.</u>  
+<u>To problem writer: Please write a JSON file.</u>  
 
-## Format of Problem
+## Format of JSON
 
 Each problem must be defined by JSON file like below.
 
@@ -39,9 +39,9 @@ Each problem must be defined by JSON file like below.
 }
 ```
 
-> note: Json file name will be used as problem name.
+> note: The JSON file name will also be used as the problem name.
 
-Example: This is a JSON code of sample problem.  
+Example: This is a JSON of sample problem.  
 (`problem/sample-1.json`)
 
 ```json
@@ -81,7 +81,7 @@ Example: This is a JSON code of sample problem.
 }
 ```
 
-In this case, this table is prepared.
+In this case, this table is given.
 
 Table: Students
 | id | name    |
@@ -91,8 +91,8 @@ Table: Students
 | 3  | Charlie |
 | 4  | David   |
 
-And expected output is like this.  
-(Now it's same to prepared table)
+And the expected output will look like this. 
+(This time, it is the same as the table we were given)
 
 | id | name    |
 |----|---------|
@@ -101,5 +101,5 @@ And expected output is like this.
 | 3  | Charlie |
 | 4  | David   |
 
-Then user write sql code to solve the problem.  
-> Of course it's "`select id, name from Students;`".
+The user then writes the SQL code that would solve the problem.  
+> Of course, the answer is  "`select id, name from Students;`".

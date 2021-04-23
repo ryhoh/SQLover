@@ -35,7 +35,7 @@ const mb_substr = function(str, begin, end) {
         } else {
             s = String.fromCharCode(upper);
         }
-        if ( begin <= len && len < end ) {
+        if (begin <= len && len < end) {
             ret += s;
         }
     }
@@ -49,6 +49,7 @@ new Vue({
     
     data: () => ({
         language: 'en',
+        db_version: null,
 
         user_name: null,
         user_password: null,
@@ -308,6 +309,20 @@ new Vue({
     },
 
     mounted() {
+        // Set default language
+        this.language = (navigator.browserLanguage || navigator.language || navigator.userLanguage).substr(0,2);
+
+        // Load information of this application
+        axios
+            .get('/api/v1/info')
+            .then(response => {
+                this.db_version = response.data.version;
+            })
+            .catch(error => {
+                console.error(error.response);
+            })
+            .finally(() => {});
+        
         // Load problem list
         this.problem_list_loading = true;
         axios
@@ -321,8 +336,5 @@ new Vue({
                 this.problem_list_errored = true;
             })
             .finally(() => this.problem_list_loading = false);
-
-        // Set default language
-        this.language = (navigator.browserLanguage || navigator.language || navigator.userLanguage).substr(0,2);
     },
 });
