@@ -210,7 +210,6 @@ new Vue({
                 .post('/api/v1/login', params)
                 .then(response => {
                     setTimeout(clearUserResult.bind(this), 5000);
-                    this.user_info = 'name';
                     this.user_clear_num = response.data.cleared_num;
                     this.cleared_flags = response.data.cleared_flags;
                     if (response.data.result === 'success') {

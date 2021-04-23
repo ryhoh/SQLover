@@ -62,13 +62,16 @@ def login(name: str = Form(...), password: str = Form(...)):
         return {'result': 'failed'}
 
     accepted = verify_password(password, hashed_passwd)
+    if not accepted:
+        return {'result': 'failed'}
+
     cleared_problems = set(
         elms[0] for elms in
         db.read_cleared_problem_from_result(name)
     )
     cleared_flags = [problem in cleared_problems for problem in problems_list]
     return {
-        'result': 'success' if accepted else 'failed',
+        'result': 'success',
         'cleared_num': sum(cleared_flags),
         'cleared_flags': cleared_flags,
     }
