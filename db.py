@@ -5,7 +5,7 @@ import psycopg2
 import psycopg2.errors
 
 
-DATABASE = os.environ.get('DATABASE_URL') or 'postgresql://web:web@localhost/sqlabo'
+DATABASE = os.environ.get('DATABASE_URL') or 'postgresql://web:web@localhost:54321/sqlabo'
 
 
 def create_user(name: str, password: bytes) -> bool:
