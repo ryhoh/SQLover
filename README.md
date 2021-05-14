@@ -25,7 +25,7 @@ There are services that allow you to practice programming (algorithm implementat
 
 - Anyone can create and post a problem
     - All problems are written in JSON format following the given format
-    - Posted problem will be accepted in a PR on GitHub, and the content will be checked before it is reflected
+    - Posted problem will be accepted in a PR on GitHub, and the content will be checked before it is registered
         - I deliberately chose not to manage it in a database
 - Japanese and English are supported
 
