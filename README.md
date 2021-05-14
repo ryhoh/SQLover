@@ -1,5 +1,8 @@
 # SQLabo
 
+[![MIT License](readme_resources/license-mit-blue.svg?style=flat)](LICENSE)
+![Heroku](https://heroku-badge.herokuapp.com/?app=sqlabo)
+
 ## Abstract
 This is an application that allows you to practice SQL in a quiz format in your browser.
 
@@ -17,6 +20,7 @@ There are services that allow you to practice programming (algorithm implementat
 - On an independent database, create tables, execute user queries, and check the results against a model answer to determine correct or incorrect
 - There is a simple account function
     - When you log in, you will be able to see at a glance the problems you have completed in the past
+        
         <img src="readme_resources/problem_list.png">
 
 - Anyone can create and post a problem
@@ -25,6 +29,13 @@ There are services that allow you to practice programming (algorithm implementat
         - I deliberately chose not to manage it in a database
 - Japanese and English are supported
 
+## Thanks to ...
+This software is using other libraries.
+
+- natsort
+    - https://github.com/SethMMorton/natsort
+    - by SethMMorton et al.
+
 ---
 
-[MIT License] Copyright (c) 2021 Tetsuya Hori a.k.a. ryhoh / shirosha2
+Copyright (c) 2021 Tetsuya Hori a.k.a. ryhoh / shirosha2
