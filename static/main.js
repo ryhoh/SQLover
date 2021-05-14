@@ -172,7 +172,7 @@ new Vue({
             this.sql_submitting = true;
 
             const params = new URLSearchParams();
-            params.append('problem_name', this.selected_problem);
+            params.append('problem_name', mb_substr(this.selected_problem, 1, this.selected_problem.length));
             params.append('answer', this.sql);
             if (this.user_info === 'loginned') {
                 params.append('user_name', this.user_name);
