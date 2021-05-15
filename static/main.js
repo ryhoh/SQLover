@@ -46,10 +46,10 @@ const mb_substr = function(str, begin, end) {
 // Vue.js
 new Vue({
     el: '#vue_app',
+    delimiters: ['${', '}'],
     
     data: () => ({
         language: 'en',
-        db_version: null,
 
         user_name: null,
         user_password: null,
@@ -310,17 +310,6 @@ new Vue({
     mounted() {
         // Set default language
         this.language = (navigator.browserLanguage || navigator.language || navigator.userLanguage).substr(0,2);
-
-        // Load information of this application
-        axios
-            .get('/api/v1/info')
-            .then(response => {
-                this.db_version = response.data.version;
-            })
-            .catch(error => {
-                console.error(error.response);
-            })
-            .finally(() => {});
         
         // Load problem list
         this.problem_list_loading = true;

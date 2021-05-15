@@ -4,8 +4,8 @@ from typing import Dict, Any, List
 
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import natsort
 from passlib.context import CryptContext
 
@@ -19,6 +19,7 @@ SECRET_KEY = 'd6db23525330c4807115b31ddf9efeb707dc3c29ae139dde'
 app = FastAPI()
 app.mount("/api/problems", StaticFiles(directory="problems"), name="problems")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -36,7 +37,13 @@ async def root(request: Request):
     await request.send_push_promise('static/style_template.css')
     await request.send_push_promise('static/style.css')
     await request.send_push_promise('static/main.js')
-    return FileResponse('static/index.html')
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "psql_version": sandbox_psql_version,
+        }
+    )
 
 
 @app.get('/api/v1/problem')

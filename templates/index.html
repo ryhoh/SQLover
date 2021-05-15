@@ -48,7 +48,7 @@
                 <span v-else-if="user_info === 'loginned'">
                     <span v-show="isEnglish">User</span>
                     <span v-show="isJapanese">ユーザ名</span>
-                    : {{ user_name }} ({{ user_clear_num }}/{{ problem_num }}
+                    : ${ user_name } (${ user_clear_num }/${ problem_num }
                     <span v-show="isEnglish"> cleared!)</span>
                     <span v-show="isJapanese"> クリア済)</span>
 
@@ -59,7 +59,7 @@
                 </span>
 
                 <span style="margin-left: 10px; font-size: 90%; text-align: left;">
-                    {{ user_message }}
+                    ${ user_message }
                 </span>
             </div>
 
@@ -74,7 +74,7 @@
                     <option disabled value="" v-show="isEnglish">--Please choose problem--</option>
                     <option disabled value="" v-show="isJapanese">--問題を選んでください--</option>
 
-                    <option v-for="(problem, idx) in problem_list" :key="problem">{{ addTrophyMark(problem, idx) }}</option>
+                    <option v-for="(problem, idx) in problem_list" :key="problem">${ addTrophyMark(problem, idx) }</option>
                 </select>
             </div>
 
@@ -99,15 +99,15 @@
                     <div style="display: flex;">
                         <div v-for="table in tables" :key="table.name">
                             <table style="margin: 4px;" class="prepared">
-                                <caption>{{ table.name }}</caption>
+                                <caption>${ table.name }</caption>
                                 <tr>
                                     <th v-for="col in table.columns" :key="col">
-                                        {{ col }}
+                                        ${ col }
                                     </th>
                                 </tr>
                                 <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
                                     <td v-for="(cell, idx) in record" :key="idx">
-                                        {{ cell }}
+                                        ${ cell }
                                     </td>
                                 </tr>
                             </table>
@@ -129,7 +129,7 @@
                                     <span v-show="isJapanese">問題についての説明</span>
                                 </span>
                                 <span v-for="(sentence, idx) in description" key="idx">
-                                    {{ sentence }}
+                                    ${ sentence }
                                     <br>
                                 </span>
                             </p>
@@ -173,10 +173,10 @@
                                     <span v-show="isJapanese">提出に失敗しました。ページを再読み込みしてください。</span>
                                 </span>
                                 <span v-else-if="judged" v-bind:class="result" class="result_icon">
-                                    {{ result }}
+                                    ${ result }
                                 </span>
                             </form>
-                            <pre v-if="result === 'PE'" class="code">{{ re_message }}</pre>
+                            <pre v-if="result === 'PE'" class="code">${ re_message }</pre>
                         </p>
                     </div>
 
@@ -191,12 +191,12 @@
                             <caption style="white-space: nowrap" v-show="isJapanese">(出力例)</caption>
                             <tr>
                                 <th v-for="col in expected_columns" :key="col">
-                                    {{ col }}
+                                    ${ col }
                                 </th>
                             </tr>
                             <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
                                 <td v-for="(cell, idx) in record" :key="idx">
-                                    {{ cell }}
+                                    ${ cell }
                                 </td>
                             </tr>
                         </table>
@@ -209,12 +209,12 @@
                             <caption style="white-space: nowrap" v-show="isJapanese">(あなたの出力)</caption>
                             <tr>
                                 <th v-for="col in answer_columns" :key="col">
-                                    {{ col }}
+                                    ${ col }
                                 </th>
                             </tr>
                             <tr v-for="(record, idx) in answer_records" :key="idx" v-bind:class="'bg' + idx % 2">
                                 <td v-for="(cell, idx) in record" :key="idx">
-                                    {{ cell }}
+                                    ${ cell }
                                 </td>
                                 <td v-if="wrong_line == idx + 1" class="warn" style="background-color: #FFF;">&lt;</td>
                             </tr>
@@ -243,7 +243,7 @@
                         <br>
                         実行環境：
                     </span>
-                    {{ db_version }}
+                    {{ psql_version }}
                 </p>
             </div>
 
