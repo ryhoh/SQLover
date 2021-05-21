@@ -1,0 +1,44 @@
+{
+  "DDL": [
+    "create table Scores (",
+    "    id int primary key,",
+    "    x int,",
+    "    y int,",
+    "    z int",
+    ");"
+  ],
+  "description": [
+    "1. Get max(x, y, z) for each row as \"Highest\".",
+    "2. Print (\"id\", \"Highest\")"
+  ],
+  "description_jp": [
+    "1. 各行について、 (x, y, z) の最大値を \"Highest\" として取得してください。",
+    "2. (\"id\", \"Highest\") を出力してください。"
+  ],
+  "tables": [
+    {
+      "name": "Scores",
+      "columns": ["id", "x", "y", "z"],
+      "records": [
+        [1, 30, 60, 90],
+        [2, 40, 80, 60],
+        [3, 10, 10, 50],
+        [4, 75, 65, 20],
+        [5, 70, 70, 40],
+        [6, 50, 50, 50]
+      ]
+    }
+  ],
+  "expected": {
+    "columns": ["id", "Highest"],
+    "records": [
+        [1, 90],
+        [2, 80],
+        [3, 50],
+        [4, 75],
+        [5, 70],
+        [6, 50]
+    ],
+    "order_sensitive": false
+  }
+}

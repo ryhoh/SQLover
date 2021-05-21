@@ -13,6 +13,9 @@
   "description": [
     "Joining test on multiple tables."
   ],
+  "description_jp": [
+    "複数テーブルでの Join のテスト用問題です。"
+  ],
   "tables": [
     {
       "name": "Students",

@@ -16,9 +16,13 @@
     ");",
     "create table another ..."
   ],
-  "description": [  // Optional
+  "description": [
     "Hello!",
     "This is message from writer."
+  ],
+  "description_jp": [  // Optional
+    "こんにちは。",
+    "日本語の説明を書くこともできます。"
   ],
   "tables": [  // List of tables
     {  // Table information
@@ -55,6 +59,10 @@
   "description": [
     "This is the first problem.",
     "Just select all."
+  ],
+  "description_jp": [
+    "最初の問題です。",
+    "表全体をそのまま出力してください。"
   ],
   "tables": [
     {

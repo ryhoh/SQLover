@@ -9,6 +9,10 @@
     "This is the first problem.",
     "Just select all."
   ],
+  "description_jp": [
+    "最初の問題です。",
+    "表全体をそのまま出力してください。"
+  ],
   "tables": [
     {
       "name": "Students",

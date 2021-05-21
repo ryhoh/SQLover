@@ -247,6 +247,8 @@ new Vue({
                     this.wrong_line = response.data.wrong_line;
                     this.user_clear_num = response.data.cleared_num;
                     this.cleared_flags = response.data.cleared_flags;
+                    localStorage.setItem('user_clear_num', this.user_clear_num);
+                    localStorage.setItem('cleared_flags', this.cleared_flags);
                 })
                 .catch(error => {
                     console.error(error.response);
@@ -351,7 +353,11 @@ new Vue({
                 .then(response => {
                     // Print new problem's data
                     this.tables = response.data.tables;
-                    this.description = response.data.description;
+                    if (this.language === 'ja' && response.data.description_jp) {
+                        this.description = response.data.description_jp;
+                    } else {
+                        this.description = response.data.description;
+                    }
                     this.expected_records = response.data.expected.records;
                     this.expected_columns = response.data.expected.columns;
                     this.order_sensitive = response.data.expected.order_sensitive;

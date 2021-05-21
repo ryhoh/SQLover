@@ -10,6 +10,10 @@
         "Extract all students' names.",
         "(We need names only!)"
     ],
+    "description_jp": [
+        "全生徒の名前を出力しましょう。",
+        "（必要なのは名前「だけ」です）"
+    ],
     "tables": [
       {
         "name": "Students",

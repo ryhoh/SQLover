@@ -9,6 +9,9 @@
     "description": [
         "Extract all students who are younger than 20 years."
     ],
+    "description_jp": [
+        "年齢が20歳未満の全生徒を取り出してください。"
+    ],
     "tables": [
       {
         "name": "Students",

@@ -1,48 +1,52 @@
 {
-    "DDL": [
-      "create table Students (",
-      "    id int primary key,",
-      "    name varchar(16) unique",
-      ");",
-      "create table LivesIn (",
-      "    id int primary key,",
-      "    place varchar(16),",
-      "    foreign key(id) references Students(id)",
-      ");"
-    ],
-    "description": [
-      "1. Extract name and place who lives in Birmingham.",
-      "2. Sort it in alphabetical order!"
-    ],
-    "tables": [
-      {
-        "name": "Students",
-        "columns": ["id", "name"],
-        "records": [
-          [1, "David"],
-          [2, "Charlie"],
-          [3, "Bob"],
-          [4, "Alice"]
-        ]
-      },
-      {
-        "name": "LivesIn",
-        "columns": ["id", "place"],
-        "records": [
-            [1, "Detroit"],
-            [2, "Birmingham"],
-            [3, "Canberra"],
-            [4, "Birmingham"]
-        ]
-      }
-    ],
-    "expected": {
-      "columns": ["name", "place"],
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16) unique",
+    ");",
+    "create table LivesIn (",
+    "    id int primary key,",
+    "    place varchar(16),",
+    "    foreign key(id) references Students(id)",
+    ");"
+  ],
+  "description": [
+    "1. Extract name and place who lives in Birmingham.",
+    "2. Sort it in alphabetical order by Student's name!"
+  ],
+  "description_jp": [
+    "1. Birmingham に住んでいる全生徒の (name, place) を取り出してください。",
+    "2. 1の結果を、生徒名の辞書順で昇順ソートして出力してください。"
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name"],
       "records": [
-          ["Alice", "Birmingham"],
-          ["Charlie", "Birmingham"]
-      ],
-      "order_sensitive": true
+        [1, "David"],
+        [2, "Charlie"],
+        [3, "Bob"],
+        [4, "Alice"]
+      ]
+    },
+    {
+      "name": "LivesIn",
+      "columns": ["id", "place"],
+      "records": [
+          [1, "Detroit"],
+          [2, "Birmingham"],
+          [3, "Canberra"],
+          [4, "Birmingham"]
+      ]
     }
+  ],
+  "expected": {
+    "columns": ["name", "place"],
+    "records": [
+        ["Alice", "Birmingham"],
+        ["Charlie", "Birmingham"]
+    ],
+    "order_sensitive": true
   }
+}
   

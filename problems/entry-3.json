@@ -9,6 +9,9 @@
   "description": [
       "Extract students' name and age whose name ends with 'e'."
   ],
+  "description_jp": [
+      "名前が 'e' で終わる全生徒の (name, age) を取り出してください。"
+  ],
   "tables": [
     {
       "name": "Students",
