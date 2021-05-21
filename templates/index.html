@@ -11,7 +11,8 @@
 <body>
     <div id="vue_app" class="container">
         <header class="sidebar__item">
-            <h1 style="margin: 0px; float: left;" v-on:click="resetAll">SQLabo</h1>
+            <!-- <h1 style="margin: 0px; float: left;" v-on:click="resetAll">SQLabo</h1> -->
+            <h1 style="margin: 0px; float: left;"><a href="/">SQLabo</a></h1>
             
             <div id="lang_change" style="float: right; margin-right: 8px">
                 <label>
@@ -158,9 +159,13 @@
                                 <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="isEnglish"></textarea>
                                 <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="isJapanese"></textarea>
                                 <br>
+                                <button v-on:click="testProblem" v-bind:disabled="sql_submitting">
+                                    <span v-show="isEnglish">Run</span>
+                                    <span v-show="isJapanese">実行</span>
+                                </button>
                                 <button v-on:click="submitProblem" v-bind:disabled="sql_submitting">
-                                    <span v-show="isEnglish">Submit</span>
-                                    <span v-show="isJapanese">提出</span>
+                                    <span v-show="isEnglish">Submit (need login)</span>
+                                    <span v-show="isJapanese">提出 （要ログイン）</span>
                                 </button>
 
                                 <!-- Judge Result -->
@@ -174,6 +179,10 @@
                                 </span>
                                 <span v-else-if="judged" v-bind:class="result" class="result_icon">
                                     ${ result }
+                                </span>
+                                <span v-show="submit_message">
+                                    <br>
+                                    ${ submit_message }
                                 </span>
                             </form>
                             <pre v-if="result === 'PE'" class="code">${ re_message }</pre>

@@ -58,6 +58,8 @@ new Vue({
         user_message: null,
         user_clear_num: null,
 
+        token: null,
+
         problem_list: null,
         problem_list_errored: false,
         problem_list_loding: false,
@@ -76,6 +78,7 @@ new Vue({
         sql: null,
         judged: false,
         result: null,
+        submit_message: null,
         answer_columns: null,
         answer_records: null,
         wrong_line: null,
@@ -139,6 +142,7 @@ new Vue({
                     setTimeout(clearUserResult.bind(this), 5000);
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
+                        this.token = response.data.access_token;
                         this.user_clear_num = response.data.cleared_num;
                         this.cleared_flags = response.data.cleared_flags;
                         if (this.language === 'ja') {
@@ -167,23 +171,73 @@ new Vue({
                 });
         },
 
-        submitProblem: function() {
+        testProblem: function() {
+            this.submit_message = null;
             this.result = 'Judging...';
             this.sql_submitting = true;
 
             const params = new URLSearchParams();
             params.append('problem_name', mb_substr(this.selected_problem, 1, this.selected_problem.length));
             params.append('answer', this.sql);
-            if (this.user_info === 'loginned') {
-                params.append('user_name', this.user_name);
-                params.append('user_passwd', this.user_password);
-            }
 
             axios
-                .post('/api/v1/submit', params)
+                .post('/api/v1/test', params)
                 .then(response => {
                     this.result = response.data.result;
                     this.re_message = response.data.message;
+                    this.answer_columns = response.data.answer_columns;
+                    this.answer_records = response.data.answer_records;
+                    this.wrong_line = response.data.wrong_line;
+                })
+                .catch(error => {
+                    console.error(error.response);
+                    this.sql_submit_error = true;
+                })
+                .finally(() => {
+                    this.judged = true;
+                    this.sql_submitting = false;
+                });
+        },
+
+        submitProblem: function() {
+            this.submit_message = null;
+            if (this.user_info !== 'loginned') {
+                this.result = null;
+                if (this.language === 'ja') {
+                    this.submit_message = '提出するにはログインしてください。';
+                } else {
+                    this.submit_message = 'Please login to submit answer.';
+                }
+                return;
+            }
+
+            this.result = 'Judging...';
+            this.sql_submitting = true;
+            axios
+                .post(
+                    '/api/v1/submit',
+                    {
+                        'problem_name': mb_substr(this.selected_problem, 1, this.selected_problem.length),
+                        'answer': this.sql,
+                    },
+                    {
+                        'headers': { 'Authorization': 'Bearer ' + this.token }
+                    }
+                )
+                .then(response => {
+                    this.result = response.data.result;
+                    if (this.result === 'AC') {
+                        // if (mb_substr(this.selected_problem, 0, 1) === '🏆') {
+                        //     this.selected_problem = '🏆' + mb_substr(this.selected_problem, 1, this.selected_problem.length);
+                        // }
+                        if (this.language === 'ja') {
+                            this.submit_message = '提出しました。';
+                        } else {
+                            this.submit_message = 'Submitted.';
+                        }
+                    } else {
+                        this.re_message = response.data.message;
+                    }
                     this.answer_columns = response.data.answer_columns;
                     this.answer_records = response.data.answer_records;
                     this.wrong_line = response.data.wrong_line;
@@ -204,35 +258,28 @@ new Vue({
             this.user_accessing = true;
 
             const params = new URLSearchParams();
-            params.append('name', this.user_name);
+            params.append('username', this.user_name);
             params.append('password', this.user_password);
             axios
-                .post('/api/v1/login', params)
+                .post('/api/v1/token', params)
                 .then(response => {
                     setTimeout(clearUserResult.bind(this), 5000);
                     this.user_clear_num = response.data.cleared_num;
                     this.cleared_flags = response.data.cleared_flags;
-                    if (response.data.result === 'success') {
-                        this.user_info = 'loginned';
-                        if (this.language === 'ja') {
-                            this.user_message = 'ログインに成功しました!';
-                        } else {
-                            this.user_message = 'Successfully logined!';
-                        }
-                    } else {  // failed
-                        if (this.language === 'ja') {
-                            this.user_message = 'ユーザ名またはパスワードが間違っています';
-                        } else {
-                            this.user_message = 'Wrong username or password.';
-                        }
+                    this.token = response.data.access_token;
+                    this.user_info = 'loginned';
+                    if (this.language === 'ja') {
+                        this.user_message = 'ログインに成功しました!';
+                    } else {
+                        this.user_message = 'Successfully logined!';
                     }
                 })
                 .catch(error => {
                     console.error(error.response);
                     if (this.language === 'ja') {
-                        this.user_message = 'エラーが発生しました...';
+                        this.user_message = 'ユーザ名またはパスワードが間違っています';
                     } else {
-                        this.user_message = 'An error has occurred...';
+                        this.user_message = 'Wrong username or password.';
                     }
                 })
                 .finally(() => {
@@ -248,6 +295,7 @@ new Vue({
                 this.user_message = 'Processing...';
             }
 
+            this.token = null;
             this.user_name = '';
             this.user_password = '';
             this.cleared_flags = null;

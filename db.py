@@ -127,10 +127,11 @@ def upsert_result(problem_name: str, user_name: str, category: str) -> bool:
     :return: True if successfully created else False
     """
     if category not in ('AC', 'WA'):
-        return False
+        return False  # We currently treat AC and WA (We don't record PE).
 
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
+            # Once cleared, results.cleared never get back to false.
             cur.execute("""
                 insert into results(problem_id, user_id, cleared)
                 values(
@@ -141,7 +142,7 @@ def upsert_result(problem_name: str, user_name: str, category: str) -> bool:
                     %s
                 )
                 on conflict on constraint results_problem_id_user_id_un do
-                update set cleared = %s;
+                update set cleared = (results.cleared or %s);
             """, (problem_name, user_name, (category == 'AC'), (category == 'AC')))
         conn.commit()
     return True

@@ -21,6 +21,10 @@ class Result:
         self.records = records
 
 
+class IllegalCommandError(Exception):
+    pass
+
+
 def read_version() -> str:
     """
     Read the version of PostgreSQL
@@ -31,6 +35,23 @@ def read_version() -> str:
         with conn.cursor() as cur:
             cur.execute("select version();")
             return cur.fetchone()[0]
+
+
+def sanitize(query: str) -> str:
+    """
+    Check and modify submitted query and return runnable sql.
+
+    - Find illegal command
+    - Extract one (first) sentence
+
+    :param query: Submitted query
+    :return: Runnable sql
+    """
+    to_check = query.split(';')[0].lower()
+    for bad_word in ('create', 'delete', 'drop', 'alter', 'insert', 'database', 'role'):
+        if bad_word in to_check:
+            raise IllegalCommandError('[App] Illegal command: %s' % bad_word)
+    return query.split(';')[0]
 
 
 def execute(
@@ -68,17 +89,15 @@ def execute(
                             "'" + elm + "'" if isinstance(elm, str) else str(elm)
                             for elm in record
                         ) + ')'
-                        # Don't care sql-injection because this is an independent DB.
                         cur.execute("insert into %s values %s" % (table['name'], val))
 
                 # Test query
-                cur.execute(query)
+                query = sanitize(query)
+                cur.execute(query)  # Don't care sql-injection because this is an independent DB.
                 result_columns = [col.name for col in cur.description]
                 result_records = cur.fetchall()
-
-        except psycopg2.ProgrammingError as e:
+        except (psycopg2.ProgrammingError, IllegalCommandError) as e:
             return Result(has_error=True, error_message=str(e))
-
         finally:  # prepare for next
             conn.rollback()
 
