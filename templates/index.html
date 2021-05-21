@@ -252,7 +252,15 @@
                         <br>
                         実行環境：
                     </span>
-                    {{ psql_version }}
+                    {{ psql_version }}<br>
+                    <span v-show="isEnglish">
+                        Note: The answer must be a single-sentence SQL statement.<br>
+                        If you write more than one statement, the second and subsequent statements will be ignored.
+                    </span>
+                    <span v-show="isJapanese">
+                        注意：解答は1文の SQL 文でなけらばなりません。<br>
+                        複数の文を書いた場合、2文目以降は無視されます。
+                    </span>
                 </p>
             </div>
 
