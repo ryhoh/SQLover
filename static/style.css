@@ -125,11 +125,13 @@ main {
 
 /* 実行結果関係 */
 .result_icon {
+    font-family: "Courier";
     color: #FFF;
     font-weight: 600;
     padding: 2px 4px;
     border-radius: 4px;
     margin-top: 8px;
+    user-select: none;
 }
 
 .result_icon.AC {

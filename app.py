@@ -114,7 +114,7 @@ def signup(name: str = Form(...), password: str = Form(...)):
 
 
 @app.post('/api/v1/test')
-def test_answer(problem_name: str = Form(...), answer: str = Form(...),):
+def test_answer(problem_name: str = Form(...), answer: str = Form(...)):
     return execute_answer(problem_name, answer)
 
 
