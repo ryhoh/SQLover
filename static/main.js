@@ -145,6 +145,10 @@ new Vue({
                         this.token = response.data.access_token;
                         this.user_clear_num = response.data.cleared_num;
                         this.cleared_flags = response.data.cleared_flags;
+                        localStorage.setItem('user_name', this.user_name);
+                        localStorage.setItem('user_clear_num', this.user_clear_num);
+                        localStorage.setItem('cleared_flags', this.cleared_flags);
+                        localStorage.setItem('token', this.token);
                         if (this.language === 'ja') {
                             this.user_message = '登録に成功しました!';
                         } else {
@@ -267,6 +271,10 @@ new Vue({
                     this.user_clear_num = response.data.cleared_num;
                     this.cleared_flags = response.data.cleared_flags;
                     this.token = response.data.access_token;
+                    localStorage.setItem('user_name', this.user_name);
+                    localStorage.setItem('user_clear_num', this.user_clear_num);
+                    localStorage.setItem('cleared_flags', this.cleared_flags);
+                    localStorage.setItem('token', this.token);
                     this.user_info = 'loginned';
                     if (this.language === 'ja') {
                         this.user_message = 'ログインに成功しました!';
@@ -296,6 +304,10 @@ new Vue({
             }
 
             this.token = null;
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_clear_num');
+            localStorage.removeItem('cleared_flags');
+            localStorage.removeItem('token');
             this.user_name = '';
             this.user_password = '';
             this.cleared_flags = null;
@@ -372,5 +384,14 @@ new Vue({
                 this.problem_list_errored = true;
             })
             .finally(() => this.problem_list_loading = false);
+
+        // read cookie if available
+        if (localStorage.length > 0) {
+            this.user_info = 'loginned';
+            if (localStorage.getItem('user_name')) this.user_name = localStorage.getItem('user_name');
+            if (localStorage.getItem('user_clear_num')) this.user_clear_num = localStorage.getItem('user_clear_num');
+            if (localStorage.getItem('cleared_flags')) this.cleared_flags = localStorage.getItem('cleared_flags');
+            if (localStorage.getItem('token')) this.token = localStorage.getItem('token');
+        }
     },
 });

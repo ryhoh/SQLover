@@ -13,7 +13,7 @@ import db
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
 SECRET_KEY = '53cea8056df0ac6aacae06321bac67b36f1402a8eca5b8b9310b158ec8c76df5'
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
+ACCESS_TOKEN_EXPIRE_MINUTES = 12 * 60 * 60
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
