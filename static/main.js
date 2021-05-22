@@ -204,7 +204,7 @@ new Vue({
             this.submit_message = null;
             if (this.user_info !== 'loginned') {
                 this.result = null;
-                this.user_message = selectSentence(this.language, {
+                this.submit_message = selectSentence(this.language, {
                     'ja': '提出するにはログインしてください。',
                     'en': 'Please login to submit answer.',
                 });
@@ -230,7 +230,7 @@ new Vue({
                         // if (mb_substr(this.selected_problem, 0, 1) === '🏆') {
                         //     this.selected_problem = '🏆' + mb_substr(this.selected_problem, 1, this.selected_problem.length);
                         // }
-                        this.user_message = selectSentence(this.language, {
+                        this.submit_message = selectSentence(this.language, {
                             'ja': '提出しました。',
                             'en': 'Submitted.',
                         });
