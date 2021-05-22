@@ -47,8 +47,8 @@ def sanitize(query: str) -> str:
     :param query: Submitted query
     :return: Runnable sql
     """
-    to_check = query.split(';')[0].lower()
-    for bad_word in ('create', 'delete', 'drop', 'alter', 'insert', 'database', 'role'):
+    to_check: str = query.split(';')[0].lower()
+    for bad_word in ('create', 'delete', 'drop', 'alter', 'insert', 'database', 'role', 'grant'):
         if bad_word in to_check:
             raise IllegalCommandError('[App] Illegal command: %s' % bad_word)
     return query.split(';')[0]

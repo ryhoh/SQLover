@@ -11,7 +11,6 @@
 <body>
     <div id="vue_app" class="container">
         <header class="sidebar__item">
-            <!-- <h1 style="margin: 0px; float: left;" v-on:click="resetAll">SQLabo</h1> -->
             <h1 style="margin: 0px; float: left;"><a href="/">SQLabo</a></h1>
             
             <div id="lang_change" style="float: right; margin-right: 8px">
@@ -156,8 +155,8 @@
                         <h2 v-show="isJapanese">解答</h2>
                         <p>
                             <form @submit.prevent="submitProblem">
-                                <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="isEnglish"></textarea>
-                                <textarea name="sql" cols="50" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="isJapanese"></textarea>
+                                <textarea name="sql" v-model="sql" class="sql_area" placeholder="Write your SQL here..." v-show="isEnglish"></textarea>
+                                <textarea name="sql" v-model="sql" class="sql_area" placeholder="ここに SQL を書いてください..." v-show="isJapanese"></textarea>
                                 <br>
                                 <button v-on:click="testProblem" v-bind:disabled="sql_submitting">
                                     <span v-show="isEnglish">Run</span>
