@@ -3,6 +3,24 @@ const clearUserResult = function() {
     this.user_message = null;
 };
 
+const selectSentence = function(lang, dict) {
+    for (const key in dict) {
+        if (key === lang)
+            return dict[key];
+    }
+    return null;
+};
+
+const setUserData = function(response) {
+    this.token = response.data.access_token;
+    this.user_clear_num = response.data.cleared_num;
+    this.cleared_flags = response.data.cleared_flags;
+    localStorage.setItem('user_name', this.user_name);
+    localStorage.setItem('user_clear_num', this.user_clear_num);
+    localStorage.setItem('cleared_flags', this.cleared_flags.map(x => '' + Number(x)).join(''));  // 0010110100010...
+    localStorage.setItem('token', this.token);
+};
+
 const wipeProblem = function() {
     this.selected_problem = null;
     this.description = null;
@@ -87,10 +105,6 @@ new Vue({
         sql_submitting: false,
     }),
 
-    filters: {
-        
-    },
-
     computed: {
         isEnglish: function() {
             return this.language === 'en';
@@ -102,36 +116,28 @@ new Vue({
     },
 
     methods: {
-        resetAll: function() {
-            wipeProblem.bind(this)();
-            wipeSql.bind(this)();
-        },
-
         signup: function() {
             if (this.user_name === null || this.user_name.length < 4 || 30 < this.user_name.length) {
-                if (this.language === 'ja') {
-                    this.user_message = 'ユーザ名は4文字以上30文字以内の英数字にしてください';
-                } else {
-                    this.user_message = 'Username must be between 4 ~ 30 letters!';
-                }
+                this.user_message = selectSentence(this.language, {
+                    'ja': 'ユーザ名は4文字以上30文字以内の英数字にしてください',
+                    'en': 'Username must be between 4 ~ 30 letters!',
+                });
                 return
             }
 
             if (this.user_password === null || this.user_password.length < 8 || 60 < this.user_password.length) {
-                if (this.language === 'ja') {
-                    this.user_message = 'パスワードは8文字以上60文字以内にしてください';
-                } else {
-                    this.user_message = 'Password must be between 8 ~ 60 letters!';
-                }
+                this.user_message = selectSentence(this.language, {
+                    'ja': 'パスワードは8文字以上60文字以内にしてください',
+                    'en': 'Password must be between 8 ~ 60 letters!',
+                });
                 return
             }
 
             this.user_accessing = true;
-            if (this.language === 'ja') {
-                this.user_message = '登録中...';
-            } else {
-                this.user_message = 'Registering...';
-            }
+            this.user_message = selectSentence(this.language, {
+                'ja': '登録中...',
+                'en': 'Registering...',
+            });
 
             const params = new URLSearchParams();
             params.append('name', this.user_name);
@@ -142,33 +148,24 @@ new Vue({
                     setTimeout(clearUserResult.bind(this), 5000);
                     if (response.data.result === 'success') {
                         this.user_info = 'loginned';
-                        this.token = response.data.access_token;
-                        this.user_clear_num = response.data.cleared_num;
-                        this.cleared_flags = response.data.cleared_flags;
-                        localStorage.setItem('user_name', this.user_name);
-                        localStorage.setItem('user_clear_num', this.user_clear_num);
-                        localStorage.setItem('cleared_flags', this.cleared_flags);
-                        localStorage.setItem('token', this.token);
-                        if (this.language === 'ja') {
-                            this.user_message = '登録に成功しました!';
-                        } else {
-                            this.user_message = 'Successfully registered!';
-                        }
+                        setUserData.bind(this)(response);
+                        this.user_message = selectSentence(this.language, {
+                            'ja': '登録に成功しました!',
+                            'en': 'Successfully registered!',
+                        });
                     } else {  // failed
-                        if (this.language === 'ja') {
-                            this.user_message = '登録に失敗しました（別の名前にしてください）';
-                        } else {
-                            this.user_message = 'Register failed (use other name)';
-                        }
+                        this.user_message = selectSentence(this.language, {
+                            'ja': '登録に失敗しました（別の名前にしてください）',
+                            'en': 'Register failed (use other name)',
+                        });
                     }
                 })
                 .catch(error => {
                     console.error(error.response);
-                    if (this.language === 'ja') {
-                        this.user_message = 'エラーが発生しました...';
-                    } else {
-                        this.user_message = 'An error has occurred...';
-                    }
+                    this.user_message = selectSentence(this.language, {
+                        'ja': 'エラーが発生しました...',
+                        'en': 'An error has occurred...',
+                    });
                 })
                 .finally(() => {
                     this.user_accessing = false;
@@ -207,11 +204,10 @@ new Vue({
             this.submit_message = null;
             if (this.user_info !== 'loginned') {
                 this.result = null;
-                if (this.language === 'ja') {
-                    this.submit_message = '提出するにはログインしてください。';
-                } else {
-                    this.submit_message = 'Please login to submit answer.';
-                }
+                this.user_message = selectSentence(this.language, {
+                    'ja': '提出するにはログインしてください。',
+                    'en': 'Please login to submit answer.',
+                });
                 return;
             }
 
@@ -234,11 +230,10 @@ new Vue({
                         // if (mb_substr(this.selected_problem, 0, 1) === '🏆') {
                         //     this.selected_problem = '🏆' + mb_substr(this.selected_problem, 1, this.selected_problem.length);
                         // }
-                        if (this.language === 'ja') {
-                            this.submit_message = '提出しました。';
-                        } else {
-                            this.submit_message = 'Submitted.';
-                        }
+                        this.user_message = selectSentence(this.language, {
+                            'ja': '提出しました。',
+                            'en': 'Submitted.',
+                        });
                     } else {
                         this.re_message = response.data.message;
                     }
@@ -248,7 +243,7 @@ new Vue({
                     this.user_clear_num = response.data.cleared_num;
                     this.cleared_flags = response.data.cleared_flags;
                     localStorage.setItem('user_clear_num', this.user_clear_num);
-                    localStorage.setItem('cleared_flags', this.cleared_flags);
+                    localStorage.setItem('cleared_flags', this.cleared_flags.map(x => '' + Number(x)).join(''));  // 0010110100010...
                 })
                 .catch(error => {
                     console.error(error.response);
@@ -270,27 +265,19 @@ new Vue({
                 .post('/api/v1/token', params)
                 .then(response => {
                     setTimeout(clearUserResult.bind(this), 5000);
-                    this.user_clear_num = response.data.cleared_num;
-                    this.cleared_flags = response.data.cleared_flags;
-                    this.token = response.data.access_token;
-                    localStorage.setItem('user_name', this.user_name);
-                    localStorage.setItem('user_clear_num', this.user_clear_num);
-                    localStorage.setItem('cleared_flags', this.cleared_flags);
-                    localStorage.setItem('token', this.token);
                     this.user_info = 'loginned';
-                    if (this.language === 'ja') {
-                        this.user_message = 'ログインに成功しました!';
-                    } else {
-                        this.user_message = 'Successfully logined!';
-                    }
+                    setUserData.bind(this)(response);
+                    this.user_message = selectSentence(this.language, {
+                        'ja': 'ログインに成功しました!',
+                        'en': 'Successfully logined!',
+                    });
                 })
                 .catch(error => {
                     console.error(error.response);
-                    if (this.language === 'ja') {
-                        this.user_message = 'ユーザ名またはパスワードが間違っています';
-                    } else {
-                        this.user_message = 'Wrong username or password.';
-                    }
+                    this.user_message = selectSentence(this.language, {
+                        'ja': 'ユーザ名またはパスワードが間違っています',
+                        'en': 'Wrong username or password.',
+                    });
                 })
                 .finally(() => {
                     this.user_accessing = false;
@@ -299,11 +286,10 @@ new Vue({
 
         logout: function() {
             this.user_accessing = true;
-            if (this.language === 'ja') {
-                this.user_message = '処理中...';
-            } else {
-                this.user_message = 'Processing...';
-            }
+            this.user_message = selectSentence(this.language, {
+                'ja': '処理中...',
+                'en': 'Processing...',
+            });
 
             this.token = null;
             localStorage.removeItem('user_name');
@@ -315,12 +301,10 @@ new Vue({
             this.cleared_flags = null;
             this.user_info = 'forms';
             setTimeout(clearUserResult.bind(this), 5000);
-            if (this.language === 'ja') {
-                this.user_message = 'ログアウトしました';
-            } else {
-                this.user_message = 'Logout.';
-            }
-            
+            this.user_message = selectSentence(this.language, {
+                'ja': 'ログアウトしました',
+                'en': 'Logout.',
+            });
             this.user_accessing = false;
         },
 
@@ -346,9 +330,7 @@ new Vue({
             this.problem_loding = true;
             axios
                 .get('/api/v1/problem', {
-                    params: {
-                        problem_name: new_problem,
-                    }
+                    params: { problem_name: new_problem }
                 })
                 .then(response => {
                     // Print new problem's data
@@ -396,7 +378,9 @@ new Vue({
             this.user_info = 'loginned';
             if (localStorage.getItem('user_name')) this.user_name = localStorage.getItem('user_name');
             if (localStorage.getItem('user_clear_num')) this.user_clear_num = localStorage.getItem('user_clear_num');
-            if (localStorage.getItem('cleared_flags')) this.cleared_flags = localStorage.getItem('cleared_flags');
+            if (localStorage.getItem('cleared_flags')) {
+                this.cleared_flags = localStorage.getItem('cleared_flags').split('').map(x => Boolean(Number(x)));
+            }
             if (localStorage.getItem('token')) this.token = localStorage.getItem('token');
         }
     },
