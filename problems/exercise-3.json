@@ -8,10 +8,10 @@
     ");"
   ],
   "description": [
-    "Transform the given table into first normal form."
+    "Unpivot the given table."
   ],
   "description_jp": [
-    "所与の表を第一正規形に変形してください。"
+    "所与の表を第一正規形（縦持ち）に変形してください。"
   ],
   "tables": [
     {
