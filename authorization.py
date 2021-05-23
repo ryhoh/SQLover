@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import subprocess
 from typing import Optional, Union
 
 from fastapi import Depends, HTTPException, status
@@ -12,8 +13,9 @@ import db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
 
-with open('.secret', 'r') as f:
-    SECRET_KEY = f.read()
+# Generate JWT secret
+SECRET_KEY = (subprocess.Popen('openssl rand -hex 32', stdout=subprocess.PIPE,
+                               shell=True).communicate()[0]).decode('utf-8')
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 12 * 60 * 60
