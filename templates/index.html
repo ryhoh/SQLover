@@ -106,7 +106,7 @@
                                     </th>
                                 </tr>
                                 <tr v-for="(record, idx) in table.records" :key="idx" v-bind:class="'bg' + idx % 2">
-                                    <td v-for="(cell, idx) in record" :key="idx">
+                                    <td v-for="(cell, idx) in record" :key="idx" v-bind:class="!isNaN(cell) ? 'number' : ''">
                                         ${ cell }
                                     </td>
                                 </tr>
@@ -203,7 +203,7 @@
                                 </th>
                             </tr>
                             <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                                <td v-for="(cell, idx) in record" :key="idx">
+                                <td v-for="(cell, idx) in record" :key="idx" v-bind:class="!isNaN(cell) ? 'number' : ''">
                                     ${ cell }
                                 </td>
                             </tr>
@@ -221,7 +221,7 @@
                                 </th>
                             </tr>
                             <tr v-for="(record, idx) in answer_records" :key="idx" v-bind:class="'bg' + idx % 2">
-                                <td v-for="(cell, idx) in record" :key="idx">
+                                <td v-for="(cell, idx) in record" :key="idx" v-bind:class="!isNaN(cell) ? 'number' : ''">
                                     ${ cell }
                                 </td>
                                 <td v-if="wrong_line == idx + 1" class="warn" style="background-color: #FFF;">&lt;</td>

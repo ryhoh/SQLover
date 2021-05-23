@@ -131,6 +131,11 @@ main {
     color:#ccc;
 }
 
+/* 表 */
+.number {
+    text-align: right;
+}
+
 /* 実行結果関係 */
 .result_icon {
     font-family: "Courier";
