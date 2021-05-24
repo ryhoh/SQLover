@@ -12,10 +12,7 @@ import db
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
-
-# Generate JWT secret
-SECRET_KEY = (subprocess.Popen('openssl rand -hex 32', stdout=subprocess.PIPE,
-                               shell=True).communicate()[0]).decode('utf-8')
+SECRET_KEY = db.read_secret()
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 12 * 60 * 60

@@ -5,6 +5,10 @@ from typing import List, Tuple, Dict, Any, Union
 
 
 SANDBOX_DB = os.environ.get('SANDBOX_DB_URL') or 'postgresql://web:web@localhost:54320/sandbox'
+BAD_WORDS = frozenset({
+    'create', 'update', 'insert', 'delete', 'drop', 'alter', 'insert', 'database', 'role', 'grant', 'set',
+    'definition', 'database', 'table', 'current_user', 'pg_user', 'current_schema', 'pg_roles',
+})
 
 
 class Result:
@@ -48,7 +52,7 @@ def sanitize(query: str) -> str:
     :return: Runnable sql
     """
     to_check: str = query.split(';')[0].lower()
-    for bad_word in ('create', 'delete', 'drop', 'alter', 'insert', 'database', 'role', 'grant'):
+    for bad_word in BAD_WORDS:
         if bad_word in to_check:
             raise IllegalCommandError('[App] Illegal command: %s' % bad_word)
     return query.split(';')[0]

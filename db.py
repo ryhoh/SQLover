@@ -8,6 +8,19 @@ import psycopg2.errors
 DATABASE = os.environ.get('DATABASE_URL') or 'postgresql://web:web@localhost:54321/sqlabo'
 
 
+def read_secret() -> str:
+    """
+    Read JWT secret
+
+    :return: JWT secret
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("select secret from credential;")
+            res: List[str] = cur.fetchone()
+            return res[0]
+
+
 def create_user(name: str, password: bytes) -> bool:
     """
     Create new user
