@@ -44,7 +44,7 @@ class MailSession:
 
     @classmethod
     def clean_sessions(cls):
-        for key, session in cls.sessions.values():
+        for key, session in cls.sessions.items():
             session: 'MailSession'
             if session.is_expired():
                 cls.sessions.pop(key)
