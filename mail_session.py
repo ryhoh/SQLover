@@ -50,7 +50,7 @@ class MailSession:
                 cls.sessions.pop(key)
 
     def is_expired(self) -> bool:
-        return self.created_datetime - datetime.now() > timedelta(minutes=self.EXPIRE_MINUTES)
+        return datetime.now() - self.created_datetime > timedelta(minutes=self.EXPIRE_MINUTES)
 
     def send_mail(self, language: str, email: str):
         raise NotImplementedError

@@ -81,7 +81,6 @@ async def reset_password(request: Request, param: str):
     try:
         user_reset_password_session = ResetPasswordMailSession.sessions[ms_id]
     except KeyError:
-        sys.stderr.write('%s is not in %s\n' % (ms_id, ResetPasswordMailSession.sessions))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     if user_reset_password_session.is_expired():
         ResetPasswordMailSession.sessions.pop(ms_id)
@@ -130,6 +129,7 @@ async def update_password(
     try:
         user_reset_password_session = ResetPasswordMailSession.sessions[ms_id]
     except KeyError:
+        sys.stderr.write('%s is not in %s\n' % (ms_id, ResetPasswordMailSession.sessions))
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     if user_reset_password_session.is_expired():
         ResetPasswordMailSession.sessions.pop(ms_id)
