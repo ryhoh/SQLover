@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import subprocess
 from typing import Optional, Union
 
 from fastapi import Depends, HTTPException, status
@@ -12,7 +11,7 @@ import db
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
-SECRET_KEY = db.read_secret()
+SECRET_KEY = db.read_JWT_secret()
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 12 * 60 * 60
@@ -34,10 +33,12 @@ class User(BaseModel):
 
 class UserInDB(User):
     hashed_password: str
+    email: str
+    is_active: bool
 
 
-def authenticate_user(username: str, password: str):
-    user = get_user(username)
+def authenticate_user(username: str, password: str) -> Union[UserInDB, bool]:
+    user: Optional[UserInDB] = get_user(username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -79,10 +80,11 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
 def get_user(username: str) -> Optional[UserInDB]:
     try:
-        hashed_password = db.read_passwd_by_name_from_user(username)
+        hashed_password, email, is_active = db.read_user_from_user(username)
     except ValueError:
         return None
-    return UserInDB(**{'username': username, 'hashed_password': hashed_password})
+    return UserInDB(**{
+        'username': username, 'hashed_password': hashed_password, 'email': email, 'is_active': is_active})
 
 
 def get_password_hash(password: str) -> str:

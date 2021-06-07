@@ -77,18 +77,31 @@ header h2:hover {
     background-color: var(--h2-sub);
 }
 
-header .btn {
+header .btn, header .btn_alt {
     display: inline-block;
-    height: 20px;
-    width: 84px;
     text-align: center;
     padding-bottom: 4px;
     padding-left: 4px;
     padding-right: 4px;
-    background-color: var(--h2-sub);
+    text-decoration: none;
 }
 
-header .btn:hover {
+header .btn {
+    margin-top 5px;
+    height: 20px;
+    width: 84px;
+    background-color: #FFF;
+    color: var(--h2-sub);
+}
+
+header .btn_alt {
+    height: 20px;
+    --width: 120px;
+    background-color: var(--h2-sub);
+    color: #FFF;
+}
+
+header .btn:hover, header .btn_alt:hover {
     cursor: pointer;
 }
 

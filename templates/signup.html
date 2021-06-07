@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLabo: Signup</title>
+    <link rel="stylesheet" href="/static/style_template.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        input { margin-left: 20px; }
+        .frame {
+            display: table;
+            margin: 10px;
+        }
+        #signup_button {
+            text-decoration: none;
+            padding: 5px;
+            border-radius: 6px;
+            background-color: var(--h2-sub);
+            color: white;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Signup</h1>
+    <div class="frame">
+        <form id="submit_form" method="POST" action="/api/v1/signup">
+            <p>
+                Mail Address:<br>
+                <input id="email" name="email" type="email" size="32" placeholder="someone@example.com"><br>
+                
+                Username:<br>
+                <input id="username" name="username" type="text" size="32" placeholder="Johndoe"><br>
+
+                Password:<br>
+                <input id="password" name="password" type="password" size="32" placeholder="password"><br>
+
+                Confirm Password:<br>
+                <input id="password_confirm" name="password_confirm" type="password" size="32" placeholder="password"><br>
+
+                <input name="language" type="hidden" value="en"><br>
+
+                <span id="error_message" class="warn">
+                    <!-- error message here -->
+                </span>
+                
+                <div style="text-align: center;">
+                    <a id="signup_button" onclick="signup();">Signup</a>
+                </div>
+            </p>
+        </form>
+    </div>
+
+    <script>
+        let processing = false;
+
+        function signup() {
+            if (processing) return;  // block during processing
+
+            processing = true;
+            document.getElementById('signup_button').style.backgroundColor = 'gray';
+
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const password_confirm = document.getElementById('password_confirm').value;
+
+            const error = find_error(email, username, password, password_confirm);
+            if (null !== error) {
+                document.getElementById('error_message').innerText = error;
+                document.getElementById('signup_button').style.backgroundColor = 'var(--h2-sub)';
+                processing = false;
+                return;
+            }
+
+            document.getElementById('submit_form').submit();
+        }
+
+        function find_error(email, username, password, password_confirm) {
+            if ('' === email)
+                return 'Mail Address can\'t be empty.';
+            if (!email.includes('@'))
+                return 'Invalid Mail Address.';
+            if ('' === username)
+                return 'Username can\'t be empty.';
+            if (username.length < 4 || 30 < username.length)
+                return 'Username must be in 4 ~ 30 letters.';
+            if ('' === password)
+                return 'Password can\'t be empty.';
+            if (password.length < 8 || 60 < password.length)
+                return 'Password must be in 8 ~ 60 letters!';
+            if (password !== password_confirm)
+                return 'Passwords are not same.';
+            return null;
+        }
+    </script>
+</body>
+</html>

@@ -2,8 +2,10 @@ from datetime import timedelta
 import glob
 import json
 from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from fastapi import Body, Depends, FastAPI, Form, HTTPException, Request, status
+from fastapi.responses import PlainTextResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -14,6 +16,7 @@ import authorization
 import db
 import judge
 import sandbox_db
+from mail_session import ResetPasswordMailSession, SignupMailSession
 
 
 app = FastAPI()
@@ -44,6 +47,103 @@ async def root(request: Request):
     )
 
 
+@app.get('/activate')
+async def activate_account(param: str):
+    ms_id = param
+    try:
+        user_signup_session = SignupMailSession.sessions[ms_id]
+    except KeyError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    if user_signup_session.is_expired():
+        SignupMailSession.sessions.pop(ms_id)
+        return PlainTextResponse('Session expired. Try signup procedure again.\n\
+時間切れです。もう一度、登録手続きをしてください。')
+
+    db.update_users_active(user_signup_session.user_name)
+    SignupMailSession.sessions.pop(ms_id)
+    return PlainTextResponse('Signup successfully done! Please close window and login.\n\
+登録に成功しました！ウィンドウを閉じて、ログインしてください。')
+
+
+@app.get('/forgot_password/{language}')
+async def forgot_password(request: Request, language: str):
+    if 'en' == language:
+        return templates.TemplateResponse("forgot_password.html", {"request": request})
+    if 'ja' == language:
+        return templates.TemplateResponse("forgot_password_ja.html", {"request": request})
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+
+
+@app.get('/reset_password')
+async def reset_password(request: Request, param: str):
+    ms_id = param
+    try:
+        user_reset_password_session = ResetPasswordMailSession.sessions[ms_id]
+    except KeyError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    if user_reset_password_session.is_expired():
+        ResetPasswordMailSession.sessions.pop(ms_id)
+        return PlainTextResponse('Session expired. Try signup procedure again.\n\
+時間切れです。もう一度、登録手続きをしてください。')
+    return templates.TemplateResponse("reset_password.html", {"request": request, "ms_id": ms_id})
+
+
+@app.post('/request_reset_password')
+async def request_reset_password(email: str = Form(...), language: str = Form(...)):
+    if email == '' or email.count('@') != 1:
+        return {'result': 'invalid_email'}
+
+    try:
+        username = db.read_username_from_user_by_email(email)
+    except ValueError:
+        return PlainTextResponse('The email is not registered.\n\
+登録されていないメールアドレスです。')
+
+    ResetPasswordMailSession(username).send_mail(language, email)
+    return PlainTextResponse('Verification mail has send. Please check it out.\n\
+認証用メールが送信されました。確認してください。')
+
+
+@app.get('/signup/{language}')
+async def signup_page(request: Request, language: str):
+    if 'en' == language:
+        return templates.TemplateResponse("signup.html", {"request": request})
+    if 'ja' == language:
+        return templates.TemplateResponse("signup_ja.html", {"request": request})
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+
+
+@app.post('/update_password')
+async def update_password(
+        password: str = Form(...),
+        password_confirm: str = Form(...),
+        ms_id: str = Form(...)
+):
+    if password == '' or len(password) < 8 or 60 < len(password) or not password.isascii():
+        return {'result': 'invalid_password'}
+    if password != password_confirm:
+        return {'result': 'Passwords are not same.'}
+
+    try:
+        user_reset_password_session = ResetPasswordMailSession.sessions[ms_id]
+    except KeyError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    if user_reset_password_session.is_expired():
+        ResetPasswordMailSession.sessions.pop(ms_id)
+        return PlainTextResponse('Session expired. Try signup procedure again.\n\
+時間切れです。もう一度、登録手続きをしてください。')
+
+    db.update_users_password(
+        user_reset_password_session.user_name,
+        authorization.get_password_hash(password).encode()
+    )
+    ResetPasswordMailSession.sessions.pop(ms_id)
+    return PlainTextResponse('Password reset successfully done! Please close window and login.\n\
+パスワードの変更に成功しました！ウィンドウを閉じて、ログインしてください。')
+
+
 @app.get('/api/v1/problem')
 def get_problem(problem_name: str):
     return load_problem(problem_name)
@@ -61,8 +161,8 @@ def get_info():
 
 @app.post('/api/v1/token')
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authorization.authenticate_user(form_data.username, form_data.password)
-    if not user:
+    user: Union[authorization.UserInDB, bool] = authorization.authenticate_user(form_data.username, form_data.password)
+    if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -88,29 +188,32 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @app.post('/api/v1/signup')
-def signup(name: str = Form(...), password: str = Form(...)):
-    if name == '' or len(name) < 4 or 30 < len(name) or not name.isalnum():
-        return {'result': 'name_invalid'}
+def signup(
+        email: str = Form(...),
+        username: str = Form(...),
+        password: str = Form(...),
+        password_confirm: str = Form(...),
+        language: str = Form(...)
+):
+    if email == '' or email.count('@') != 1:
+        return {'result': 'invalid_email'}
+
+    if username == '' or len(username) < 4 or 30 < len(username) or not username.isalnum():
+        return {'result': 'invalid_username'}
 
     if password == '' or len(password) < 8 or 60 < len(password) or not password.isascii():
-        return {'result': 'password_invalid'}
+        return {'result': 'invalid_password'}
 
-    success = db.create_user(name=name, password=authorization.get_password_hash(password).encode())
+    if password != password_confirm:
+        return {'result': 'Passwords are not same.'}
+
+    success = db.create_user(username, authorization.get_password_hash(password).encode(), email)
     if not success:
-        return {'result': 'failed'}
+        return PlainTextResponse('This username already used.\nこのユーザ名はすでに使われています。')
 
-    access_token_expires = timedelta(minutes=authorization.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = authorization.create_access_token(
-        data={"sub": name}, expires_delta=access_token_expires
-    )
-
-    return {
-        'result': 'success',
-        "access_token": access_token,
-        "token_type": "bearer",
-        'cleared_num': 0,
-        'cleared_flags': [False for _ in range(problems_num)]
-    }
+    SignupMailSession(username).send_mail(language, email)
+    return PlainTextResponse('Verification mail has send. Please check it out.\n\
+認証用メールが送信されました。確認してください。')
 
 
 @app.post('/api/v1/test')

@@ -116,62 +116,6 @@ new Vue({
     },
 
     methods: {
-        signup: function() {
-            if (this.user_name === null || this.user_name.length < 4 || 30 < this.user_name.length) {
-                this.user_message = selectSentence(this.language, {
-                    'ja': 'ユーザ名は4文字以上30文字以内の英数字にしてください',
-                    'en': 'Username must be between 4 ~ 30 letters!',
-                });
-                return
-            }
-
-            if (this.user_password === null || this.user_password.length < 8 || 60 < this.user_password.length) {
-                this.user_message = selectSentence(this.language, {
-                    'ja': 'パスワードは8文字以上60文字以内にしてください',
-                    'en': 'Password must be between 8 ~ 60 letters!',
-                });
-                return
-            }
-
-            this.user_accessing = true;
-            this.user_message = selectSentence(this.language, {
-                'ja': '登録中...',
-                'en': 'Registering...',
-            });
-
-            const params = new URLSearchParams();
-            params.append('name', this.user_name);
-            params.append('password', this.user_password);
-            axios
-                .post('/api/v1/signup', params)
-                .then(response => {
-                    setTimeout(clearUserResult.bind(this), 5000);
-                    if (response.data.result === 'success') {
-                        this.user_info = 'loginned';
-                        setUserData.bind(this)(response);
-                        this.user_message = selectSentence(this.language, {
-                            'ja': '登録に成功しました!',
-                            'en': 'Successfully registered!',
-                        });
-                    } else {  // failed
-                        this.user_message = selectSentence(this.language, {
-                            'ja': '登録に失敗しました（別の名前にしてください）',
-                            'en': 'Register failed (use other name)',
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error(error.response);
-                    this.user_message = selectSentence(this.language, {
-                        'ja': 'エラーが発生しました...',
-                        'en': 'An error has occurred...',
-                    });
-                })
-                .finally(() => {
-                    this.user_accessing = false;
-                });
-        },
-
         testProblem: function() {
             this.submit_message = null;
             this.result = 'Judging...';

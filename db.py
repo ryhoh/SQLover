@@ -1,5 +1,5 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import psycopg2
 import psycopg2.errors
@@ -8,7 +8,7 @@ import psycopg2.errors
 DATABASE = os.environ.get('DATABASE_URL') or 'postgresql://web:web@localhost:54321/sqlabo'
 
 
-def read_secret() -> str:
+def read_JWT_secret() -> str:
     """
     Read JWT secret
 
@@ -16,26 +16,40 @@ def read_secret() -> str:
     """
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
-            cur.execute("select secret from credential;")
+            cur.execute("select value from credential where type = 'JWT_secret';")
             res: List[str] = cur.fetchone()
             return res[0]
 
 
-def create_user(name: str, password: bytes) -> bool:
+def read_mailgun_api_key() -> str:
+    """
+    Read Mailgun API key
+
+    :return: Mailgun API key
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("select value from credential where type = 'mailgun_api_key';")
+            res: List[str] = cur.fetchone()
+            return res[0]
+
+
+def create_user(username: str, password: bytes, email: str) -> bool:
     """
     Create new user
 
-    :param name: new user's name
+    :param username: new user's name
     :param password: new user's password (hashed)
+    :param email: new user's email address
     :return: True if successfully created else False
     """
     with psycopg2.connect(DATABASE) as conn:
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    insert into users(name, passwd)
-                    values(%s, %s);
-                """, (name, password))
+                    insert into users(name, passwd, email)
+                    values(%s, %s, %s);
+                """, (username, password, email))
         except psycopg2.errors.UniqueViolation:
             return False
         finally:
@@ -43,25 +57,82 @@ def create_user(name: str, password: bytes) -> bool:
     return True
 
 
-def read_passwd_by_name_from_user(name: str) -> bytes:
+def read_user_from_user(name: str) -> Tuple[bytes, str, bool]:
     """
     Read user's password
 
     :param name: user's name
-    :return: hashed password
+    :return: (hashed password, email, is_active)
     """
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select passwd
+                select passwd, email, is_active
                 from users
                 where name = %s;
             """, (name,))
 
-            res: List[memoryview] = cur.fetchone()
+            res: List[Union[memoryview, str, bool]] = cur.fetchone()
             if res is None:
                 raise ValueError("User not exist:", name)
-    return res[0].tobytes()  # get single value
+    return res[0].tobytes(), res[1], res[2]
+
+
+def read_username_from_user_by_email(email: str) -> str:
+    """
+    Read user's name by email.
+
+    :param email: user's email
+    :return: username
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                select name
+                from users
+                where email = %s;
+            """, (email,))
+
+            res: List[str] = cur.fetchone()
+            if res is None:
+                raise ValueError("User not exist with email:", email)
+    return res[0]
+
+
+def update_users_active(user_name: str):
+    """
+    Update user's availability.
+
+    (Called after verification of new user)
+
+    :param user_name: user's name
+    :return: Number of cleared
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                update users
+                set is_active = true
+                where name = %s;
+            """, (user_name,))
+        conn.commit()
+
+
+def update_users_password(user_name: str, password: bytes):
+    """
+    Change user's password
+
+    :param user_name: username to change password
+    :param password: new password
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                update users
+                set passwd = %s
+                where name = %s;
+            """, (password, user_name))
+            conn.commit()
 
 
 def create_problem(name: str) -> bool:
@@ -90,7 +161,7 @@ def read_cleared_problem_from_result(user_name: str) -> List[Tuple[str]]:
     Read an user's problems of cleared.
 
     :param user_name: user's name
-    :return: Number of cleared
+    :return: Problem names of cleared
     """
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
@@ -104,8 +175,6 @@ def read_cleared_problem_from_result(user_name: str) -> List[Tuple[str]]:
                 );
             """, (user_name,))
             res: List[Tuple[str]] = cur.fetchall()
-            if len(res) == 0:
-                raise ValueError("User not exist:", user_name)
     return res
 
 
@@ -160,3 +229,17 @@ def upsert_result(problem_name: str, user_name: str, category: str) -> bool:
         conn.commit()
     return True
 
+
+def delete_inactivated_users():
+    """
+    Delete all users who is not activated.
+
+    """
+    with psycopg2.connect(DATABASE) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                delete
+                from users
+                where is_active = false;
+            """)
+        conn.commit()

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLabo: 登録</title>
+    <link rel="stylesheet" href="/static/style_template.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        input { margin-left: 20px; }
+        .frame {
+            display: table;
+            margin: 10px;
+        }
+        #signup_button {
+            text-decoration: none;
+            padding: 5px;
+            border-radius: 6px;
+            background-color: var(--h2-sub);
+            color: white;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>登録</h1>
+    <div class="frame">
+        <form id="submit_form" method="POST" action="/api/v1/signup">
+            <p>
+                メールアドレス：<br>
+                <input id="email" name="email" type="email" size="32" placeholder="someone@example.com"><br>
+                
+                ユーザ名：<br>
+                <input id="username" name="username" type="text" size="32" placeholder="Johndoe"><br>
+
+                パスワード：<br>
+                <input id="password" name="password" type="password" size="32" placeholder="password"><br>
+
+                パスワード（もう一回）：<br>
+                <input id="password_confirm" name="password_confirm" type="password" size="32" placeholder="password"><br>
+
+                <input name="language" type="hidden" value="ja"><br>
+
+                <span id="error_message" class="warn">
+                    <!-- error message here -->
+                </span>
+                
+                <div style="text-align: center;">
+                    <a id="signup_button" onclick="signup();">Signup</a>
+                </div>
+            </p>
+        </form>
+    </div>
+
+    <script>
+        let processing = false;
+
+        function signup() {
+            if (processing) return;  // block during processing
+
+            processing = true;
+            document.getElementById('signup_button').style.backgroundColor = 'gray';
+
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const password_confirm = document.getElementById('password_confirm').value;
+
+            const error = find_error(email, username, password, password_confirm);
+            if (null !== error) {
+                document.getElementById('error_message').innerText = error;
+                document.getElementById('signup_button').style.backgroundColor = 'var(--h2-sub)';
+                processing = false;
+                return;
+            }
+
+            document.getElementById('submit_form').submit();
+        }
+
+        function find_error(email, username, password, password_confirm) {
+            if ('' === email)
+                return 'メールアドレスが空欄になっています。';
+            if (!email.includes('@'))
+                return 'メールアドレスが正しくないです。';
+            if ('' === username)
+                return 'ユーザ名が空欄になっています。';
+            if (username.length < 4 || 30 < username.length)
+                return 'ユーザ名は4文字以上30文字以内である必要があります。';
+            if ('' === password)
+                return 'パスワードが空欄になっています。';
+            if (password.length < 8 || 60 < password.length)
+                return 'パスワードは8文字以上60文字以内である必要があります。';
+            if (password !== password_confirm)
+                return 'パスワードが一致していません。';
+            return null;
+        }
+    </script>
+</body>
+</html>

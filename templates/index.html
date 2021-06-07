@@ -38,9 +38,30 @@
                             <span v-show="isJapanese">ログイン</span>
                         </a>
 
-                        <a class="btn" v-on:click="signup" v-bind:disabled="user_accessing">
-                            <span v-show="isEnglish">Register</span>
-                            <span v-show="isJapanese">登録</span>
+                        <a
+                            href="/signup/en" target="_blank" rel="noopener noreferrer" class="btn_alt"
+                            onclick="window.open('/signup/en', '', 'width=300,height=400'); return false;"
+                            v-bind:disabled="user_accessing" v-show="isEnglish" >
+                            <span>Register</span>
+                        </a>
+                        <a
+                            href="/signup/ja" target="_blank" rel="noopener noreferrer" class="btn_alt"
+                            onclick="window.open('/signup/ja', '', 'width=300,height=400'); return false;"
+                            v-bind:disabled="user_accessing" v-show="isJapanese" >
+                            <span>登録</span>
+                        </a>
+
+                        <a
+                            href="/forgot_password" target="_blank" rel="noopener noreferrer" class="btn_alt"
+                            onclick="window.open('/forgot_password/en', '', 'width=420,height=560'); return false;"
+                            v-bind:disabled="user_accessing" v-show="isEnglish" >
+                            <span>Forgot password?</span>
+                        </a>
+                        <a
+                            href="/forgot_password/ja" target="_blank" rel="noopener noreferrer" class="btn_alt"
+                            onclick="window.open('/forgot_password/ja', '', 'width=420,height=560'); return false;"
+                            v-bind:disabled="user_accessing" v-show="isJapanese" >
+                            <span>パスワードを忘れたら</span>
                         </a>
                     </form>
                 </div>
