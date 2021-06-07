@@ -31,6 +31,7 @@ class MailSession:
                 break
         self.created_datetime = datetime.now()
         self.sessions[self.id] = self
+        self.clean_sessions()  # temporary
 
     def __hash__(self):
         return self.id.__hash__()
@@ -40,6 +41,13 @@ class MailSession:
 
     def __repr__(self):
         return '%s(%s, %s)' % (self.__class__.__name__, self.id, self.user_name)
+
+    @classmethod
+    def clean_sessions(cls):
+        for key, session in cls.sessions.values():
+            session: 'MailSession'
+            if session.is_expired():
+                cls.sessions.pop(key)
 
     def is_expired(self) -> bool:
         return self.created_datetime - datetime.now() > timedelta(minutes=self.EXPIRE_MINUTES)
