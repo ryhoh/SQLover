@@ -196,19 +196,17 @@ def signup(
 ):
     if email == '' or email.count('@') != 1:
         return {'result': 'invalid_email'}
-
     if username == '' or len(username) < 4 or 30 < len(username) or not username.isalnum():
         return {'result': 'invalid_username'}
-
     if password == '' or len(password) < 8 or 60 < len(password) or not password.isascii():
         return {'result': 'invalid_password'}
-
     if password != password_confirm:
         return {'result': 'Passwords are not same.'}
 
     success = db.create_user(username, authorization.get_password_hash(password).encode(), email)
     if not success:
-        return PlainTextResponse('This username already used.\nこのユーザ名はすでに使われています。')
+        return PlainTextResponse('This username or email address is already used.\n\
+このユーザ名またはメールアドレスはすでに使われています。')
 
     SignupMailSession(username).send_mail(language, email)
     return PlainTextResponse('Verification mail has send. Please check it out.\n\
