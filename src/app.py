@@ -12,10 +12,8 @@ from fastapi.templating import Jinja2Templates
 import natsort
 import uvicorn
 
-import authorization
-from src import db, sandbox_db
-import judge
-from mail_session import ResetPasswordMailSession, SignupMailSession
+from src import authorization, db, sandbox_db, judge
+from src.mail_session import ResetPasswordMailSession, SignupMailSession
 
 
 app = FastAPI()

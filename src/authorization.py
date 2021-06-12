@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-import db
+from src import db
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")

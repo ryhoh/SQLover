@@ -4,7 +4,7 @@ import requests
 import string
 from typing import Dict
 
-import db
+from src import db
 
 
 MAILGUN_API_KEY = db.read_mailgun_api_key()
