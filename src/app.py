@@ -13,9 +13,8 @@ import natsort
 import uvicorn
 
 import authorization
-import db
+from src import db, sandbox_db
 import judge
-import sandbox_db
 from mail_session import ResetPasswordMailSession, SignupMailSession
 
 
@@ -35,9 +34,9 @@ sandbox_psql_version = ' '.join(sandbox_db.read_version().split()[:2])  # 'Postg
 # End points
 @app.get('/')
 async def root(request: Request):
-    await request.send_push_promise('static/style_template.css')
-    await request.send_push_promise('static/style.css')
-    await request.send_push_promise('static/main.js')
+    await request.send_push_promise('../static/style_template.css')
+    await request.send_push_promise('../static/style.css')
+    await request.send_push_promise('../static/main.js')
     return templates.TemplateResponse(
         "index.html",
         {

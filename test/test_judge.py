@@ -1,7 +1,7 @@
 import unittest
 
-from judge import judge
-import sandbox_db
+from src.judge import judge
+from src import sandbox_db
 
 
 class JudgeTestCase(unittest.TestCase):
