@@ -11,6 +11,18 @@ const selectSentence = function(lang, dict) {
     return null;
 };
 
+const setCurrentProblem = function(data) {
+    this.tables = data.tables;
+    if (this.language === 'ja' && data.description_jp) {
+        this.description = data.description_jp;
+    } else {
+        this.description = data.description;
+    }
+    this.expected_records = data.expected.records;
+    this.expected_columns = data.expected.columns;
+    this.order_sensitive = data.expected.order_sensitive;
+}
+
 const setUserData = function(response) {
     this.token = response.data.access_token;
     this.user_clear_num = response.data.cleared_num;
@@ -86,6 +98,9 @@ new Vue({
         problem_list_loding: false,
         problem_num: null,
         cleared_flags: null,
+
+        // Problems cache Variables
+        problems_cache: {},
 
         // Selected Problem variables
         selected_problem: null,
@@ -268,25 +283,20 @@ new Vue({
                 return;  // '-- Please choose problem --'
 
             new_problem = mb_substr(new_problem, 1, new_problem.length)  // Remove 🏆
+            if (new_problem in this.problems_cache) {  // if cache available
+                setCurrentProblem.bind(this)(this.problems_cache[new_problem]);
+                return;
+            }
+
             this.problem_loding = true;
             axios
                 .get('/api/v1/problem', {
                     params: { problem_name: new_problem }
                 })
                 .then(response => {
-                    // Print new problem's data
-                    this.tables = response.data.tables;
-                    if (this.language === 'ja' && response.data.description_jp) {
-                        this.description = response.data.description_jp;
-                    } else {
-                        this.description = response.data.description;
-                    }
-                    this.expected_records = response.data.expected.records;
-                    this.expected_columns = response.data.expected.columns;
-                    this.order_sensitive = response.data.expected.order_sensitive;
-
-                    // Delete old problem's gabage
-                    wipeSql.bind(this)();
+                    setCurrentProblem.bind(this)(response.data);  // Print new problem
+                    this.problems_cache[new_problem] = response.data;  // Cache problem
+                    wipeSql.bind(this)();  // Delete old problem's gabage
                 })
                 .catch(error => {
                     console.error(error.response);
