@@ -1,59 +1,68 @@
+/* template */
+@charset "UTF-8";
+
 :root {
-    --ac: rgb(102, 176, 106);
-    --wa: rgb(255, 167,  38);
-    
-    --h1: rgb(186,  28,  88);
-    --h2: var(--h1);
-    --h2-sub: rgb(234, 76, 136);
+    --prime-color:  rgb(186, 28,  88);
+    --second-color: rgb(234, 76, 136);
 
     --prepared-th-bg:   rgb(108, 122, 137);
     --prepared-td-bg-0: rgb(172, 186, 201);
     --prepared-td-bg-1: rgb(197, 211, 226);
 
-    --wrong-th-bg:   rgb(255, 167,  38);
-    --wrong-td-bg-0: rgb(255, 224, 130);
-    --wrong-td-bg-1: rgb(255, 245, 157);
-
     --accepted-th-bg:   rgb(102, 176, 106);
     --accepted-td-bg-0: rgb(197, 225, 165);
 	--accepted-td-bg-1: rgb(230, 238, 156);
+
+    --wrong-th-bg:   rgb(255, 167,  38);
+    --wrong-td-bg-0: rgb(255, 224, 130);
+    --wrong-td-bg-1: rgb(255, 245, 157);
 
     /* same to accepted */
     --expected-th-bg:   var(--accepted-th-bg  );
     --expected-td-bg-0: var(--accepted-td-bg-0);
     --expected-td-bg-1: var(--accepted-td-bg-1);
 
-    --header-thickness: 48px;
+    /* result icon */
+    --ac: var(--accepted-th-bg);
+    --wa: var(--wrong-th-bg);
+
+	--color-caution: #F57F17;
+	--color-warn: #c0392b;
+
+    --header-thickness: 48px;  /* fixme */
 }
 
-/* タグのスタイルのオーバーライド */
-h1 {
-    border-color: var(--h1);
-}
 
-h2 {
-    border-color: var(--h2);
-}
-
-table {
-	border-spacing: 3px;
-}
-
-/* タグに対する装飾 */
 body {
+	font-family: "Noto Sans JP", "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", sans-serif;
+	color: #111;
+	background-color: #FFF;
     margin: 0px;
 }
 
+/* Header */
 header {
     position: fixed;
     width: 100%;
     height: var(--header-thickness);
-    background-color: var(--h1);
+    background-color: var(--prime-color);
     color: #FFF;
     border-left: 0px;
 }
 
-header h1 {
+h1, h2, h3, h4, h5, h6 {
+	padding-left: 0.5em;
+}
+
+h2, h4, h6 {
+	border-left: 0.5em solid var(--prime-color);
+}
+
+h1 {
+    border-left: 0.5em solid var(--prime-color);
+	display: inline;
+    /* "ヒラギノ丸ゴ Pro" の方が綺麗 */
+    font-family: "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", "Noto Sans JP", sans-serif;
     border-width: 0px;
     padding-right: 32px;
 }
@@ -73,31 +82,23 @@ header h2 {
     color: #FFF;
 }
 
-header h2:hover {
-    background-color: var(--h2-sub);
-}
-
 header .btn, header .btn_alt {
     display: inline-block;
     text-align: center;
-    padding-bottom: 4px;
+    font-size: 14px;
     padding-left: 4px;
     padding-right: 4px;
     text-decoration: none;
 }
 
 header .btn {
-    margin-top 5px;
-    height: 20px;
-    width: 84px;
+    width: 56px;
     background-color: #FFF;
-    color: var(--h2-sub);
+    color: var(--second-color);
 }
 
 header .btn_alt {
-    height: 20px;
-    --width: 120px;
-    background-color: var(--h2-sub);
+    background-color: var(--second-color);
     color: #FFF;
 }
 
@@ -106,7 +107,7 @@ header .btn:hover, header .btn_alt:hover {
 }
 
 header label {
-    background-color: var(--h1);
+    background-color: var(--prime-color);
 }
 
 main {
@@ -114,7 +115,34 @@ main {
     margin-left: 8px;
 }
 
+/* Table */
+table {
+	border-spacing: 3px;
+}
+
+th, td {
+	padding: 5px;
+}
+
+th {
+	color: #FAFAFA;
+	font-size: 17px;
+	padding: 4px;
+}
+
 /* -- クラスごとの設定 -- */
+
+/* Text Color */
+.caution {
+	color: var(--color-caution);
+	font-weight: 800;
+}
+
+.warn {
+	color: var(--color-warn);
+	font-weight: 800;
+}
+
 /* 配置 */
 .float_pane {
     float: left;
@@ -218,6 +246,8 @@ main {
 
 .code {
     background-color: lightgray;
+    font-family: "Courier";
+    font-size: 15px;
 }
 
 .comment {
