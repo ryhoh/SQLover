@@ -7,10 +7,10 @@
     ");"
   ],
   "description": [
-    "Extract all students' name whose age is 18."
+    "Extract all students' name whose age is NOT 16."
   ],
   "description_jp": [
-    "年齢が18歳の生徒の名前を出力しましょう。"
+    "年齢が16歳でない生徒の名前を出力しましょう。"
   ],
   "tables": [
     {
@@ -27,7 +27,6 @@
   "expected": {
     "columns": ["name"],
     "records": [
-      ["Alice"],
       ["Bob"],
       ["Charlie"],
       ["David"]

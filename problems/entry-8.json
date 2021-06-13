@@ -1,0 +1,43 @@
+{
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16),",
+    "    age int,",
+    "    gender char(1)",
+    ");"
+  ],
+  "description": [
+    "Extract all students' (name, age, gender)",
+    "who is younger than 22 and female (gender = \"F\")."
+  ],
+  "description_jp": [
+    "年齢が22歳未満かつ女性（gender が\"F\"）生徒の、",
+    "名前, 年齢と性別を取り出してください。"
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name", "age", "gender"],
+      "records": [
+        [1, "Alice", 16, "F"],
+        [2, "Bob", 18, "M"],
+        [3, "Charlie", 15, "M"],
+        [4, "David", 23, "M"],
+        [5, "Emilia", 29, "F"],
+        [6, "François", 24, "M"],
+        [7, "Günter", 16, "M"],
+        [8, "Hàoyǔ", 21, "M"],
+        [9, "Iori", 20, "F"]
+      ]
+    }
+  ],
+  "expected": {
+    "columns": ["name", "age", "gender"],
+    "records": [
+      ["Alice", 16, "F"],
+      ["Iori", 20, "F"]
+    ],
+    "order_sensitive": false
+  }
+}

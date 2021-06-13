@@ -1,0 +1,42 @@
+{
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16),",
+    "    age int,",
+    "    gender char(1)",
+    ");"
+  ],
+  "description": [
+    "Extract students' name whose name DOSEN'T include 'i'."
+  ],
+  "description_jp": [
+    "名前に 'i' を含まない生徒の名前を取り出してください。"
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name", "age", "gender"],
+      "records": [
+        [1, "Alice", 16, "F"],
+        [2, "Bob", 18, "M"],
+        [3, "Charlie", 15, "M"],
+        [4, "David", 23, "M"],
+        [5, "Emilia", 29, "F"],
+        [6, "François", 24, "M"],
+        [7, "Günter", 16, "M"],
+        [8, "Hàoyǔ", 21, "M"],
+        [9, "Iori", 20, "F"]
+      ]
+    }
+  ],
+  "expected": {
+    "columns": ["name"],
+    "records": [
+      ["Bob"],
+      ["Günter"],
+      ["Hàoyǔ"]
+    ],
+    "order_sensitive": false
+  }
+}
