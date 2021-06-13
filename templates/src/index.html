@@ -149,7 +149,7 @@
                                     <span v-show="isEnglish">Description from Writer</span>
                                     <span v-show="isJapanese">問題についての説明</span>
                                 </span>
-                                <span v-for="(sentence, idx) in description" key="idx">
+                                <span v-for="(sentence, idx) in getDescription" key="idx">
                                     ${ sentence }
                                     <br>
                                 </span>

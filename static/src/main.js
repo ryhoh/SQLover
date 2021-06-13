@@ -13,11 +13,8 @@ const selectSentence = function(lang, dict) {
 
 const setCurrentProblem = function(data) {
     this.tables = data.tables;
-    if (this.language === 'ja' && data.description_jp) {
-        this.description = data.description_jp;
-    } else {
-        this.description = data.description;
-    }
+    this.description_jp = data.description_jp;
+    this.description = data.description;
     this.expected_records = data.expected.records;
     this.expected_columns = data.expected.columns;
     this.order_sensitive = data.expected.order_sensitive;
@@ -105,6 +102,7 @@ new Vue({
         // Selected Problem variables
         selected_problem: null,
         description: null,
+        description_jp: null,
         tables: null,
         expected_records: null,
         expected_columns: null,
@@ -133,6 +131,14 @@ new Vue({
         isJapanese: function() {
             return this.language === 'ja';
         },
+
+        getDescription: function() {
+            if (this.language === 'ja' && this.description_jp) {
+                return this.description_jp;
+            } else {
+                return this.description;
+            }
+        }
     },
 
     methods: {
