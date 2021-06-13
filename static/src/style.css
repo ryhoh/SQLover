@@ -92,7 +92,6 @@ header .btn, header .btn_alt {
 }
 
 header .btn {
-    width: 56px;
     background-color: #FFF;
     color: var(--second-color);
 }
