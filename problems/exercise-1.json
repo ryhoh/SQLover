@@ -33,18 +33,18 @@
       "name": "LivesIn",
       "columns": ["id", "place"],
       "records": [
-          [1, "Detroit"],
-          [2, "Birmingham"],
-          [3, "Canberra"],
-          [4, "Birmingham"]
+        [1, "Detroit"],
+        [2, "Birmingham"],
+        [3, "Canberra"],
+        [4, "Birmingham"]
       ]
     }
   ],
   "expected": {
     "columns": ["name", "place"],
     "records": [
-        ["Alice", "Birmingham"],
-        ["Charlie", "Birmingham"]
+      ["Alice", "Birmingham"],
+      ["Charlie", "Birmingham"]
     ],
     "order_sensitive": true
   }

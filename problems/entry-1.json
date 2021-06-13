@@ -1,40 +1,40 @@
 {
-    "DDL": [
-      "create table Students (",
-      "    id int primary key,",
-      "    name varchar(16),",
-      "    age int",
-      ");"
-    ],
-    "description": [
-        "Extract all students' names.",
-        "(We need names only!)"
-    ],
-    "description_jp": [
-        "全生徒の名前を出力しましょう。",
-        "（必要なのは名前「だけ」です）"
-    ],
-    "tables": [
-      {
-        "name": "Students",
-        "columns": ["id", "name", "age"],
-        "records": [
-          [1, "Alice", 16],
-          [2, "Bob", 18],
-          [3, "Charlie", 15],
-          [4, "David", 23]
-        ]
-      }
-    ],
-    "expected": {
-      "columns": ["name"],
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16),",
+    "    age int",
+    ");"
+  ],
+  "description": [
+    "Extract all students' names.",
+    "(We need names only!)"
+  ],
+  "description_jp": [
+    "全生徒の名前を出力しましょう。",
+    "（必要なのは名前「だけ」です）"
+  ],
+  "tables": [
+    {
+      "name": "Students",
+      "columns": ["id", "name", "age"],
       "records": [
-        ["Alice"],
-        ["Bob"],
-        ["Charlie"],
-        ["David"]
-      ],
-      "order_sensitive": false
+        [1, "Alice", 16],
+        [2, "Bob", 18],
+        [3, "Charlie", 15],
+        [4, "David", 23]
+      ]
     }
+  ],
+  "expected": {
+    "columns": ["name"],
+    "records": [
+      ["Alice"],
+      ["Bob"],
+      ["Charlie"],
+      ["David"]
+    ],
+    "order_sensitive": false
   }
+}
   

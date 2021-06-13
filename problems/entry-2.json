@@ -1,37 +1,37 @@
 {
-    "DDL": [
-      "create table Students (",
-      "    id int primary key,",
-      "    name varchar(16),",
-      "    age int",
-      ");"
-    ],
-    "description": [
-        "Extract all students who are younger than 20 years."
-    ],
-    "description_jp": [
-        "年齢が20歳未満の全生徒を取り出してください。"
-    ],
-    "tables": [
-      {
-        "name": "Students",
-        "columns": ["id", "name", "age"],
-        "records": [
-          [1, "Alice", 16],
-          [2, "Bob", 18],
-          [3, "Charlie", 15],
-          [4, "David", 23]
-        ]
-      }
-    ],
-    "expected": {
+  "DDL": [
+    "create table Students (",
+    "    id int primary key,",
+    "    name varchar(16),",
+    "    age int",
+    ");"
+  ],
+  "description": [
+    "Extract all students who are younger than 20 years."
+  ],
+  "description_jp": [
+    "年齢が20歳未満の全生徒を取り出してください。"
+  ],
+  "tables": [
+    {
+      "name": "Students",
       "columns": ["id", "name", "age"],
       "records": [
         [1, "Alice", 16],
         [2, "Bob", 18],
-        [3, "Charlie", 15]
-      ],
-      "order_sensitive": false
+        [3, "Charlie", 15],
+        [4, "David", 23]
+      ]
     }
+  ],
+  "expected": {
+    "columns": ["id", "name", "age"],
+    "records": [
+      [1, "Alice", 16],
+      [2, "Bob", 18],
+      [3, "Charlie", 15]
+    ],
+    "order_sensitive": false
   }
+}
   
