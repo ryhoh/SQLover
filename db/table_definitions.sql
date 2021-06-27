@@ -82,7 +82,7 @@ CREATE UNIQUE INDEX results_problem_id_user_id_idx ON public.results USING btree
 
 INSERT INTO public.credential (value,"type") VALUES
 	 ('cf6ecd429e05b2ce17a66b4e06c1e467ac335bae0962c516f42a8bdb69c754d1','JWT_secret'),
-	 ('a5e98f4f1e16ed6400e62cdc0c955132-1d8af1f4-d3c77544','mailgun_api_key');
+	 (API_KEY_HERE,'mailgun_api_key');
 	 
 INSERT INTO public.problems ("name") VALUES
 	 ('entry-1'),
