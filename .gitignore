@@ -3,3 +3,9 @@
 __pycache__/*
 venv/*
 answers/*
+db/psql/*
+db/sandbox_db/*
+node_modules/*
+
+*.pyc
+
