@@ -58,7 +58,7 @@ class MailSession:
     @staticmethod
     def _call_api_for_send_mail(sender_name: str, to: str, subject: str, text: str):
         return requests.post(  # use mailgun api
-            "https://api.mailgun.net/v3/sandbox8b306743e1324385b99e843fac6f002b.mailgun.org/messages",
+            "https://api.mailgun.net/v3/sandbox04dd3ae9006542a684d58aeb5ee761ea.mailgun.org/messages",
             auth=("api", MAILGUN_API_KEY),
             data={
                 "from": sender_name,
