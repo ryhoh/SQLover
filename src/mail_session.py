@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import os
 import random
 import requests
 import string
@@ -7,7 +8,7 @@ from typing import Dict
 from src import db
 
 
-MAILGUN_API_KEY = db.read_mailgun_api_key()
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY') or 'TEST_API_KEY_HERE'
 # APP_DOMAIN = 'https://localhost:8000'
 APP_DOMAIN = 'https://sqlabo.herokuapp.com'
 

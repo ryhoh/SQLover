@@ -21,19 +21,6 @@ def read_JWT_secret() -> str:
             return res[0]
 
 
-def read_mailgun_api_key() -> str:
-    """
-    Read Mailgun API key
-
-    :return: Mailgun API key
-    """
-    with psycopg2.connect(DATABASE) as conn:
-        with conn.cursor() as cur:
-            cur.execute("select value from credential where type = 'mailgun_api_key';")
-            res: List[str] = cur.fetchone()
-            return res[0]
-
-
 def create_user(username: str, password: bytes, email: str) -> bool:
     """
     Create new user
