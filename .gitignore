@@ -1,5 +1,9 @@
 .*
 .idea/*
-__pycache__/*
+*/__pycache__/*
 venv/*
 answers/*
+db/secret_definitions.sql
+db/psql
+db/sandbox_db
+node_modules
