@@ -17,12 +17,14 @@ class Result:
             has_error: bool,
             error_message: str = None,
             columns: List[str] = None,
-            records: List[Tuple[Any]] = None
+            records: List[Tuple[Any]] = None,
+            exec_ms: float = None,
     ):
         self.has_error = has_error
         self.error_message = error_message
         self.columns = columns
         self.records = records
+        self.exec_ms = exec_ms
 
 
 class IllegalCommandError(Exception):
@@ -58,6 +60,27 @@ def sanitize(query: str) -> str:
     return query.split(';')[0]
 
 
+def is_explaining(query: str) -> bool:
+    """
+    True if query starts with 'EXPLAIN'
+
+    :param query: Submitted query
+    :return: bool
+    """
+    first_word: str = query.split(';')[0].split()[0].lower()
+    return first_word == 'explain'
+
+
+def extract_exec_ms_from_QueryPlan(table: List[List[str]]) -> float:
+    for row in table:
+        row: List[str]
+        content = row[0]
+        elm = content.split()
+        if elm[0] == 'Execution':
+            return float(elm[2])
+    raise ValueError('execution time not exists in', table)
+
+
 def execute(
         ddl: Union[str, List[str]],
         tables: List[Dict[str, Any]],
@@ -72,6 +95,7 @@ def execute(
     :return: 実行結果
     """
     # todo docstringを英語化
+    exec_ms = None
     with psycopg2.connect(SANDBOX_DB) as conn:
         try:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
@@ -100,10 +124,15 @@ def execute(
                 cur.execute(query)  # Don't care sql-injection because this is an independent DB.
                 result_columns = [col.name for col in cur.description]
                 result_records = cur.fetchall()
+
+                # Time check
+                if not is_explaining(query):
+                    cur.execute('EXPLAIN ANALYSE ' + query)
+                    exec_ms = extract_exec_ms_from_QueryPlan(cur.fetchall())
         except (psycopg2.ProgrammingError, IllegalCommandError) as e:
             return Result(has_error=True, error_message=str(e))
         finally:  # prepare for next
             conn.rollback()
 
     result_records = [tuple(record) for record in result_records]
-    return Result(has_error=False, columns=result_columns, records=result_records)
+    return Result(has_error=False, columns=result_columns, records=result_records, exec_ms=exec_ms)

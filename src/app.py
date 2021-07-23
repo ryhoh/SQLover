@@ -277,6 +277,7 @@ def execute_answer(problem_name: str, answer: str) -> Dict[str, Any]:
         "wrong_line": wrong_line,
         "answer_columns": result.columns,
         "answer_records": result.records,
+        "exec_ms": result.exec_ms,
     }
 
 
