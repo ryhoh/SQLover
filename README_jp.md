@@ -38,4 +38,4 @@
 
 ---
 
-Copyright (c) 2021 Tetsuya Hori a.k.a. ryhoh / shirosha2
+Copyright (c) 2021 a.k.a. ryhoh / shirosha2
