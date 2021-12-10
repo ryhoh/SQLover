@@ -21,13 +21,16 @@ app.mount("/api/problems", StaticFiles(directory="problems"), name="problems")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# About problems...
 problems_list: List[str] = natsort.natsorted(
     name.removeprefix('problems/').removesuffix('.json')
     for name in glob.glob('problems/*.json', recursive=False)
 )
 problems_num = len(problems_list)
-sandbox_psql_version = ' '.join(sandbox_db.read_version().split()[:2])  # 'PostgreSQL XX.X'
+problems_type = natsort.natsorted(list(set(name.split('-')[0] for name in problems_list)))
 
+# SQL Runtime
+sandbox_psql_version = ' '.join(sandbox_db.read_version().split()[:2])  # 'PostgreSQL XX.X'
 
 # End points
 @app.get('/')
@@ -149,7 +152,11 @@ def get_problem(problem_name: str):
 
 @app.get('/api/v1/problem_list')
 async def get_problem_list():
-    return {'problems': problems_list}
+    return {
+        'problems': problems_list,
+        # 'problems_by_type': problems_by_type,
+        'problems_type': problems_type,
+    }
 
 
 @app.get('/api/v1/info')

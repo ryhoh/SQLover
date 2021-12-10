@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <div id="vue_app" class="container">
@@ -305,6 +306,19 @@
                 <dd v-show="isEnglish">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
                 <dd v-show="isJapanese">解答にエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
             </dl>
+
+            <div v-show="user_info === 'loginned'">
+                <hr>
+                <h2 v-show="isEnglish">Progress</h2>
+                <h2 v-show="isJapanese">進捗</h2>
+                <svg id="heatmap"></svg>
+                <div id="tooltip" style="opacity: 0;">
+                    <p>
+                        <span id="tooltip_ac"></span>
+                        <span id="tooltip_value"></span>
+                    </p>
+                </div>
+            </div>
 
             <hr>
 

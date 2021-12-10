@@ -85,7 +85,8 @@ INSERT INTO public.problems ("name") VALUES
 	 ('sample-1');
 	 
 INSERT INTO public.users (name,passwd,email,is_active) VALUES
-	 ('testuser', decode(E'$2b$12$0qLWitw/XJyqf/j/1D42/uVMEoqmkgQfFu84OUjhqJ2eELtQC7S1e', 'escape'),'test@shirosha2.example.com',true);
+	-- testuser, password
+	 ('testuser', decode(E'$2b$12$0qLWitw/XJyqf/j/1D42/uVMEoqmkgQfFu84OUjhqJ2eELtQC7S1e', 'escape'),'test@example.recery.tk',true);
 
 
 --------------------

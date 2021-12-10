@@ -1,1 +1,289 @@
-@charset "UTF-8";:root{--prime-color:rgb(186, 28,  88);--second-color:rgb(234, 76, 136);--prepared-th-bg:rgb(108, 122, 137);--prepared-td-bg-0:rgb(172, 186, 201);--prepared-td-bg-1:rgb(197, 211, 226);--accepted-th-bg:rgb(102, 176, 106);--accepted-td-bg-0:rgb(197, 225, 165);--accepted-td-bg-1:rgb(230, 238, 156);--wrong-th-bg:rgb(255, 167,  38);--wrong-td-bg-0:rgb(255, 224, 130);--wrong-td-bg-1:rgb(255, 245, 157);--expected-th-bg:var(--accepted-th-bg  );--expected-td-bg-0:var(--accepted-td-bg-0);--expected-td-bg-1:var(--accepted-td-bg-1);--ac:var(--accepted-th-bg);--wa:var(--wrong-th-bg);--color-caution:#F57F17;--color-warn:#c0392b;--header-thickness:48px}body{font-family:"Noto Sans JP","ヒラギノ丸ゴ Pro","Hiragino Maru Gothic Pro",sans-serif;color:#111;background-color:#fff;margin:0}header{position:fixed;width:100%;height:var(--header-thickness);background-color:var(--prime-color);color:#fff;border-left:0}h1,h2,h3,h4,h5,h6{padding-left:.5em}h2,h4,h6{border-left:.5em solid var(--prime-color)}h1{border-left:.5em solid var(--prime-color);display:inline;font-family:"ヒラギノ丸ゴ Pro","Hiragino Maru Gothic Pro","Noto Sans JP",sans-serif;border-width:0;padding-right:32px}header h1 a{color:#fff;user-select:none;text-decoration:none}header h2{margin-top:0;padding:6px;border-width:0;width:120px;text-align:center;color:#fff}header .btn,header .btn_alt{display:inline-block;text-align:center;font-size:14px;padding-left:4px;padding-right:4px;text-decoration:none}header .btn{background-color:#fff;color:var(--second-color)}header .btn_alt{background-color:var(--second-color);color:#fff}header .btn:hover,header .btn_alt:hover{cursor:pointer}header label{background-color:var(--prime-color)}main{padding-top:var(--header-thickness);margin-left:8px}table{border-spacing:3px}td,th{padding:5px}th{color:#fafafa;font-size:17px;padding:4px}.caution{color:var(--color-caution);font-weight:800}.warn{color:var(--color-warn);font-weight:800}.float_pane{float:left;width:480px;margin-right:20px}.float_end{clear:left}.centering{margin-left:auto;margin-right:auto}.sql_area{background-color:#2c3e50;color:#fff;font-family:Courier;font-size:11pt;min-height:8em;min-width:480px}.sql_area::placeholder{color:#ccc}.number{text-align:right}.result_icon{font-family:Courier;color:#fff;font-weight:600;padding:2px 4px;border-radius:4px;margin-top:8px;user-select:none}.result_icon.AC{background:var(--ac)}.result_icon.PE,.result_icon.TLE,.result_icon.WA{background:var(--wa)}.prepared th{background-color:var(--prepared-th-bg)}.prepared tr.bg0 td{background-color:var(--prepared-td-bg-0)}.prepared tr.bg1 td{background-color:var(--prepared-td-bg-1)}.expected th{background-color:var(--expected-th-bg)}.expected tr.bg0 td{background-color:var(--expected-td-bg-0)}.expected tr.bg1 td{background-color:var(--expected-td-bg-1)}.AC th{background-color:var(--accepted-th-bg)}.AC tr.bg0 td{background-color:var(--accepted-td-bg-0)}.AC tr.bg1 td{background-color:var(--accepted-td-bg-1)}.WA th{background-color:var(--wrong-th-bg)}.WA tr.bg0 td{background-color:var(--wrong-td-bg-0)}.WA tr.bg1 td{background-color:var(--wrong-td-bg-1)}.code{background-color:#d3d3d3;font-family:Courier;font-size:15px}.comment{display:inline-block;margin:0;padding:.5em;border:solid #d3d3d3 3px}dd{margin-bottom:1.5em}
+/* template */
+@charset "UTF-8";
+
+:root {
+    --prime-color:  rgb(186, 28,  88);
+    --second-color: rgb(234, 76, 136);
+
+    --prepared-th-bg:   rgb(108, 122, 137);
+    --prepared-td-bg-0: rgb(172, 186, 201);
+    --prepared-td-bg-1: rgb(197, 211, 226);
+
+    --accepted-th-bg:   rgb(102, 176, 106);
+    --accepted-td-bg-0: rgb(197, 225, 165);
+	--accepted-td-bg-1: rgb(230, 238, 156);
+
+    --wrong-th-bg:   rgb(255, 167,  38);
+    --wrong-td-bg-0: rgb(255, 224, 130);
+    --wrong-td-bg-1: rgb(255, 245, 157);
+
+    /* same to accepted */
+    --expected-th-bg:   var(--accepted-th-bg  );
+    --expected-td-bg-0: var(--accepted-td-bg-0);
+    --expected-td-bg-1: var(--accepted-td-bg-1);
+
+    /* result icon */
+    --ac: var(--accepted-th-bg);
+    --wa: var(--wrong-th-bg);
+
+	--color-caution: #F57F17;
+	--color-warn: #c0392b;
+
+    --header-thickness: 48px;  /* fixme */
+}
+
+
+body {
+	font-family: "Noto Sans JP", "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", sans-serif;
+	color: #111;
+	background-color: #FFF;
+    margin: 0px;
+}
+
+/* Header */
+header {
+    position: fixed;
+    width: 100%;
+    height: var(--header-thickness);
+    background-color: var(--prime-color);
+    color: #FFF;
+    border-left: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	padding-left: 0.5em;
+}
+
+h2, h4, h6 {
+	border-left: 0.5em solid var(--prime-color);
+}
+
+h1 {
+    border-left: 0.5em solid var(--prime-color);
+	display: inline;
+    /* "ヒラギノ丸ゴ Pro" の方が綺麗 */
+    font-family: "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", "Noto Sans JP", sans-serif;
+    border-width: 0px;
+    padding-right: 32px;
+}
+
+header h1 a {
+    color: #FFF;
+    user-select: none;
+    text-decoration: none;
+}
+
+header h2 {
+    margin-top: 0px;
+    padding: 6px;
+    border-width: 0px;
+    width: 120px;
+    text-align: center;
+    color: #FFF;
+}
+
+header .btn, header .btn_alt {
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 4px;
+    padding-right: 4px;
+    text-decoration: none;
+}
+
+header .btn {
+    background-color: #FFF;
+    color: var(--second-color);
+}
+
+header .btn_alt {
+    background-color: var(--second-color);
+    color: #FFF;
+}
+
+header .btn:hover, header .btn_alt:hover {
+    cursor: pointer;
+}
+
+header label {
+    background-color: var(--prime-color);
+}
+
+main {
+    padding-top: var(--header-thickness);
+    margin-left: 8px;
+}
+
+/* Table */
+table {
+	border-spacing: 3px;
+}
+
+th, td {
+	padding: 5px;
+}
+
+th {
+	color: #FAFAFA;
+	font-size: 17px;
+	padding: 4px;
+}
+
+/* -- クラスごとの設定 -- */
+
+/* Text Color */
+.caution {
+	color: var(--color-caution);
+	font-weight: 800;
+}
+
+.warn {
+	color: var(--color-warn);
+	font-weight: 800;
+}
+
+/* 配置 */
+.float_pane {
+    float: left;
+    width: 480px;
+    margin-right: 20px;
+}
+
+.float_end {
+    clear: left;
+}
+
+.centering {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sql_area {
+    background-color: #2c3e50;
+    color: white;
+    font-family: Courier;
+    font-size: 11pt;
+    min-height: 8em;
+    min-width: 480px;
+}
+
+.sql_area::placeholder{
+    color:#ccc;
+}
+
+/* 表 */
+.number {
+    text-align: right;
+}
+
+/* 実行結果関係 */
+.result_icon {
+    font-family: "Courier";
+    color: #FFF;
+    font-weight: 600;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 8px;
+    user-select: none;
+}
+
+.result_icon.AC {
+    background: var(--ac);
+}
+
+.result_icon.WA, .result_icon.TLE, .result_icon.PE {
+    background: var(--wa);
+}
+
+.prepared th {
+	background-color: var(--prepared-th-bg);
+}
+
+.prepared tr.bg0 td {
+	background-color: var(--prepared-td-bg-0);
+}
+
+.prepared tr.bg1 td {
+	background-color: var(--prepared-td-bg-1);
+}
+
+.expected th {
+	background-color: var(--expected-th-bg);
+}
+
+.expected tr.bg0 td {
+	background-color: var(--expected-td-bg-0);
+}
+
+.expected tr.bg1 td {
+	background-color: var(--expected-td-bg-1);
+}
+
+.AC th, #tooltip_ac {
+	background-color: var(--accepted-th-bg);
+}
+
+.AC tr.bg0 td {
+	background-color: var(--accepted-td-bg-0);
+}
+
+.AC tr.bg1 td {
+	background-color: var(--accepted-td-bg-1);
+}
+
+.WA th {
+	background-color: var(--wrong-th-bg);
+}
+
+.WA tr.bg0 td {
+	background-color: var(--wrong-td-bg-0);
+}
+
+.WA tr.bg1 td {
+	background-color: var(--wrong-td-bg-1);
+}
+
+.code {
+    background-color: lightgray;
+    font-family: "Courier";
+    font-size: 15px;
+}
+
+.comment {
+    display: inline-block;
+    margin: 0px;
+    padding: 0.5em;
+    border: solid lightgray 3px;
+}
+
+dd {
+    margin-bottom: 1.5em;
+}
+
+#tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+  
+#tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+#tooltip_ac {
+    font-family: "Courier";
+    color: #FFF;
+    font-weight: 600;
+    font-size: larger;
+    border-radius: 4px;
+    margin-top: 8px;
+    user-select: none;
+}
