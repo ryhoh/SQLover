@@ -119,7 +119,7 @@
                     <h2 v-show="isEnglish">Tables</h2>
                     <h2 v-show="isJapanese">テーブル</h2>
                     <div style="display: flex;">
-                        <div v-for="table in tables" :key="table.name">
+                        <div v-for="table in problem.tables" :key="table.name">
                             <table style="margin: 4px;" class="prepared">
                                 <caption>${ table.name }</caption>
                                 <tr>
@@ -145,7 +145,7 @@
 
                         <!-- Description -->
                         <div class="comment">
-                            <p v-show="description" style="margin: 0;">
+                            <p v-show="problem.description" style="margin: 0;">
                                 <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
                                     <span v-show="isEnglish">Description from Writer</span>
                                     <span v-show="isJapanese">問題についての説明</span>
@@ -155,12 +155,12 @@
                                     <br>
                                 </span>
                                 <br>
-                                <span v-show="isEnglish">(Writer: ${ writer })</span>
-                                <span v-show="isJapanese">(作問者: ${ writer })</span>
+                                <span v-show="isEnglish">(Writer: ${ problem.writer })</span>
+                                <span v-show="isJapanese">(作問者: ${ problem.writer })</span>
                             </p>
                         </div>
 
-                        <p v-if="order_sensitive">
+                        <p v-if="problem.order_sensitive">
                             <span v-show="isEnglish">
                                 Be careful!
                                 This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
@@ -229,11 +229,11 @@
                             <caption style="white-space: nowrap" v-show="isEnglish">(Output)</caption>
                             <caption style="white-space: nowrap" v-show="isJapanese">(出力例)</caption>
                             <tr>
-                                <th v-for="col in expected_columns" :key="col">
+                                <th v-for="col in problem.expected.columns" :key="col">
                                     ${ col }
                                 </th>
                             </tr>
-                            <tr v-for="(record, idx) in expected_records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <tr v-for="(record, idx) in problem.expected.records" :key="idx" v-bind:class="'bg' + idx % 2">
                                 <td v-for="(cell, idx) in record" :key="idx" v-bind:class="!isNaN(cell) ? 'number' : ''">
                                     ${ cell }
                                 </td>

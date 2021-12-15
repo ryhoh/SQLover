@@ -182,12 +182,14 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
         elms[0] for elms in
         db.read_cleared_problem_from_result(user.username)
     )
-    cleared_flags = [problem in cleared_problems for problem in problems_list]
+    cleared_flags = {
+        problem: problem in cleared_problems for problem in problems_list
+    }
 
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        'cleared_num': sum(cleared_flags),
+        'cleared_num': sum(cleared_flags[problem] for problem in cleared_flags.keys()),
         'cleared_flags': cleared_flags,
     }
 

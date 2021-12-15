@@ -11,34 +11,14 @@ const selectSentence = function (lang, dict) {
   return null;
 };
 
-const setCurrentProblem = function (data) {
-  this.tables = data.tables;
-  this.description_jp = data.description_jp;
-  this.description = data.description;
-  this.expected_records = data.expected.records;
-  this.expected_columns = data.expected.columns;
-  this.order_sensitive = data.expected.order_sensitive;
-  this.writer = data.writer;
-}
-
 const setUserData = function (response) {
   this.token = response.data.access_token;
   this.user_clear_num = response.data.cleared_num;
   this.cleared_flags = response.data.cleared_flags;
   localStorage.setItem('user_name', this.user_name);
   localStorage.setItem('user_clear_num', this.user_clear_num);
-  localStorage.setItem('cleared_flags', this.cleared_flags.map(x => '' + Number(x)).join(''));  // 0010110100010...
+  localStorage.setItem('cleared_flags', JSON.stringify(this.cleared_flags));
   localStorage.setItem('token', this.token);
-};
-
-const wipeProblem = function () {
-  this.selected_problem = null;
-  this.description = null;
-  this.tables = null;
-  this.expected_records = null;
-  this.expected_columns = null;
-  this.order_sensitive = null;
-  this.writer = null;
 };
 
 const wipeSql = function () {
@@ -50,6 +30,26 @@ const wipeSql = function () {
   this.wrong_line = null;
   this.re_message = null;
 };
+
+const loadProblems = function () {
+  this.problem_list_loading = true;  // Load problem list
+    axios
+      .get('/api/v1/problem_list')
+      .then(response => {
+        this.problem_list = response.data.problems;
+        this.problem_num = this.problem_list.length;
+
+        // Visualization
+        if (this.cleared_flags !== null) {
+          this.heatmap(response.data, this.cleared_flags);
+        }
+      })
+      .catch(error => {
+        console.error(error.response);
+        this.problem_list_errored = true;
+      })
+      .finally(() => this.problem_list_loading = false);
+}
 
 // c.f. https://qiita.com/ka215/items/d059a78e29adef3978b5
 const mb_substr = function (str, begin, end) {
@@ -106,14 +106,8 @@ const vm = new Vue({
     problems_cache: {},
 
     // Selected Problem variables
+    problem: null,
     selected_problem: null,
-    description: null,
-    description_jp: null,
-    tables: null,
-    expected_records: null,
-    expected_columns: null,
-    order_sensitive: null,
-    writer: null,
     problem_errored: false,
     problem_loding: false,
 
@@ -141,10 +135,10 @@ const vm = new Vue({
     },
 
     getDescription: function () {
-      if (this.language === 'ja' && this.description_jp) {
-        return this.description_jp;
+      if (this.language === 'ja' && this.problem.description_jp) {
+        return this.problem.description_jp;
       } else {
-        return this.description;
+        return this.problem.description;
       }
     }
   },
@@ -220,7 +214,7 @@ const vm = new Vue({
           this.user_clear_num = response.data.cleared_num;
           this.cleared_flags = response.data.cleared_flags;
           localStorage.setItem('user_clear_num', this.user_clear_num);
-          localStorage.setItem('cleared_flags', this.cleared_flags.map(x => '' + Number(x)).join(''));  // 0010110100010...
+          localStorage.setItem('cleared_flags', JSON.stringify(this.cleared_flags));
         })
         .catch(error => {
           console.error(error.response);
@@ -231,26 +225,7 @@ const vm = new Vue({
           this.sql_submitting = false;
         });
 
-        setTimeout(() => {
-          this.problem_list_loading = true;  // Load problem list
-          axios
-            .get('/api/v1/problem_list')
-            .then(response => {
-              this.problem_list = response.data.problems;
-              this.problem_num = this.problem_list.length;
-
-              // Visualization
-              if (this.cleared_flags !== null) {
-                this.heatmap(response.data, this.cleared_flags);
-              }
-            })
-            .catch(error => {
-              console.error(error.response);
-              this.problem_list_errored = true;
-            })
-            .finally(() => this.problem_list_loading = false);
-          },
-          5000);
+        setTimeout(() => { loadProblems.bind(this)(); }, 5000);
     },
 
     login: function () {
@@ -265,6 +240,7 @@ const vm = new Vue({
           setTimeout(clearUserResult.bind(this), 5000);
           this.user_info = 'loginned';
           setUserData.bind(this)(response);
+          loadProblems.bind(this)();
           this.user_message = selectSentence(this.language, {
             'ja': 'ログインに成功しました!',
             'en': 'Successfully logined!',
@@ -307,7 +283,7 @@ const vm = new Vue({
     },
 
     addTrophyMark: function (problem_name, problem_idx) {
-      if (this.cleared_flags == null || !this.cleared_flags[problem_idx]) {
+      if (this.cleared_flags == null || !this.cleared_flags[problem_name]) {
         return '　' + problem_name;
       }
       return '🏆' + problem_name;
@@ -323,10 +299,18 @@ const vm = new Vue({
       const problem_type = problems.problems_type;
       const problem_progress = []
       for (let i = 0; i < problems.problems.length; ++i) {
-        problem_progress.push({
-          'name': problems.problems[i],
-          'cleared_flag': cleared_flags[i],
-        });
+        const name = problems.problems[i];
+        if (cleared_flags.hasOwnProperty(name)) {
+          problem_progress.push({
+            'name': name,
+            'cleared_flag': cleared_flags[name],
+          });
+        } else {
+          problem_progress.push({
+            'name': name,
+            'cleared_flag': false,
+          });
+        }
       }
       const max_length = problem_type.map((type_name) =>
         problem_progress.filter((x) => x.name.split('-')[0] === type_name).length
@@ -452,7 +436,7 @@ const vm = new Vue({
 
       new_problem = mb_substr(new_problem, 1, new_problem.length)  // Remove 🏆
       if (new_problem in this.problems_cache) {  // if cache available
-        setCurrentProblem.bind(this)(this.problems_cache[new_problem]);
+        this.problem = this.problems_cache[new_problem];
         return;
       }
 
@@ -462,7 +446,7 @@ const vm = new Vue({
           params: { problem_name: new_problem }
         })
         .then(response => {
-          setCurrentProblem.bind(this)(response.data);  // Print new problem
+          this.problem = response.data;
           this.problems_cache[new_problem] = response.data;  // Cache problem
           wipeSql.bind(this)();  // Delete old problem's gabage
         })
@@ -482,27 +466,11 @@ const vm = new Vue({
       if (localStorage.getItem('user_name')) this.user_name = localStorage.getItem('user_name');
       if (localStorage.getItem('user_clear_num')) this.user_clear_num = localStorage.getItem('user_clear_num');
       if (localStorage.getItem('cleared_flags')) {
-        this.cleared_flags = localStorage.getItem('cleared_flags').split('').map(x => Boolean(Number(x)));
+        this.cleared_flags = JSON.parse(localStorage.getItem('cleared_flags'));
       }
       if (localStorage.getItem('token')) this.token = localStorage.getItem('token');
     }
 
-    this.problem_list_loading = true;  // Load problem list
-    axios
-      .get('/api/v1/problem_list')
-      .then(response => {
-        this.problem_list = response.data.problems;
-        this.problem_num = this.problem_list.length;
-
-        // Visualization
-        if (this.cleared_flags !== null) {
-          this.heatmap(response.data, this.cleared_flags);
-        }
-      })
-      .catch(error => {
-        console.error(error.response);
-        this.problem_list_errored = true;
-      })
-      .finally(() => this.problem_list_loading = false);
+    loadProblems.bind(this)();
   },
 });
