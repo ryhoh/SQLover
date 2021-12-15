@@ -153,7 +153,10 @@
                                 <span v-for="(sentence, idx) in getDescription" key="idx">
                                     ${ sentence }
                                     <br>
+                                    <br>
                                 </span>
+                                <span v-show="isEnglish">(Writer: ${ writer })</span>
+                                <span v-show="isJapanese">(作問者: ${ writer })</span>
                             </p>
                         </div>
 

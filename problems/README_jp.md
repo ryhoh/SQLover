@@ -8,7 +8,7 @@
 
 ```json
 {
-  "DDL": [  // List of strings
+  "DDL": [  // 必須, 1行1文
     "create table Foo (",
     "    xxx varchar(256) primary key,",
     "    yyy varchar(256),",
@@ -16,16 +16,16 @@
     ");",
     "create table another ..."
   ],
-  "description": [
+  "description": [  // 必須
     "Hello!",
     "This is message from writer."
   ],
-  "description_jp": [  // Optional
+  "description_jp": [  // 任意
     "こんにちは。",
     "日本語の説明を書くこともできます。"
   ],
-  "tables": [  // List of tables
-    {  // Table information
+  "tables": [  // 必須，テーブルのリスト
+    {  // テーブル情報
       "name": "Name of Table",
       "columns": ["names", "of", "columns"],
       "records": [
@@ -33,13 +33,14 @@
       ]
     }
   ],
-  "expected": {  // Expected output
+  "expected": {  // 必須，期待される出力
     "columns": ["names", "of", "columns"],
     "records": [
         ["Hi!", "Foo", "Bar"]
     ],
-    "order_sensitive": false  // ORDER BY など、順序の一致を求めるなら true
-  }
+    "order_sensitive": false  // 必須，ORDER BY など、順序の一致を求めるなら true
+  },
+  "writer": "your_name_here"  // 必須
 }
 ```
 
@@ -85,7 +86,8 @@
         [4, "David"]
     ],
     "order_sensitive": false
-  }
+  },
+  "writer": "ryhoh"
 }
 ```
 

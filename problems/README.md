@@ -8,7 +8,7 @@ Each problem must be defined by JSON file like below.
 
 ```json
 {
-  "DDL": [  // List of strings
+  "DDL": [  // Required, List of strings
     "create table Foo (",
     "    xxx varchar(256) primary key,",
     "    yyy varchar(256),",
@@ -16,7 +16,7 @@ Each problem must be defined by JSON file like below.
     ");",
     "create table another ..."
   ],
-  "description": [
+  "description": [  // Required
     "Hello!",
     "This is message from writer."
   ],
@@ -24,7 +24,7 @@ Each problem must be defined by JSON file like below.
     "こんにちは。",
     "日本語の説明を書くこともできます。"
   ],
-  "tables": [  // List of tables
+  "tables": [  // Required, List of tables
     {  // Table information
       "name": "Name of Table",
       "columns": ["names", "of", "columns"],
@@ -33,13 +33,14 @@ Each problem must be defined by JSON file like below.
       ]
     }
   ],
-  "expected": {  // Expected output
+  "expected": {  // Required, Expected output
     "columns": ["names", "of", "columns"],
     "records": [
         ["Hi!", "Foo", "Bar"]
     ],
-    "order_sensitive": false  // true when using ORDER BY
-  }
+    "order_sensitive": false  // Required, true when using ORDER BY
+  },
+  "writer": "your_name_here"  // Required
 }
 ```
 
@@ -85,11 +86,12 @@ Example: This is a JSON of sample problem.
         [4, "David"]
     ],
     "order_sensitive": false
-  }
+  },
+  "writer": "ryhoh"
 }
 ```
 
-In this case, this table is given.
+In this case, this table will be given.
 
 Table: Students
 | id | name    |
@@ -99,7 +101,7 @@ Table: Students
 | 3  | Charlie |
 | 4  | David   |
 
-And the expected output will look like this. 
+And the expected output looks like below. 
 (This time, it is the same as the table we were given)
 
 | id | name    |
@@ -109,5 +111,5 @@ And the expected output will look like this.
 | 3  | Charlie |
 | 4  | David   |
 
-The user then writes the SQL code that would solve the problem.  
+The user then writes the SQL code which solves the problem.  
 > Of course, the answer is  "`select id, name from Students;`".

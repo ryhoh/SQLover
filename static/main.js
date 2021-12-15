@@ -18,6 +18,7 @@ const setCurrentProblem = function (data) {
   this.expected_records = data.expected.records;
   this.expected_columns = data.expected.columns;
   this.order_sensitive = data.expected.order_sensitive;
+  this.writer = data.writer;
 }
 
 const setUserData = function (response) {
@@ -37,13 +38,14 @@ const wipeProblem = function () {
   this.expected_records = null;
   this.expected_columns = null;
   this.order_sensitive = null;
+  this.writer = null;
 };
 
 const wipeSql = function () {
   this.sql = null;
   this.judged = false;
   this.result = null,
-    this.answer_columns = null;
+  this.answer_columns = null;
   this.answer_records = null;
   this.wrong_line = null;
   this.re_message = null;
@@ -111,6 +113,7 @@ const vm = new Vue({
     expected_records: null,
     expected_columns: null,
     order_sensitive: null,
+    writer: null,
     problem_errored: false,
     problem_loding: false,
 
