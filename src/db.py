@@ -16,7 +16,7 @@ def read_JWT_secret() -> str:
     """
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
-            cur.execute("select value from credential where type = 'JWT_secret';")
+            cur.execute("SELECT value FROM credential WHERE type = 'JWT_secret';")
             res: List[str] = cur.fetchone()
             return res[0]
 
@@ -34,8 +34,8 @@ def create_user(username: str, password: bytes, email: str) -> bool:
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    insert into users(name, passwd, email)
-                    values(%s, %s, %s);
+INSERT INTO users(name, passwd, email)
+VALUES (%s, %s, %s);
                 """, (username, password, email))
         except psycopg2.errors.UniqueViolation:
             return False
@@ -54,9 +54,9 @@ def read_user_from_user(name: str) -> Tuple[bytes, str, bool]:
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select passwd, email, is_active
-                from users
-                where name = %s;
+SELECT passwd, email, is_active
+  FROM users
+ WHERE name = %s;
             """, (name,))
 
             res: List[Union[memoryview, str, bool]] = cur.fetchone()
@@ -75,9 +75,9 @@ def read_username_from_user_by_email(email: str) -> str:
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select name
-                from users
-                where email = %s;
+SELECT name
+  FROM users
+ WHERE email = %s;
             """, (email,))
 
             res: List[str] = cur.fetchone()
@@ -98,9 +98,9 @@ def update_users_active(user_name: str):
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                update users
-                set is_active = true
-                where name = %s;
+UPDATE users
+   SET is_active = true
+ WHERE name = %s;
             """, (user_name,))
         conn.commit()
 
@@ -115,9 +115,9 @@ def update_users_password(user_name: str, password: bytes):
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                update users
-                set passwd = %s
-                where name = %s;
+UPDATE users
+   SET passwd = %s
+ WHERE name = %s;
             """, (password, user_name))
             conn.commit()
 
@@ -133,8 +133,8 @@ def create_problem(name: str) -> bool:
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    insert into problems(name)
-                    values(%s);
+INSERT INTO problems(name)
+VALUES (%s);
                 """, (name,))
         except psycopg2.errors.UniqueViolation:
             return False
@@ -153,13 +153,14 @@ def read_cleared_problem_from_result(user_name: str) -> List[Tuple[str]]:
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select problems.name
-                from results
-                join problems on results.problem_id = problems.id
-                where results.cleared and results.user_id = (
-                    select users.id from users
-                    where users.name = %s
-                );
+SELECT problems.name
+  FROM results
+  JOIN problems ON results.problem_id = problems.id
+ WHERE results.cleared AND results.user_id = (
+       SELECT users.id
+         FROM users
+        WHERE users.name = %s
+       );
             """, (user_name,))
             res: List[Tuple[str]] = cur.fetchall()
     return res
@@ -175,10 +176,14 @@ def read_cleared_num_from_result(user_name: str) -> int:
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                select sum(cleared::int) from results
-                where user_id = (select id from users
-                    where users.name = %s)
-                group by user_id;
+SELECT SUM(cleared::int)
+  FROM results
+ WHERE user_id = (
+       SELECT id
+         FROM users
+        WHERE users.name = %s
+       )
+ GROUP BY user_id;
             """, (user_name,))
             res: List[int] = cur.fetchone()
             if res is None:
@@ -202,16 +207,24 @@ def upsert_result(problem_name: str, user_name: str, category: str) -> bool:
         with conn.cursor() as cur:
             # Once cleared, results.cleared never get back to false.
             cur.execute("""
-                insert into results(problem_id, user_id, cleared)
-                values(
-                    (select problems.id from problems
-                    where problems.name = %s),
-                    (select users.id from users
-                    where users.name = %s),
-                    %s
-                )
-                on conflict on constraint results_problem_id_user_id_un do
-                update set cleared = (results.cleared or %s);
+INSERT INTO results(problem_id, user_id, cleared)
+VALUES (
+       (
+        SELECT problems.id
+          FROM problems
+         WHERE problems.name = %s
+       ),
+       (
+        SELECT users.id
+          FROM users
+         WHERE users.name = %s
+       ),
+       %s
+)
+ON CONFLICT
+ON CONSTRAINT results_problem_id_user_id_un
+DO
+UPDATE SET cleared = (results.cleared or %s);
             """, (problem_name, user_name, (category == 'AC'), (category == 'AC')))
         conn.commit()
     return True
@@ -225,8 +238,8 @@ def delete_inactivated_users():
     with psycopg2.connect(DATABASE) as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                delete
-                from users
-                where is_active = false;
+DELETE
+  FROM users
+ WHERE is_active = false;
             """)
         conn.commit()
