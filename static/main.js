@@ -289,6 +289,10 @@ const vm = new Vue({
       return '🏆' + problem_name;
     },
 
+    removeTrophyMark: function (problem_name) {
+      return mb_substr(problem_name, 1, problem_name.length);
+    },
+
     // d3.js visualization
     heatmap: function (problems, cleared_flags) {
       const width = 640;

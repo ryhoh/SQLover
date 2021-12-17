@@ -137,6 +137,13 @@
                     </div>
                 </div>
 
+                <div>
+                    <h2 v-show="isEnglish">ERD</h2>
+                    <h2 v-show="isJapanese">ER図</h2>
+                    <img v-show="isEnglish" v-bind:src="'er/' + removeTrophyMark(selected_problem) + '.png'" alt="ERD not available">
+                    <img v-show="isJapanese" v-bind:src="'er/' + removeTrophyMark(selected_problem) + '.png'" alt="ER図はありません">
+                </div>
+
                 <!-- Expected & Answer area -->
                 <div>
                     <div class="float_pane">
