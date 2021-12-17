@@ -19,7 +19,7 @@ from src.mail_session import ResetPasswordMailSession, SignupMailSession
 app = FastAPI()
 app.mount("/api/problems", StaticFiles(directory="problems"), name="problems")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/er", StaticFiles(directory="ER"), name="er")
+app.mount("/er", StaticFiles(directory="er"), name="er")
 templates = Jinja2Templates(directory="templates")
 
 # About problems...
