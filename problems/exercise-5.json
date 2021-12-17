@@ -1,23 +1,26 @@
 {
   "DDL": [
     "create table Students (",
-    "    student_id int primary key,",
+    "    id int primary key,",
     "    student_name varchar(16)",
     ");",
     "create table Teachers (",
-    "    teacher_id int primary key,",
+    "    id int primary key,",
     "    teacher_name varchar(16)",
     ");",
     "create table Classes (",
-    "    class_id int primary key,",
+    "    id int primary key,",
     "    class_name varchar(32),",
     "    class_room varchar(8),",
-    "    teacher_id int",
+    "    teacher_id int,",
+    "    foreign key(teacher_id) references Teachers(id)",
     ");",
     "create table ClassSessions (",
-    "    session_id int primary key,",
+    "    id int primary key,",
     "    student_id int,",
-    "    class_id int",
+    "    class_id int,",
+    "    foreign key(student_id) references Students(id),",
+    "    foreign key(class_id) references Classes(id)",
     ");"
   ],
   "description": [
@@ -31,7 +34,7 @@
   "tables": [
     {
       "name": "Students",
-      "columns": ["student_id", "student_name"],
+      "columns": ["id", "student_name"],
       "records": [
         [1, "Alice"],
         [2, "Bob"],
@@ -42,7 +45,7 @@
     },
     {
       "name": "Teachers",
-      "columns": ["teacher_id", "teacher_name"],
+      "columns": ["id", "teacher_name"],
       "records": [
         [1, "John"],
         [2, "Franklin"]
@@ -50,7 +53,7 @@
     },
     {
       "name": "Classes",
-      "columns": ["class_id", "class_name", "class_room", "teacher_id"],
+      "columns": ["id", "class_name", "class_room", "teacher_id"],
       "records": [
         [1, "Fundamental of Informatics", "A210", 1],
         [2, "Economics", "B302", 2],
@@ -60,7 +63,7 @@
     },
     {
       "name": "ClassSessions",
-      "columns": ["session_id", "student_id", "class_id"],
+      "columns": ["id", "student_id", "class_id"],
       "records": [
         [ 1, 1, 1],
         [ 2, 1, 2],

@@ -5,9 +5,9 @@
     "    name varchar(16) unique",
     ");",
     "create table LivesIn (",
-    "    id int primary key,",
+    "    student_id int primary key,",
     "    place varchar(16),",
-    "    foreign key(id) references Students(id)",
+    "    foreign key(student_id) references Students(id)",
     ");"
   ],
   "description": [
@@ -31,7 +31,7 @@
     },
     {
       "name": "LivesIn",
-      "columns": ["id", "place"],
+      "columns": ["student_id", "place"],
       "records": [
         [1, "Detroit"],
         [2, "Birmingham"],
