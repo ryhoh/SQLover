@@ -307,11 +307,11 @@
             <h2 v-show="isJapanese">結果の種類</h2>
             <dl>
                 <dt class="result_icon AC" style="display:inline">AC</dt>
-                <dd v-show="isEnglish">means "Accepted". There are no errors and your answer is correct.</dd>
-                <dd v-show="isJapanese">正答（Accepted）を意味します。実行時にエラーがなく、正しいクエリ結果が得られた状態です。</dd>
+                <dd v-show="isEnglish">means "ACcepted". There are no errors and your answer is correct.</dd>
+                <dd v-show="isJapanese">正答（ACcepted）を意味します。実行時にエラーがなく、正しい結果が得られた状態です。</dd>
                 <dt class="result_icon WA" style="display:inline">WA</dt>
                 <dd v-show="isEnglish">means "Wrong Answer". There are no errors but your answer is wrong.</dd>
-                <dd v-show="isJapanese">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、クエリ結果が正しくない状態です。</dd>
+                <dd v-show="isJapanese">誤答（Wrong Answer）を意味します。実行時にエラーはないものの、結果が正しくない状態です。</dd>
                 <dt class="result_icon PE" style="display:inline">PE</dt>
                 <dd v-show="isEnglish">means "Programming Error". There are some errors and DBMS couldn't execute your code.</dd>
                 <dd v-show="isJapanese">解答にエラーが存在することを意味します（Programming Error）。これも誤答扱いです。</dd>
