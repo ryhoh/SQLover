@@ -6,4 +6,5 @@ answers/*
 db/secret_definitions.sql
 db/psql
 db/sandbox_db
+db/problem_master
 node_modules
