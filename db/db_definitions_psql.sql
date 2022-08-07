@@ -17,6 +17,6 @@ CREATE ROLE web WITH
 --------------------
 -- DataBase Definition
 --------------------
-DROP DATABASE IF EXISTS sqlovers;
-CREATE DATABASE sqlovers WITH
+DROP DATABASE IF EXISTS sqlpuzzlers;
+CREATE DATABASE sqlpuzzlers WITH
 	OWNER = web;
