@@ -17,5 +17,6 @@ CREATE ROLE web WITH
 --------------------
 -- DataBase Definition
 --------------------
+DROP DATABASE IF EXISTS sandbox;
 CREATE DATABASE sandbox WITH
 	OWNER = web;

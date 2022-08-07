@@ -17,5 +17,6 @@ CREATE ROLE web WITH
 --------------------
 -- DataBase Definition
 --------------------
-CREATE DATABASE sqlabo WITH
+DROP DATABASE IF EXISTS sqlovers;
+CREATE DATABASE sqlovers WITH
 	OWNER = web;
