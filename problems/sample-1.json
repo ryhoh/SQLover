@@ -1,39 +1,40 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en" :[
+      "This is the first problem.",
+      "Just select all."
+    ],
+    "jp": [
+      "最初の問題です。",
+      "表全体をそのまま出力してください。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16)",
+    "       id int primary key,",
+    "       name varchar(16)",
     ");"
   ],
-  "description": [
-    "This is the first problem.",
-    "Just select all."
-  ],
-  "description_jp": [
-    "最初の問題です。",
-    "表全体をそのまま出力してください。"
-  ],
-  "tables": [
-    {
-      "name": "Students",
-      "columns": ["id", "name"],
-      "records": [
-        [1, "Alice"],
-        [2, "Bob"],
-        [3, "Charlie"],
-        [4, "David"]
-      ]
-    }
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice'),",
+    "       (2, 'Bob'),",
+    "       (3, 'Charlie'),",
+    "       (4, 'Dave')",
+    ");"
   ],
   "expected": {
-    "columns": ["id", "name"],
-    "records": [
+    "expected_columns": ["id", "name"],
+    "expected_types": ["int", "varchar"],
+    "expected_result": [
         [1, "Alice"],
         [2, "Bob"],
         [3, "Charlie"],
         [4, "David"]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

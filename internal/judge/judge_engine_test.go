@@ -1,4 +1,4 @@
-package judge_engine
+package judge
 
 import (
 	"os"

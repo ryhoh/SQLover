@@ -1,4 +1,4 @@
-package judge_engine
+package judge
 
 import (
 	"database/sql"
@@ -6,14 +6,14 @@ import (
 	"os"
 	"reflect"
 	"strings"
-	"time"
 
 	_ "github.com/lib/pq"
 	util "github.com/ryhoh/go-util"
+
+	. "sqlovers/internal/common"
+	"sqlovers/internal/storage"
 )
 
-type SQL string
-type SQLRows [][]interface{}
 type SQLExecuteRequest struct {
 	create_sql    SQL
 	insert_sql    SQL
@@ -31,15 +31,12 @@ type SQLExecuteResult struct {
 	exec_ms          float64
 }
 
-const UNUSED = -1
-
 var (
-	LOCAL_DB_URL  = "postgresql://web:web@localhost:54320/sandbox?sslmode=disable"
-	INHIBIT_WORDS = util.SetFromSlice(&[]string{
+	_LOCAL_DB_URL  = "postgresql://web:web@localhost:54320/sandbox?sslmode=disable"
+	_INHIBIT_WORDS = util.SetFromSlice(&[]string{
 		"create", "update", "insert", "delete", "drop", "alter", "insert", "database", "role", "grant", "set",
 		"definition", "database", "table", "current_user", "pg_user", "current_schema", "pg_roles",
 	})
-	ErrUseOfInhibitWords = fmt.Errorf("using inhibit words")
 )
 
 /*
@@ -50,28 +47,33 @@ func JudgeMain(
 	submit_sql SQL,
 	problem_name string,
 ) (*SQLExecuteResult, error) {
+	problem, err := storage.SelectProblem(problem_name)
+	if err != nil {
+		return nil, err
+	}
+
 	var (
-		problem             = SelectProblem(problem_name)
 		sql_execute_request = SQLExecuteRequest{
-			create_sql: Problem.create_sql,
-			insert_sql: Problem.insert_sql,
+			create_sql: problem.Create_sql,
+			insert_sql: problem.Insert_sql,
 			select_sql: submit_sql,
 		}
+		expected_result    = problem.Expected.Expected_result
 		sql_execute_result = SQLExecuteResult{
-			expected_result:  &Problem.expected_result,
-			expected_columns: &Problem.expected_columns,
-			order_strict:     Problem.order_strict,
+			expected_result:  &expected_result,
+			expected_columns: &problem.Expected.Expected_columns,
+			order_strict:     problem.Expected.Order_strict,
 		}
 	)
 
-	err := sql_execute_request.arrangeSQL()
-	if err != nil {
+	if err := sql_execute_request.arrangeSQL(); err != nil {
 		return &sql_execute_result, err
 	}
-	err = executeSQL(&sql_execute_request, &sql_execute_result)
-	if err != nil {
+
+	if err := executeSQL(&sql_execute_request, &sql_execute_result); err != nil {
 		return &sql_execute_result, err
 	}
+
 	sql_execute_result.judge()
 
 	return &sql_execute_result, nil
@@ -100,9 +102,9 @@ func (sql_execute_request *SQLExecuteRequest) isExplaining() bool {
 */
 func (sql_execute_request *SQLExecuteRequest) arrangeSQL() error {
 	first_sentence := strings.ToLower(strings.Split(string(sql_execute_request.select_sql), ";")[0])
-	for inhibit_word := range *INHIBIT_WORDS {
+	for inhibit_word := range *_INHIBIT_WORDS {
 		if strings.Contains(first_sentence, inhibit_word) {
-			return ErrUseOfInhibitWords
+			return fmt.Errorf("using inhibit words")
 		}
 	}
 
@@ -228,22 +230,25 @@ func storeSQLRows(sql_rows *sql.Rows) (*SQLRows, error) {
 		// convert and copy to row
 		row := make([]interface{}, column_num)
 		for i := 0; i < column_num; i++ {
-			switch elm := buff[i].(type) {
-			case int64:
-				row[i] = int(elm)
-			case float64:
-				row[i] = float64(elm)
-			case []uint8:
-				row[i] = string(elm)
-			case string:
-				row[i] = string(elm)
-			case rune:
-				row[i] = rune(elm)
-			case time.Time:
-				row[i] = elm.Format("2006-01-02 15:04:05")
-			default:
-				return nil, fmt.Errorf("unsupported data type: %T", elm)
+			if err := SQLResultTypeConversion(&buff[i], &row[i]); err != nil {
+				return nil, err
 			}
+			// switch elm := buff[i].(type) {
+			// case int64:
+			// 	row[i] = int(elm)
+			// case float64:
+			// 	row[i] = float64(elm)
+			// case []uint8:
+			// 	row[i] = string(elm)
+			// case string:
+			// 	row[i] = string(elm)
+			// case rune:
+			// 	row[i] = rune(elm)
+			// case time.Time:
+			// 	row[i] = elm.Format("2006-01-02 15:04:05")
+			// default:
+			// 	return nil, fmt.Errorf("unsupported data type: %T", elm)
+			// }
 		}
 		res = append(res, row)
 	}
@@ -255,7 +260,7 @@ func storeSQLRows(sql_rows *sql.Rows) (*SQLRows, error) {
 func getSandboxDBAddress() string {
 	env, env_exists := os.LookupEnv("SANDBOX_DB_URL")
 	if !env_exists {
-		return LOCAL_DB_URL
+		return _LOCAL_DB_URL
 	}
 	return env
 }
