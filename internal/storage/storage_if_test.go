@@ -4,17 +4,17 @@ import (
 	"reflect"
 	"testing"
 
-	. "sqlovers/internal/common"
+	. "sqlpuzzlers/internal/common"
 )
 
 func TestSelectProblem(t *testing.T) {
 	expected := Problem{
 		Descriptions: descriptions_t{
-			EN: "This is the first problem.\nJust select all.",
-			JP: "最初の問題です。\n表全体をそのまま出力してください。",
+			EN: "This is the sample problem.\nJust select all.",
+			JP: "サンプル問題です。\n表全体をそのまま出力してください。",
 		},
 		Create_sql: "create table Students (       id int primary key,       name varchar(16));",
-		Insert_sql: "insert into Students values       (1, 'Alice'),       (2, 'Bob'),       (3, 'Charlie'),       (4, 'Dave'));",
+		Insert_sql: "insert into Students values       (1, 'Alice'),       (2, 'Bob'),       (3, 'Charlie'),       (4, 'Dave');",
 		Expected: expected_t{
 			Expected_columns: []string{"id", "name"},
 			Expected_types:   []string{"int", "varchar"},
@@ -22,14 +22,14 @@ func TestSelectProblem(t *testing.T) {
 				{int64(1), "Alice"},
 				{int64(2), "Bob"},
 				{int64(3), "Charlie"},
-				{int64(4), "David"},
+				{int64(4), "Dave"},
 			},
 			Order_strict: false,
 		},
 		Writers: "ryhoh",
 	}
 
-	actual, err := SelectProblem("../../problems/sample-1.json")
+	actual, err := SelectProblem("../../web/static/problems/sample-1.json")
 	if err != nil {
 		t.Errorf("expected nil but given %#v", err)
 	}

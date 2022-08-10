@@ -1,11 +1,11 @@
 {
   "descriptions": {
     "en" :[
-      "This is the first problem.",
+      "This is the sample problem.",
       "Just select all."
     ],
     "jp": [
-      "最初の問題です。",
+      "サンプル問題です。",
       "表全体をそのまま出力してください。"
     ]
   },
@@ -21,7 +21,7 @@
     "       (2, 'Bob'),",
     "       (3, 'Charlie'),",
     "       (4, 'Dave')",
-    ");"
+    ";"
   ],
   "expected": {
     "expected_columns": ["id", "name"],
@@ -30,7 +30,7 @@
         [1, "Alice"],
         [2, "Bob"],
         [3, "Charlie"],
-        [4, "David"]
+        [4, "Dave"]
     ],
     "order_strict": false
   },

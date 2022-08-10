@@ -26,6 +26,7 @@ graph LR
         is_correct[bool is_correct]
         wrong_line[int wrong_line]
         exec_ms[float64 exec_ms]
+        writers[string writers]
         
         judge([judge])
     end
@@ -37,6 +38,7 @@ graph LR
     SelectProblem --> expected_columns
     SelectProblem --> expected_result
     SelectProblem --> order_strict
+    SelectProblem --> writers
     HttpEndPoint --> select_sql
     create_sql --> executeSQL
     insert_sql --> executeSQL
@@ -66,6 +68,7 @@ graph LR
     wrong_line --> HttpReturn
     order_strict --> HttpReturn
     exec_ms --> HttpReturn
+    writers --> HttpReturn
 
     sandbox_db --> ReadVersion([ReadVersion]) --> psql_version[string psql_version] --> HttpReturn
 
@@ -75,7 +78,7 @@ graph LR
     classDef database fill:lightgray,color:#000
 
     class getSandboxDBAddress,executeSQL,HttpEndPoint,judge,HttpReturn,arrangeSQL,SelectProblem,ReadVersion,isExplaining,extractExecMsFromQueryPlan func;
-    class sandbox_db,create_sql,insert_sql,select_sql,expected_result,actual_result,order_strict,expected_columns,actual_columns,is_correct,wrong_line,problem_name,base_table,exec_ms,psql_version,is_explaining,queryplan_rows data;
+    class sandbox_db,create_sql,insert_sql,select_sql,expected_result,actual_result,order_strict,expected_columns,actual_columns,is_correct,wrong_line,problem_name,base_table,exec_ms,psql_version,is_explaining,queryplan_rows,writers data;
     class SQLoversDB database;
 ```
 

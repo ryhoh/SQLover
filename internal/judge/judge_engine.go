@@ -10,8 +10,8 @@ import (
 	_ "github.com/lib/pq"
 	util "github.com/ryhoh/go-util"
 
-	. "sqlovers/internal/common"
-	"sqlovers/internal/storage"
+	. "sqlpuzzlers/internal/common"
+	"sqlpuzzlers/internal/storage"
 )
 
 type SQLExecuteRequest struct {
@@ -29,6 +29,7 @@ type SQLExecuteResult struct {
 	is_correct       bool
 	wrong_line       int
 	exec_ms          float64
+	writers          string
 }
 
 var (
@@ -38,6 +39,33 @@ var (
 		"definition", "database", "table", "current_user", "pg_user", "current_schema", "pg_roles",
 	})
 )
+
+/* Read version of sandbox database */
+func ReadVersion() (string, error) {
+	db_address := getSandboxDBAddress()
+
+	/* Connection */
+	db, err := sql.Open("postgres", db_address)
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	/* SELECT */
+	rows, err := db.Query("select version();")
+	if err != nil {
+		return "", err
+	}
+
+	/* Reseult Proccess*/
+	if rows.Next() {
+		var res string
+		rows.Scan(&res)
+		return res, nil
+	}
+
+	return "", fmt.Errorf("sql statement 'select version();' returned no rows")
+}
 
 /*
 	Sandbox SQL実行メイン処理
@@ -63,6 +91,7 @@ func JudgeMain(
 			expected_result:  &expected_result,
 			expected_columns: &problem.Expected.Expected_columns,
 			order_strict:     problem.Expected.Order_strict,
+			writers:          problem.Writers,
 		}
 	)
 
@@ -171,16 +200,15 @@ func executeSQL(
 	}
 
 	/* Reseult Proccess*/
+	columns, err := rows.Columns()
+	if err != nil {
+		return err
+	}
+	sql_execute_result.actual_columns = &columns
 	sql_execute_result.actual_result, err = storeSQLRows(rows)
 	if err != nil {
 		return err
 	}
-
-	columns, err := rows.Columns()
-	if err != nil {
-		return nil
-	}
-	sql_execute_result.actual_columns = &columns
 
 	/* Watch elapsed time */
 	sql_execute_request.is_explaining = sql_execute_request.isExplaining()
@@ -233,22 +261,6 @@ func storeSQLRows(sql_rows *sql.Rows) (*SQLRows, error) {
 			if err := SQLResultTypeConversion(&buff[i], &row[i]); err != nil {
 				return nil, err
 			}
-			// switch elm := buff[i].(type) {
-			// case int64:
-			// 	row[i] = int(elm)
-			// case float64:
-			// 	row[i] = float64(elm)
-			// case []uint8:
-			// 	row[i] = string(elm)
-			// case string:
-			// 	row[i] = string(elm)
-			// case rune:
-			// 	row[i] = rune(elm)
-			// case time.Time:
-			// 	row[i] = elm.Format("2006-01-02 15:04:05")
-			// default:
-			// 	return nil, fmt.Errorf("unsupported data type: %T", elm)
-			// }
 		}
 		res = append(res, row)
 	}
@@ -282,7 +294,7 @@ func getSandboxDBAddress() string {
 */
 func (sql_execute_result *SQLExecuteResult) judge() {
 	var (
-		expected     = *sql_execute_result.actual_result
+		expected     = *sql_execute_result.expected_result
 		answered     = *sql_execute_result.actual_result
 		order_strict = sql_execute_result.order_strict
 		p_is_correct = &sql_execute_result.is_correct
@@ -310,25 +322,23 @@ func (sql_execute_result *SQLExecuteResult) judge() {
 	// 順序まで要求しない場合
 	checked := make([]bool, len(expected))
 	idx := 0
+
+LOOP_ROWS:
 	for i, answered_record := range answered { // answer を1行ずつチェック
 		idx = i + 1
 		for j, expected_record := range expected {
 			if !checked[j] && reflect.DeepEqual(answered_record, expected_record) { // 未チェックかつ一致
 				checked[j] = true
-				continue
+				continue LOOP_ROWS
 			}
-			*p_is_correct, *p_wrong_line = false, i+1 // expected のどの行にも一致しなかった
-			return
 		}
+		*p_is_correct, *p_wrong_line = false, i+1 // expected のどの行にも一致しなかった
+		return
 	}
+
 	// この時点で answered ⊆ expected
-	// for i := 0; i < len(checked); i++ {
-	// 	if !checked[i] { // answered の行数が不足 answered ⊂ expected
-	// 		return false, idx + 1
-	// 	}
-	// }
 	if !util.All(checked...) {
-		*p_is_correct, *p_wrong_line = false, idx // answered の行数が不足 answered ⊂ expected
+		*p_is_correct, *p_wrong_line = false, idx+1 // answered の行数が不足 answered ⊂ expected
 		return
 	}
 	*p_is_correct, *p_wrong_line = true, UNUSED // answered = expected

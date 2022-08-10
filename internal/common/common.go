@@ -2,7 +2,10 @@ package common
 
 import (
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/ryhoh/go-util"
 )
 
 type SQL string
@@ -13,7 +16,7 @@ const UNUSED = -1
 func SQLResultTypeConversion(from, to *interface{}) error {
 	switch elm := (*from).(type) {
 	case int64:
-		*to = int(elm)
+		*to = int64(elm)
 	case float64:
 		*to = float64(elm)
 	case []uint8:
@@ -29,4 +32,18 @@ func SQLResultTypeConversion(from, to *interface{}) error {
 	}
 
 	return nil
+}
+
+func ProblemTypeExtraction(problem_names []string) []string {
+	problem_types := util.Set[string]{}
+	for _, problem_name := range problem_names {
+		problem_types.Add(strings.Split(problem_name, "-")[0])
+	}
+
+	res := []string{}
+	for problem_type := range problem_types {
+		res = append(res, problem_type)
+	}
+
+	return res
 }

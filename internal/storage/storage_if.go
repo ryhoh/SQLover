@@ -3,9 +3,12 @@ package storage
 import (
 	"encoding/json"
 	"io/ioutil"
+	"sort"
 	"strings"
 
-	. "sqlovers/internal/common"
+	"github.com/maruel/natural"
+
+	. "sqlpuzzlers/internal/common"
 )
 
 var (
@@ -19,6 +22,7 @@ var (
 		"nvarchar": "string",
 		"nchar":    "string",
 	}
+	PROBLEM_DIR = "web/static/problems"
 )
 
 // raw (on json) data
@@ -129,4 +133,23 @@ func joinWriters(writers []string) string {
 		res += writers[length-2] + " and " + writers[length-1]
 		return res
 	}
+}
+
+func GetProblemList() ([]string, error) {
+	problem_list := []string{}
+	files, err := ioutil.ReadDir(PROBLEM_DIR)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range files {
+		file_name := file.Name()
+		file_name_parts := strings.Split(file_name, ".")
+		if file_name_parts[1] == "json" {
+			problem_list = append(problem_list, file_name_parts[0])
+		}
+	}
+
+	sort.Sort(natural.StringSlice(problem_list))
+	return problem_list, nil
 }
