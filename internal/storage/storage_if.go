@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"io/ioutil"
+	"path"
 	"sort"
 	"strings"
 
@@ -63,7 +64,7 @@ type Problem struct {
 
 func SelectProblem(problem_name string) (*Problem, error) {
 	/* Read from file */
-	json_bytes, err := ioutil.ReadFile(problem_name)
+	json_bytes, err := ioutil.ReadFile(path.Join(PROBLEM_DIR, problem_name+".json"))
 	if err != nil {
 		return nil, err
 	}

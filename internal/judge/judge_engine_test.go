@@ -22,61 +22,37 @@ func TestReadVersion(t *testing.T) {
 
 func TestJudgeMain(t *testing.T) {
 	var (
-		// SQLExecuteResult
-		expected_result = SQLRows{
-			{int64(1), "Alice"},
-			{int64(2), "Bob"},
-			{int64(3), "Charlie"},
-			{int64(4), "Dave"},
-		}
 		actual_result = SQLRows{
 			{int64(1), "Alice"},
 			{int64(2), "Bob"},
 			{int64(3), "Charlie"},
 			{int64(4), "Dave"},
 		}
-		expected_columns            = []string{"id", "name"}
-		actual_columns              = []string{"id", "name"}
-		expected_sql_execute_result = SQLExecuteResult{
-			expected_result:  &expected_result,
-			expected_columns: &expected_columns,
-			actual_result:    &actual_result,
-			actual_columns:   &actual_columns,
-			order_strict:     false,
-			is_correct:       true,
-			wrong_line:       -1,
-			writers:          "ryhoh",
+		actual_columns    = []string{"id", "name"}
+		expected_json_map = map[string]interface{}{
+			"result":         "AC",
+			"wrong_line":     -1,
+			"answer_columns": actual_columns,
+			"answer_records": actual_result,
 		}
 	)
 
-	retval, err := JudgeMain("select * from Students;", "../../web/static/problems/sample-1.json")
+	retval, err := JudgeMain("select * from Students;", "../../../../../web/static/problems/sample-1")
 	if err != nil {
 		t.Errorf("expected nil but given %#v", err)
 	}
-	actual_sql_execute_result := *retval
-	if !reflect.DeepEqual(*expected_sql_execute_result.expected_result, *actual_sql_execute_result.expected_result) {
-		t.Errorf("expected\n%#v\nbut given\n%#v\n", *expected_sql_execute_result.expected_result, *actual_sql_execute_result.expected_result)
+	actual_json_map := *retval
+	if expected_json_map["result"] != actual_json_map["result"] {
+		t.Errorf("expected\n%#v\nbut given\n%#v\n", expected_json_map["result"], actual_json_map["result"])
 	}
-	if !reflect.DeepEqual(*expected_sql_execute_result.actual_result, *actual_sql_execute_result.actual_result) {
-		t.Errorf("expected\n%#v\nbut given\n%#v\n", *expected_sql_execute_result.actual_result, *actual_sql_execute_result.actual_result)
+	if expected_json_map["wrong_line"] != actual_json_map["wrong_line"] {
+		t.Errorf("expected\n%#v\nbut given\n%#v\n", expected_json_map["wrong_line"], actual_json_map["wrong_line"])
 	}
-	if !reflect.DeepEqual(*expected_sql_execute_result.expected_columns, *actual_sql_execute_result.expected_columns) {
-		t.Errorf("expected\n%#v\nbut given\n%#v\n", *expected_sql_execute_result.expected_columns, *actual_sql_execute_result.expected_columns)
+	if !reflect.DeepEqual(expected_json_map["answer_columns"], actual_json_map["answer_columns"]) {
+		t.Errorf("expected\n%#v\nbut given\n%#v\n", expected_json_map["answer_columns"], actual_json_map["answer_columns"])
 	}
-	if !reflect.DeepEqual(*expected_sql_execute_result.actual_columns, *actual_sql_execute_result.actual_columns) {
-		t.Errorf("expected\n%#v\nbut given\n%#v\n", *expected_sql_execute_result.actual_columns, *actual_sql_execute_result.actual_columns)
-	}
-	if expected_sql_execute_result.order_strict != actual_sql_execute_result.order_strict {
-		t.Errorf("expected %#v but given %#v", expected_sql_execute_result.order_strict, actual_sql_execute_result.order_strict)
-	}
-	if expected_sql_execute_result.is_correct != actual_sql_execute_result.is_correct {
-		t.Errorf("expected %#v but given %#v", expected_sql_execute_result.is_correct, actual_sql_execute_result.is_correct)
-	}
-	if expected_sql_execute_result.wrong_line != actual_sql_execute_result.wrong_line {
-		t.Errorf("expected %#v but given %#v", expected_sql_execute_result.wrong_line, actual_sql_execute_result.wrong_line)
-	}
-	if expected_sql_execute_result.writers != actual_sql_execute_result.writers {
-		t.Errorf("expected %#v but given %#v", expected_sql_execute_result.writers, actual_sql_execute_result.writers)
+	if !reflect.DeepEqual(expected_json_map["answer_records"], actual_json_map["answer_records"]) {
+		t.Errorf("expected\n%#v\nbut given\n%#v\n", expected_json_map["answer_records"], actual_json_map["answer_records"])
 	}
 }
 

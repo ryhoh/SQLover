@@ -74,7 +74,7 @@ func ReadVersion() (string, error) {
 func JudgeMain(
 	submit_sql SQL,
 	problem_name string,
-) (*SQLExecuteResult, error) {
+) (*map[string]interface{}, error) {
 	problem, err := storage.SelectProblem(problem_name)
 	if err != nil {
 		return nil, err
@@ -88,24 +88,42 @@ func JudgeMain(
 		}
 		expected_result    = problem.Expected.Expected_result
 		sql_execute_result = SQLExecuteResult{
-			expected_result:  &expected_result,
-			expected_columns: &problem.Expected.Expected_columns,
-			order_strict:     problem.Expected.Order_strict,
-			writers:          problem.Writers,
+			expected_result: &expected_result,
+			order_strict:    problem.Expected.Order_strict,
 		}
 	)
 
 	if err := sql_execute_request.arrangeSQL(); err != nil {
-		return &sql_execute_result, err
+		json_map := map[string]interface{}{
+			"result":  "PE",
+			"message": "using invalid words",
+		}
+		return &json_map, err
 	}
 
 	if err := executeSQL(&sql_execute_request, &sql_execute_result); err != nil {
-		return &sql_execute_result, err
+		json_map := map[string]interface{}{
+			"result":  "PE",
+			"message": err.Error(),
+		}
+		return &json_map, err
 	}
 
 	sql_execute_result.judge()
 
-	return &sql_execute_result, nil
+	correct := "WA"
+	if sql_execute_result.is_correct {
+		correct = "AC"
+	}
+	json_map := map[string]interface{}{
+		"result":         correct,
+		"wrong_line":     sql_execute_result.wrong_line,
+		"answer_columns": *sql_execute_result.actual_columns,
+		"answer_records": *sql_execute_result.actual_result,
+		"exec_ms":        sql_execute_result.exec_ms,
+	}
+
+	return &json_map, nil
 }
 
 /*

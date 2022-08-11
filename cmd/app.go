@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -59,9 +60,41 @@ func problem_list(response_writer http.ResponseWriter, request *http.Request) {
 	response_writer.Write(res)
 }
 
+/* /api/v1/test */
+func test(response_writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		http.Error(response_writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	problem_name := request.Form.Get("problem_name")
+	answer := request.Form.Get("answer")
+	if problem_name == "" || answer == "" {
+		http.Error(response_writer, fmt.Sprintf("bad parameter problem_name: %s, answer: %s", problem_name, answer), http.StatusBadRequest)
+		return
+	}
+
+	json_map, err := judge.JudgeMain(common.SQL(answer), problem_name)
+	if err != nil && json_map == nil { // server-side error
+		http.Error(response_writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	/* (err != nil && json_map != nil) -> user's programming error */
+
+	json_bytes, err := json.Marshal(*json_map)
+	if err != nil {
+		http.Error(response_writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	response_writer.Header().Set("Content-Type", "application/json")
+	response_writer.Write(json_bytes)
+}
+
 func main() {
 	http.HandleFunc("/", root)
 	http.HandleFunc("/api/v1/problem_list", problem_list)
+	http.HandleFunc("/api/v1/test", test)
 
 	fileServer := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))

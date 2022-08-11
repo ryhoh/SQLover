@@ -29,7 +29,7 @@ func TestSelectProblem(t *testing.T) {
 		Writers: "ryhoh",
 	}
 
-	actual, err := SelectProblem("../../web/static/problems/sample-1.json")
+	actual, err := SelectProblem("../../../../../web/static/problems/sample-1")
 	if err != nil {
 		t.Errorf("expected nil but given %#v", err)
 	}
