@@ -135,10 +135,10 @@ const vm = new Vue({
     },
 
     getDescription: function () {
-      if (this.language === 'ja' && this.problem.description_jp) {
-        return this.problem.description_jp;
+      if (this.language === 'ja' && this.problem.descriptions.jp) {
+        return this.problem.descriptions.jp;
       } else {
-        return this.problem.description;
+        return this.problem.descriptions.en;
       }
     }
   },

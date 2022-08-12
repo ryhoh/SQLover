@@ -1,35 +1,68 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Print (student_name, class_name, class_room, teacher_name) for each session.",
+      "Note: sort it by (student_name, class_name, class_room, teacher_name) ascending."
+    ],
+    "jp": [
+      "各学生について，受講しているクラス名と教室名、先生の名前を求めてください。",
+      "このとき、結果を (student_name, class_name, class_room, teacher_name) の昇順に並べ替えてください。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    student_name varchar(16)",
+    "       id int primary key,",
+    "       student_name varchar(16)",
     ");",
     "create table Teachers (",
-    "    id int primary key,",
-    "    teacher_name varchar(16)",
+    "       id int primary key,",
+    "       teacher_name varchar(16)",
     ");",
     "create table Classes (",
-    "    id int primary key,",
-    "    class_name varchar(32),",
-    "    class_room varchar(8),",
-    "    teacher_id int,",
-    "    foreign key(teacher_id) references Teachers(id)",
+    "       id int primary key,",
+    "       class_name varchar(32),",
+    "       class_room varchar(8),",
+    "       teacher_id int,",
+    "       foreign key(teacher_id) references Teachers(id)",
     ");",
     "create table ClassSessions (",
-    "    id int primary key,",
-    "    student_id int,",
-    "    class_id int,",
-    "    foreign key(student_id) references Students(id),",
-    "    foreign key(class_id) references Classes(id)",
+    "       id int primary key,",
+    "       student_id int,",
+    "       class_id int,",
+    "       foreign key(student_id) references Students(id),",
+    "       foreign key(class_id) references Classes(id)",
     ");"
   ],
-  "description": [
-    "Print (student_name, class_name, class_room, teacher_name) for each session.",
-    "Note: sort it by (student_name, class_name, class_room, teacher_name) ascending."
-  ],
-  "description_jp": [
-    "各学生について，受講しているクラス名と教室名、先生の名前を求めてください。",
-    "このとき、結果を (student_name, class_name, class_room, teacher_name) の昇順に並べ替えてください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice'),",
+    "       (2, 'Bob'),",
+    "       (3, 'Charlie'),",
+    "       (4, 'Dave'),",
+    "       (5, 'Emma')",
+    ";",
+    "insert into Teachers values",
+    "       (1, 'John'),",
+    "       (2, 'Franklin')",
+    ";",
+    "insert into Classes values",
+    "       (1, 'Fundamental of Informatics', 'A210', 1),",
+    "       (2, 'Economics', 'B302', 2),",
+    "       (3, 'C Programming', 'A306', 1),",
+    "       (4, 'Database', 'A307', 1)",
+    ";",
+    "insert into ClassSessions values",
+    "       ( 1, 1, 1),",
+    "       ( 2, 1, 2),",
+    "       ( 3, 1, 3),",
+    "       ( 4, 2, 1),",
+    "       ( 5, 2, 3),",
+    "       ( 6, 2, 4),",
+    "       ( 7, 3, 2),",
+    "       ( 8, 4, 1),",
+    "       ( 9, 4, 4),",
+    "       (10, 5, 4)",
+    ";"
   ],
   "tables": [
     {
@@ -39,7 +72,7 @@
         [1, "Alice"],
         [2, "Bob"],
         [3, "Charlie"],
-        [4, "David"],
+        [4, "Dave"],
         [5, "Emma"]
       ]
     },
@@ -79,20 +112,23 @@
     }
   ],
   "expected": {
-    "columns": ["student_name", "class_name", "class_room", "teacher_name"],
-      "records": [
-        ["Alice", "C Programming", "A306", "John"],
-        ["Alice", "Economics", "B302", "Franklin"],
-        ["Alice", "Fundamental of Informatics", "A210", "John"],
-        ["Bob", "C Programming", "A306", "John"],
-        ["Bob", "Database", "A307", "John"],
-        ["Bob", "Fundamental of Informatics", "A210", "John"],
-        ["Charlie", "Economics", "B302", "Franklin"],
-        ["David", "Database", "A307", "John"],
-        ["David", "Fundamental of Informatics", "A210", "John"],
-        ["Emma", "Database", "A307", "John"]
-      ],
-    "order_sensitive": true
+    "expected_columns": ["student_name", "class_name", "class_room", "teacher_name"],
+    "expected_types": ["varchar", "varchar", "varchar", "varchar"],
+    "expected_result": [
+      ["Alice", "C Programming", "A306", "John"],
+      ["Alice", "Economics", "B302", "Franklin"],
+      ["Alice", "Fundamental of Informatics", "A210", "John"],
+      ["Bob", "C Programming", "A306", "John"],
+      ["Bob", "Database", "A307", "John"],
+      ["Bob", "Fundamental of Informatics", "A210", "John"],
+      ["Charlie", "Economics", "B302", "Franklin"],
+      ["Dave", "Database", "A307", "John"],
+      ["Dave", "Fundamental of Informatics", "A210", "John"],
+      ["Emma", "Database", "A307", "John"]
+    ],
+    "order_strict": true
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

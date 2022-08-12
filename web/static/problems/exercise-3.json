@@ -1,17 +1,29 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Unpivot the given table."
+    ],
+    "jp": [
+      "所与の表を第一正規形（縦持ち）に変形してください。"
+    ]
+  },
+  "create_sql": [
     "create table Evaluations (",
-    "    name varchar(16) primary key,",
-    "    english int,",
-    "    math int,",
-    "    science int",
+    "       name varchar(16) primary key,",
+    "       english int,",
+    "       math int,",
+    "       science int",
     ");"
   ],
-  "description": [
-    "Unpivot the given table."
-  ],
-  "description_jp": [
-    "所与の表を第一正規形（縦持ち）に変形してください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       ('Alice', 30, 60, 90),",
+    "       ('Bob', 40, 80, 60),",
+    "       ('Charlie', 10, 10, 50),",
+    "       ('Dave', 75, 65, 20),",
+    "       ('Emma', 70, 70, 40),",
+    "       ('Franklin', 50, 50, 50)",
+    ";"
   ],
   "tables": [
     {
@@ -21,15 +33,16 @@
         ["Alice", 30, 60, 90],
         ["Bob", 40, 80, 60],
         ["Charlie", 10, 10, 50],
-        ["David", 75, 65, 20],
+        ["Dave", 75, 65, 20],
         ["Emma", 70, 70, 40],
         ["Franklin", 50, 50, 50]
       ]
     }
   ],
   "expected": {
-    "columns": ["name", "subject", "score"],
-    "records": [
+    "expected_columns": ["name", "subject", "score"],
+    "expected_types": ["varchar", "varchar", "int"],
+    "expected_result": [
       ["Alice",    "english", 30],
       ["Alice",    "math",    60],
       ["Alice",    "science", 90],
@@ -39,9 +52,9 @@
       ["Charlie",  "english", 10],
       ["Charlie",  "math",    10],
       ["Charlie",  "science", 50],
-      ["David",    "english", 75],
-      ["David",    "math",    65],
-      ["David",    "science", 20],
+      ["Dave",     "english", 75],
+      ["Dave",     "math",    65],
+      ["Dave",     "science", 20],
       ["Emma",     "english", 70],
       ["Emma",     "math",    70],
       ["Emma",     "science", 40],
@@ -49,7 +62,9 @@
       ["Franklin", "math",    50],
       ["Franklin", "science", 50]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

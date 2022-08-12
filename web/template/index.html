@@ -152,7 +152,7 @@
 
                         <!-- Description -->
                         <div class="comment">
-                            <p v-show="problem.description" style="margin: 0;">
+                            <p v-show="problem.descriptions" style="margin: 0;">
                                 <span style="display: block; font-weight: 800; text-decoration: underline 3px lightgray; margin-bottom: 0.5em;">
                                     <span v-show="isEnglish">Description from Writer</span>
                                     <span v-show="isJapanese">問題についての説明</span>
@@ -162,12 +162,12 @@
                                     <br>
                                 </span>
                                 <br>
-                                <span v-show="isEnglish">(Writer: ${ problem.writer })</span>
-                                <span v-show="isJapanese">(作問者: ${ problem.writer })</span>
+                                <span v-show="isEnglish">(Writer(s): ${ problem.writers })</span>
+                                <span v-show="isJapanese">(作問者: ${ problem.writers })</span>
                             </p>
                         </div>
 
-                        <p v-if="problem.order_sensitive">
+                        <p v-if="problem.expected.order_strict">
                             <span v-show="isEnglish">
                                 Be careful!
                                 This problem is <span class="caution" style="text-decoration: underline;">order-sensitive</span>!
@@ -236,11 +236,11 @@
                             <caption style="white-space: nowrap" v-show="isEnglish">(Output)</caption>
                             <caption style="white-space: nowrap" v-show="isJapanese">(出力例)</caption>
                             <tr>
-                                <th v-for="col in problem.expected.columns" :key="col">
+                                <th v-for="col in problem.expected.expected_columns" :key="col">
                                     ${ col }
                                 </th>
                             </tr>
-                            <tr v-for="(record, idx) in problem.expected.records" :key="idx" v-bind:class="'bg' + idx % 2">
+                            <tr v-for="(record, idx) in problem.expected.expected_result" :key="idx" v-bind:class="'bg' + idx % 2">
                                 <td v-for="(cell, idx) in record" :key="idx" v-bind:class="!isNaN(cell) ? 'number' : ''">
                                     ${ cell }
                                 </td>

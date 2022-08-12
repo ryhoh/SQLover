@@ -1,18 +1,28 @@
 {
-  "DDL": [
-    "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16),",
-    "    age int",
-    ");"
-  ],
-  "description": [
+  "descriptions": {
+    "en": [
     "Extract all students' names.",
     "(We need names only!)"
+    ],
+    "jp": [
+      "全生徒の名前を出力しましょう。",
+      "（必要なのは名前「だけ」です）"
+    ]
+  },
+  "create_sql": [
+    "create table Students (",
+    "       id int primary key,",
+    "       name varchar(16),",
+    "       age int",
+    ");"
   ],
-  "description_jp": [
-    "全生徒の名前を出力しましょう。",
-    "（必要なのは名前「だけ」です）"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice', 16),",
+    "       (2, 'Bob', 18),",
+    "       (3, 'Charlie', 15),",
+    "       (4, 'Dave', 23)",
+    ";"
   ],
   "tables": [
     {
@@ -22,20 +32,22 @@
         [1, "Alice", 16],
         [2, "Bob", 18],
         [3, "Charlie", 15],
-        [4, "David", 23]
+        [4, "Dave", 23]
       ]
     }
   ],
   "expected": {
-    "columns": ["name"],
-    "records": [
+    "expected_columns": ["name"],
+    "expected_types": ["varchar"],
+    "expected_result": [
       ["Alice"],
       ["Bob"],
       ["Charlie"],
-      ["David"]
+      ["Dave"]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }
-  

@@ -1,20 +1,36 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Joining test on multiple tables."
+    ],
+    "jp": [
+      "複数テーブルでの Join のテスト用問題です。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16) unique",
+    "       id int primary key,",
+    "       name varchar(16) unique",
     ");",
     "create table Place (",
-    "    name varchar(16) primary key,",
-    "    place varchar(16),",
-    "    foreign key(name) references Students(name)",
+    "       name varchar(16) primary key,",
+    "       place varchar(16),",
+    "       foreign key(name) references Students(name)",
     ");"
   ],
-  "description": [
-    "Joining test on multiple tables."
-  ],
-  "description_jp": [
-    "複数テーブルでの Join のテスト用問題です。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice'),",
+    "       (2, 'Bob'),",
+    "       (3, 'Charlie'),",
+    "       (4, 'Dave')",
+    ";",
+    "insert into Places values",
+    "       ('Alice', 'Aichi'),",
+    "       ('Bob', 'Birmingham'),",
+    "       ('Charlie', 'Canberra'),",
+    "       ('Dave', 'Detroit')",
+    ";"
   ],
   "tables": [
     {
@@ -24,29 +40,32 @@
         [1, "Alice"],
         [2, "Bob"],
         [3, "Charlie"],
-        [4, "David"]
+        [4, "Dave"]
       ]
     },
     {
-      "name": "Place",
+      "name": "Places",
       "columns": ["name", "place"],
       "records": [
           ["Alice", "Aichi"],
           ["Bob", "Birmingham"],
           ["Charlie", "Canberra"],
-          ["David", "Detroit"]
+          ["Dave", "Detroit"]
       ]
     }
   ],
   "expected": {
-    "columns": ["id", "name", "place"],
-    "records": [
+    "expected_columns": ["id", "name", "place"],
+    "expected_types": ["int", "varchar", "varchar"],
+    "expected_result": [
         [1, "Alice", "Aichi"],
         [2, "Bob", "Birmingham"],
         [3, "Charlie", "Canberra"],
-        [4, "David", "Detroit"]
+        [4, "Dave", "Detroit"]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

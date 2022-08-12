@@ -1,17 +1,32 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Extract all students' name and age whose age is",
+      "between 19 and 25."
+    ],
+    "jp": [
+      "年齢が19歳から25歳の間の生徒の、名前と年齢を取り出してください。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16),",
-    "    age int",
+    "       id int primary key,",
+    "       name varchar(16),",
+    "       age int",
     ");"
   ],
-  "description": [
-    "Extract all students' name and age whose age is",
-    "between 19 and 25."
-  ],
-  "description_jp": [
-    "年齢が19歳から25歳の間の生徒の、名前と年齢を取り出してください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice', 16),",
+    "       (2, 'Bob', 18),",
+    "       (3, 'Charlie', 15),",
+    "       (4, 'Dave', 23),",
+    "       (5, 'Emilia', 29),",
+    "       (6, 'François', 24),",
+    "       (7, 'Günter', 16),",
+    "       (8, 'Hàoyǔ', 21),",
+    "       (9, 'Iori', 20)",
+    ";"
   ],
   "tables": [
     {
@@ -21,7 +36,7 @@
         [1, "Alice", 16],
         [2, "Bob", 18],
         [3, "Charlie", 15],
-        [4, "David", 23],
+        [4, "Dave", 23],
         [5, "Emilia", 29],
         [6, "François", 24],
         [7, "Günter", 16],
@@ -31,14 +46,17 @@
     }
   ],
   "expected": {
-    "columns": ["name", "age"],
-    "records": [
-      ["David", 23],
+    "expected_columns": ["name", "age"],
+    "expected_types": ["varchar", "int"],
+    "expected_result": [
+      ["Dave", 23],
       ["François", 24],
       ["Hàoyǔ", 21],
       ["Iori", 20]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

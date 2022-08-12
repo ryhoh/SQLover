@@ -1,16 +1,26 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Extract all students' name and age whose age is NOT 16."
+    ],
+    "jp": [
+      "年齢が16歳でない生徒の名前と年齢を出力しましょう。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16),",
-    "    age int",
+    "       id int primary key,",
+    "       name varchar(16),",
+    "       age int",
     ");"
   ],
-  "description": [
-    "Extract all students' name and age whose age is NOT 16."
-  ],
-  "description_jp": [
-    "年齢が16歳でない生徒の名前と年齢を出力しましょう。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice', 16),",
+    "       (2, 'Bob', 18),",
+    "       (3, 'Charlie', 15),",
+    "       (4, 'Dave', 23)",
+    ";"
   ],
   "tables": [
     {
@@ -20,19 +30,22 @@
         [1, "Alice", 16],
         [2, "Bob", 18],
         [3, "Charlie", 15],
-        [4, "David", 23]
+        [4, "Dave", 23]
       ]
     }
   ],
   "expected": {
-    "columns": ["name", "age"],
-    "records": [
+    "expected_columns": ["name", "age"],
+    "expected_types": ["varchar", "int"],
+    "expected_result": [
       ["Bob", 18],
       ["Charlie", 15],
-      ["David", 23]
+      ["Dave", 23]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }
   

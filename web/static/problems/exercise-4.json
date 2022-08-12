@@ -1,17 +1,41 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Pivot the given table."
+    ],
+    "jp": [
+      "所与の表を非正規化（横持ちに変形）してください。"
+    ]
+  },
+  "create_sql": [
     "create table Evaluations (",
-    "    name varchar(16),",
-    "    subject varchar(16),",
-    "    score int,",
-    "    primary key(name, subject)",
+    "       name varchar(16),",
+    "       subject varchar(16),",
+    "       score int,",
+    "       primary key(name, subject)",
     ");"
   ],
-  "description": [
-    "Pivot the given table."
-  ],
-  "description_jp": [
-    "所与の表を非正規化（横持ちに変形）してください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       ('Alice',    'english', 30),",
+    "       ('Alice',    'math',    60),",
+    "       ('Alice',    'science', 90),",
+    "       ('Bob',      'english', 40),",
+    "       ('Bob',      'math',    80),",
+    "       ('Bob',      'science', 60),",
+    "       ('Charlie',  'english', 10),",
+    "       ('Charlie',  'math',    10),",
+    "       ('Charlie',  'science', 50),",
+    "       ('Dave',     'english', 75),",
+    "       ('Dave',     'math',    65),",
+    "       ('Dave',     'science', 20),",
+    "       ('Emma',     'english', 70),",
+    "       ('Emma',     'math',    70),",
+    "       ('Emma',     'science', 40),",
+    "       ('Franklin', 'english', 50),",
+    "       ('Franklin', 'math',    50),",
+    "       ('Franklin', 'science', 50)",
+    ";"
   ],
   "tables": [
     {
@@ -27,9 +51,9 @@
         ["Charlie",  "english", 10],
         ["Charlie",  "math",    10],
         ["Charlie",  "science", 50],
-        ["David",    "english", 75],
-        ["David",    "math",    65],
-        ["David",    "science", 20],
+        ["Dave",     "english", 75],
+        ["Dave",     "math",    65],
+        ["Dave",     "science", 20],
         ["Emma",     "english", 70],
         ["Emma",     "math",    70],
         ["Emma",     "science", 40],
@@ -40,16 +64,19 @@
     }
   ],
   "expected": {
-    "columns": ["name", "english", "math", "science"],
-      "records": [
-        ["Alice", 30, 60, 90],
-        ["Bob", 40, 80, 60],
-        ["Charlie", 10, 10, 50],
-        ["David", 75, 65, 20],
-        ["Emma", 70, 70, 40],
-        ["Franklin", 50, 50, 50]
-      ],
-    "order_sensitive": false
+    "expected_columns": ["name", "english", "math", "science"],
+    "expected_types": ["varchar", "int", "int", "int"],
+    "expected_result": [
+      ["Alice", 30, 60, 90],
+      ["Bob", 40, 80, 60],
+      ["Charlie", 10, 10, 50],
+      ["Dave", 75, 65, 20],
+      ["Emma", 70, 70, 40],
+      ["Franklin", 50, 50, 50]
+    ],
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

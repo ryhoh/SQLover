@@ -1,19 +1,31 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "1. Get max(x, y, z) for each row as \"Highest\".",
+      "2. Print (\"id\", \"Highest\")"
+    ],
+    "jp": [
+      "1. 各行について、 (x, y, z) の最大値を \"Highest\" として取得してください。",
+      "2. (\"id\", \"Highest\") を出力してください。"
+    ]
+  },
+  "create_sql": [
     "create table Scores (",
-    "    id int primary key,",
-    "    x int,",
-    "    y int,",
-    "    z int",
+    "       id int primary key,",
+    "       x int,",
+    "       y int,",
+    "       z int",
     ");"
   ],
-  "description": [
-    "1. Get max(x, y, z) for each row as \"Highest\".",
-    "2. Print (\"id\", \"Highest\")"
-  ],
-  "description_jp": [
-    "1. 各行について、 (x, y, z) の最大値を \"Highest\" として取得してください。",
-    "2. (\"id\", \"Highest\") を出力してください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 30, 60, 90),",
+    "       (2, 40, 80, 60),",
+    "       (3, 10, 10, 50),",
+    "       (4, 75, 65, 20),",
+    "       (5, 70, 70, 40),",
+    "       (6, 50, 50, 50)",
+    ";"
   ],
   "tables": [
     {
@@ -30,8 +42,9 @@
     }
   ],
   "expected": {
-    "columns": ["id", "Highest"],
-    "records": [
+    "expected_columns": ["id", "Highest"],
+    "expected_types": ["int", "int"],
+    "expected_result": [
       [1, 90],
       [2, 80],
       [3, 50],
@@ -39,7 +52,9 @@
       [5, 70],
       [6, 50]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }

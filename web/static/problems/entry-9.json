@@ -1,19 +1,34 @@
 {
-  "DDL": [
+  "descriptions": {
+    "en": [
+      "Extract all students' (name, age, gender)",
+      "who is younger than 19 or older than 25."
+    ],
+    "jp": [
+      "年齢が19歳未満または25歳より上の生徒の、",
+      "名前, 年齢と性別を取り出してください。"
+    ]
+  },
+  "create_sql": [
     "create table Students (",
-    "    id int primary key,",
-    "    name varchar(16),",
-    "    age int,",
-    "    gender char(1)",
+    "       id int primary key,",
+    "       name varchar(16),",
+    "       age int,",
+    "       gender char(1)",
     ");"
   ],
-  "description": [
-    "Extract all students' (name, age, gender)",
-    "who is younger than 19 or older than 25."
-  ],
-  "description_jp": [
-    "年齢が19歳未満または25歳より上の生徒の、",
-    "名前, 年齢と性別を取り出してください。"
+  "insert_sql": [
+    "insert into Students values",
+    "       (1, 'Alice', 16, 'F'),",
+    "       (2, 'Bob', 18, 'M'),",
+    "       (3, 'Charlie', 15, 'M'),",
+    "       (4, 'Dave', 23, 'M'),",
+    "       (5, 'Emilia', 29, 'F'),",
+    "       (6, 'François', 24, 'M'),",
+    "       (7, 'Günter', 16, 'M'),",
+    "       (8, 'Hàoyǔ', 21, 'M'),",
+    "       (9, 'Iori', 20, 'F')",
+    ";"
   ],
   "tables": [
     {
@@ -23,7 +38,7 @@
         [1, "Alice", 16, "F"],
         [2, "Bob", 18, "M"],
         [3, "Charlie", 15, "M"],
-        [4, "David", 23, "M"],
+        [4, "Dave", 23, "M"],
         [5, "Emilia", 29, "F"],
         [6, "François", 24, "M"],
         [7, "Günter", 16, "M"],
@@ -33,15 +48,18 @@
     }
   ],
   "expected": {
-    "columns": ["name", "age", "gender"],
-    "records": [
+    "expected_columns": ["name", "age", "gender"],
+    "expected_types": ["varchar", "int", "char"],
+    "expected_result": [
       ["Alice", 16, "F"],
       ["Bob", 18, "M"],
       ["Charlie", 15, "M"],
       ["Emilia", 29, "F"],
       ["Günter", 16, "M"]
     ],
-    "order_sensitive": false
+    "order_strict": false
   },
-  "writer": "ryhoh"
+  "writers": [
+    "ryhoh"
+  ]
 }
