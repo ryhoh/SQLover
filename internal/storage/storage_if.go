@@ -131,7 +131,7 @@ func joinWriters(writers []string) string {
 		for i := 0; i < length-2; i++ {
 			res += writers[i] + ", "
 		}
-		res += writers[length-2] + " and " + writers[length-1]
+		res += writers[length-2] + "and " + writers[length-1]
 		return res
 	}
 }

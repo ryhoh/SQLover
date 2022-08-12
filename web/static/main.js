@@ -140,6 +140,18 @@ const vm = new Vue({
       } else {
         return this.problem.descriptions.en;
       }
+    },
+
+    getWriters: function () {
+      const writers_num = this.problem.writers.length;
+      if (writers_num == 0) return "";
+      if (writers_num == 1) return this.problem.writers[0];
+      var res = "";
+      for (var i = 0; i < writers_num-2; i++) {
+        res += this.problem.writers[i], ", ";
+      }
+      res += this.problem.writers[writers_num-2] + "and " + this.problem.writers[writers_num-1]
+      return res;
     }
   },
 
