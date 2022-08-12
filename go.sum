@@ -1,4 +1,6 @@
 github.com/lib/pq v1.10.6 h1:jbk+ZieJ0D7EVGJYpL9QTz7/YW6UHbmdnZWYyK5cdBs=
 github.com/lib/pq v1.10.6/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/maruel/natural v1.1.0 h1:2z1NgP/Vae+gYrtC0VuvrTJ6U35OuyUqDdfluLqMWuQ=
+github.com/maruel/natural v1.1.0/go.mod h1:eFVhYCcUOfZFxXoDZam8Ktya72wa79fNC3lc/leA0DQ=
 github.com/ryhoh/go-util v0.2.0 h1:A/ETd0MIsl7ZcZXEezPPe/A+sh0ZCA7mjBLaSRm7zs8=
 github.com/ryhoh/go-util v0.2.0/go.mod h1:O4uHCyGCLPUEQACUFxHY3iJh3DjPas5YrlBbE80OvGs=
