@@ -11,8 +11,8 @@ import (
 	"sqlpuzzlers/internal/storage"
 )
 
-/* / */
-func root(response_writer http.ResponseWriter, request *http.Request) {
+/* /index */
+func index(response_writer http.ResponseWriter, request *http.Request) {
 	psql_version, err := judge.ReadVersion()
 	if err != nil {
 		http.Error(response_writer, err.Error(), http.StatusInternalServerError)
@@ -92,7 +92,7 @@ func test(response_writer http.ResponseWriter, request *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", root)
+	http.HandleFunc("/index", index)
 	http.HandleFunc("/api/v1/problem_list", problem_list)
 	http.HandleFunc("/api/v1/test", test)
 
