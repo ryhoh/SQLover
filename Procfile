@@ -1,1 +1,1 @@
-web: bin/sqlpuzzlers
+web: bin/app
