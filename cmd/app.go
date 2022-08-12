@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 
 	"sqlpuzzlers/internal/common"
 	"sqlpuzzlers/internal/judge"
@@ -99,5 +100,6 @@ func main() {
 	fileServer := http.FileServer(http.Dir("web/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
 
-	http.ListenAndServe(":8080", nil)
+	// http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
